@@ -186,7 +186,6 @@ export const verifyFaceAction = async (face) => {
       }
     }
 
-    console.log('Verify Failure', response);
     dispatch(enrollFeedbackAction("Couldn't verify photo"));
     return Promise.resolve(false);
   };
