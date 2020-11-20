@@ -1,4 +1,3 @@
-import {createConfigItem} from '@babel/core';
 import UserAgent from 'react-native-user-agent';
 import {CONFIG} from '../env/env.json';
 
