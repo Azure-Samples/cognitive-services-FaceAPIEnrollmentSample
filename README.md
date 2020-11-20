@@ -76,7 +76,7 @@ Notice the app also offers functionality for deleting the user's enrollment and 
 
 <img src="./media/deleteProfile.GIF" alt="manage" width="300"/>
 
-To extend the app's functionality to cover the full enrollment experience, read the [overview](enrollment-overview.md) for additional features to implement and best practices.
+To extend the app's functionality to cover the full enrollment experience, read the [overview](https://docs.microsoft.com/en-us/azure/cognitive-services/face/enrollment-overview) for additional features to implement and best practices.
 
 ## Deploy the enrollment app
 
