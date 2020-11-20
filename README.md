@@ -1,4 +1,13 @@
-# Build an enrollment app for Android with React
+---
+page_type: sample
+languages:
+- javascript
+products:
+- azure-cognitive-services
+name : FaceAPI Enrollment Sample
+---
+
+# Build an enrollment app for Android with React Native
 
 This guide will show you how to get started with the sample Face enrollment application. The app demonstrates best practices for obtaining meaningful consent to enroll users into a face recognition service and acquire high-accuracy face data. An integrated system could use an enrollment app like this to provide touchless access control, identity verification, attendance tracking, personalization kiosk, or identity verification, based on their face data.
 
@@ -33,14 +42,14 @@ The sample enrollment app is written using JavaScript and the React Native frame
 
 ### Quickstart
 
-1. git clone [repository clone url]
-1. cd cognitive-services-FaceAPIEnrollmentSample
-1. cd referenceEnrollApp
-1. npm install
-1. start the metro bundler : npx react-native start 
-1. Either set up an Android Vitrual Device emulator on Android Studio, or plug in your Android device via USB. To check your device is recognized run: adb devices.
-1. Run npx react-native run-android. This will build and launch the app onto the emulator or device. 
-1. Fill out all relevant values in the env.json file. 
+1. ```git clone https://github.com/Azure-Samples/cognitive-services-FaceAPIEnrollmentSample.git```
+1. ```cd cognitive-services-FaceAPIEnrollmentSample```
+1. ```cd referenceEnrollApp```
+1. ```npm install```
+1. start the metro bundler : ```npx react-native start```
+1. Either set up an Android Vitrual Device emulator on Android Studio, or plug in your Android device via USB. To check your device is recognized run: ```adb devices```
+1. Run ```npx react-native run-android```. This will build and launch the app onto the emulator or device. 
+1. Fill out all relevant values in the ```env.json``` file. 
 
 ## Create an enrollment experience  
 
