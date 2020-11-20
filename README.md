@@ -6,11 +6,11 @@ When launched, the application shows users a detailed consent screen. If the use
 
 The sample enrollment app is written using JavaScript and the React Native framework. It can currently be deployed on Android devices; more deployment options are coming in the future.
 
-![app gif begin enrollment](./media/beginning.gif)
+![app gif begin enrollment](./media/beginning.GIF)
 
-![app image  image capture page](./media/enrolling.jpg)
+![app image  image capture page](./media/enrolling.JPG)
 
-![app gif delete profile](./media/deleteProfile.gif)
+![app gif delete profile](./media/deleteProfile.GIF)
 
 ## Getting Started
 
