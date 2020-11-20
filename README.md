@@ -19,7 +19,7 @@ The sample enrollment app is written using JavaScript and the React Native frame
 
 <img src="./media/enrolling.JPG" alt="enrolling" width="300"/> 
 
-<img src="./media/deleteProfile.GIF" alt="manage" width="300"/>
+
 
 ## Getting Started
 
@@ -74,7 +74,7 @@ Many face recognition issues are caused by low-quality reference images. Some fa
 
 Notice the app also offers functionality for deleting the user's enrollment and the option to re-enroll.
 
-<img src="./media/10_manage2.JPG" alt="manageProfile" width="300"/>
+<img src="./media/deleteProfile.GIF" alt="manage" width="300"/>
 
 To extend the app's functionality to cover the full enrollment experience, read the [overview](enrollment-overview.md) for additional features to implement and best practices.
 
