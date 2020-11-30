@@ -6,6 +6,7 @@ products:
 - azure
 - azure-cognitive-services
 name : FaceAPI Enrollment Sample
+urlFragment: faceapi-enrollment-sample
 ---
 
 # Build an enrollment app for Android with React Native
