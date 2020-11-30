@@ -3,6 +3,7 @@ page_type: sample
 languages:
 - javascript
 products:
+- azure
 - azure-cognitive-services
 name : FaceAPI Enrollment Sample
 ---
