@@ -63,3 +63,6 @@ export const USER_AGENT =
   'ReferenceEnrollmentApp/20.11.20 ' +
   UserAgent.systemName +
   UserAgent.systemVersion;
+
+export const FACEAPI_ENDPOINT = process.env.FACEAPI_ENDPOINT;
+export const FACEAPI_KEY = process.env.FACEAPI_KEY;

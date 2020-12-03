@@ -135,7 +135,12 @@ function Enrollment(props) {
     }
 
     // Verify succeeded, dispatch train
+    let t1 = performance.now();
+
     let trainResult = await dispatchTrain();
+
+    let t2 = performance.now();
+    console.log('train time', t2 - t1);
     console.log('train result:', trainResult);
 
     if (trainResult) {

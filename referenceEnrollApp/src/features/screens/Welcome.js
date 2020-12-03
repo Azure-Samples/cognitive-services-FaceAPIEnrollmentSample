@@ -108,13 +108,13 @@ function Welcome({navigation}) {
           </View>
 
           {/* This is for testing purposes */}
-          {/* <View style={styles.buttons}>
+          <View style={styles.buttons}>
             <CustomButton
               whiteButton="true"
               title="Delete all data"
               onPress={clearAllData}
             />
-          </View> */}
+          </View>
 
           <Caption style={styles.greyText}>
             Details at contoso.com/touchless-access{'\n\n'}

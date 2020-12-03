@@ -48,7 +48,7 @@ export const newEnrollmentAction = () => {
     let personId;
 
     let createPersonRgbEndpoint =
-      CONFIG.FACEAPI_ENDPOINT +
+      constants.FACEAPI_ENDPOINT +
       constants.PERSON_ENDPOINT(CONFIG.PERSONGROUP_RGB);
 
     let requestBody = {name: 'person-name'};
@@ -58,7 +58,7 @@ export const newEnrollmentAction = () => {
         'User-Agent': constants.USER_AGENT,
         'Content-Type': 'application/json',
         Accept: 'application/json',
-        'Ocp-Apim-Subscription-Key': CONFIG.FACEAPI_KEY,
+        'Ocp-Apim-Subscription-Key': constants.FACEAPI_KEY,
       },
       body: JSON.stringify(requestBody),
     });
@@ -105,7 +105,7 @@ export const deleteEnrollmentAction = async () => {
 
     // Delete person
     let deletePersonEndpoint =
-      CONFIG.FACEAPI_ENDPOINT +
+      constants.FACEAPI_ENDPOINT +
       constants.GET_PERSON_ENDPOINT(CONFIG.PERSONGROUP_RGB, personId);
 
     let response = await fetch(deletePersonEndpoint, {
@@ -114,7 +114,7 @@ export const deleteEnrollmentAction = async () => {
         'User-Agent': constants.USER_AGENT,
         'Content-Type': 'application/json',
         Accept: 'application/json',
-        'Ocp-Apim-Subscription-Key': CONFIG.FACEAPI_KEY,
+        'Ocp-Apim-Subscription-Key': constants.FACEAPI_KEY,
       },
     });
 
@@ -173,7 +173,7 @@ export const deleteOldEnrollmentAction = async () => {
 
     // Delete person
     let deletePersonEndpoint =
-      CONFIG.FACEAPI_ENDPOINT +
+      constants.FACEAPI_ENDPOINT +
       constants.GET_PERSON_ENDPOINT(CONFIG.PERSONGROUP_RGB, personIdOld);
 
     let response = await fetch(deletePersonEndpoint, {
@@ -182,7 +182,7 @@ export const deleteOldEnrollmentAction = async () => {
         'User-Agent': constants.USER_AGENT,
         'Content-Type': 'application/json',
         Accept: 'application/json',
-        'Ocp-Apim-Subscription-Key': CONFIG.FACEAPI_KEY,
+        'Ocp-Apim-Subscription-Key': constants.FACEAPI_KEY,
       },
     });
 

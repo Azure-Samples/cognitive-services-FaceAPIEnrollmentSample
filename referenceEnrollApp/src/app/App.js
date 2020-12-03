@@ -20,6 +20,8 @@ const Stack = createStackNavigator();
 const store = configureStore();
 
 const App = () => {
+  console.log(process.env.FACEAPI_ENDPOINT);
+  console.log(process.env.FACEAPI_KEY);
   validatePersonGroup(CONFIG.PERSONGROUP_RGB).then((personGroupValidated) => {
     if (personGroupValidated === false) {
       throw new Error('Person group could not be validated');

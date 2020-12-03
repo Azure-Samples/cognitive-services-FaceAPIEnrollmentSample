@@ -42,6 +42,7 @@
     "@babel/core": "^7.11.1",
     "@babel/runtime": "^7.11.2",
     "@react-native-community/eslint-config": "^2.0.0",
+    "babel-plugin-transform-inline-environment-variables": "^0.4.3",
     "eslint": "^7.2.0",
     "eslint-config-airbnb": "^18.2.1",
     "eslint-plugin-import": "^2.22.1",
