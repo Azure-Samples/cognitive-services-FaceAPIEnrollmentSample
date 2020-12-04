@@ -19,13 +19,45 @@ export const processFrameForEnrollmentAction = async (frameData) => {
       let t3 = performance.now();
 
       // Attempts to enroll face
-      let res = dispatch(await processFaceAction(face, frameData));
+      let res = await Promise.resolve(
+        dispatch(await processFaceAction(face, frameData)),
+      );
+
       let t4 = performance.now();
 
       console.log('enrollment time', t4 - t3);
 
       return res;
     }
+    // No face detected, no face enrolled
+    return false;
+  };
+};
+
+// Gets largest face from frame and enrolls
+export const processFrameForEnrollmentAction2 = (frames) => {
+  return async (dispatch) => {
+    let t1 = performance.now();
+    // spawn x detect calls to get filterd faces array
+    let filteredFaces = await Promise.resolve(
+      dispatch(await getFilteredFaces(frames)),
+    );
+    console.log('filteredFaces:', filteredFaces);
+    let t2 = performance.now();
+    console.log('total detection time:', t2 - t1);
+    // if (face.faceId) {
+    //   let t3 = performance.now();
+
+    //   // Attempts to enroll face
+    //   let res = await Promise.resolve(
+    //     dispatch(await processFaceAction(face, frameData)),
+    //   );
+    //   let t4 = performance.now();
+
+    //   console.log('enrollment time', t4 - t3);
+
+    //   return res;
+    // }
     // No face detected, no face enrolled
     return false;
   };
@@ -56,6 +88,27 @@ export const processFrameForVerifyAction = async (frameData) => {
     }
     // No face detected, no face verified
     return false;
+  };
+};
+
+export const getFilteredFaces = (frames) => {
+  return async (dispatch) => {
+    var getFilteredFace = async (frame) => {
+      var face = await Promise.resolve(dispatch(await detectFaceAction(frame)));
+      if (face.faceId) {
+        let passedFilters = dispatch(filterFaceAction(face));
+        if (passedFilters) {
+          return face;
+        }
+      }
+      return {};
+    };
+
+    var getFilteredFaces = [];
+    for (var frame of frames) {
+      getFilteredFaces.push(getFilteredFace(frame));
+    }
+    return Promise.all(getFilteredFaces);
   };
 };
 

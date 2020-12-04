@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react';
 import {useDispatch} from 'react-redux';
 import {
   processFrameForVerifyAction,
-  processFrameForEnrollmentAction,
+  processFrameForEnrollmentAction2,
   trainAction,
 } from './processFrameAction';
 import {View, StyleSheet} from 'react-native';
@@ -22,7 +22,7 @@ function Enrollment(props) {
   // Dispatch
   const dispatch = useDispatch();
   const dispatchForEnrollment = async (frame) =>
-    dispatch(await processFrameForEnrollmentAction(frame));
+    dispatch(await processFrameForEnrollmentAction2(frame));
   const dispatchForVerify = async (frame) =>
     dispatch(await processFrameForVerifyAction(frame));
   const dispatchDelete = async () => dispatch(await deleteEnrollmentAction());
@@ -148,6 +148,31 @@ function Enrollment(props) {
     } else return ENROLL_RESULT.successNoTrain;
   };
 
+  async function getFrames(framesToCollect) {
+    let frames = [];
+
+    for (var i = 0; i < framesToCollect; i++) {
+      let frame = await props.takePicture();
+      if (frame) {
+        frames.push(frame);
+      }
+    }
+
+    return frames;
+  }
+
+  const runEnrollment2 = async () => {
+    // take x pictures
+    let framesToCollect = CONFIG.ENROLL_SETTINGS.RGB_FRAMES_TOENROLL;
+    await sleep(1000);
+    let frames = await getFrames(framesToCollect);
+    await dispatchForEnrollment(frames);
+    // Begin enrollment
+
+    // return error for now
+    return ENROLL_RESULT.error;
+  };
+
   if (props.beginEnrollment && enrollStarted == false) {
     /* 
         Start Enrollment once parent component signals
@@ -156,7 +181,7 @@ function Enrollment(props) {
 
     setEnrollStarted(true);
 
-    runEnrollment().then((enrollmentResult) => {
+    runEnrollment2().then((enrollmentResult) => {
       console.log('Enrollment done', enrollmentResult);
       props.onCompleted(enrollmentResult);
     });
