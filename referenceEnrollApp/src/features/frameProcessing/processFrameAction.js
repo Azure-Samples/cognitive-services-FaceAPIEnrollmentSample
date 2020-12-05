@@ -42,9 +42,29 @@ export const processFrameForEnrollmentAction2 = (frames) => {
     let filteredFaces = await Promise.resolve(
       dispatch(await getFilteredFaces(frames)),
     );
-    console.log('filteredFaces:', filteredFaces);
+    console.log('filteredFaces:', filteredFaces.length);
     let t2 = performance.now();
     console.log('total detection time:', t2 - t1);
+
+    var enrolled = 0;
+    let t3 = performance.now();
+    for (var faceFrame of filteredFaces) {
+      //console.log(faceFrame);
+      if (faceFrame) {
+        console.log('enrolling one frame');
+        // Attempts to enroll face
+        let res = await Promise.resolve(
+          dispatch(await processFaceAction(faceFrame[0], faceFrame[1])),
+        );
+
+        enrolled = res ? ++enrolled : enrolled;
+      }
+    }
+
+    let t4 = performance.now();
+
+    console.log('enrollment time', t4 - t3);
+
     // if (face.faceId) {
     //   let t3 = performance.now();
 
@@ -59,7 +79,7 @@ export const processFrameForEnrollmentAction2 = (frames) => {
     //   return res;
     // }
     // No face detected, no face enrolled
-    return false;
+    return enrolled;
   };
 };
 
@@ -106,9 +126,24 @@ export const getFilteredFaces = (frames) => {
 
     var getFilteredFaces = [];
     for (var frame of frames) {
-      getFilteredFaces.push(getFilteredFace(frame));
+      var getFaceFrame = new Promise(async (resolve) => {
+        var face = await getFilteredFace(frame);
+        if (face.faceId) {
+          return resolve([face, frame]);
+        }
+        return resolve();
+      });
+
+      console.log('Pushing', getFaceFrame);
+      getFilteredFaces.push(getFaceFrame);
     }
-    return Promise.all(getFilteredFaces);
+
+    console.log('detect calls all run');
+    var t1 = performance.now();
+    var res = await Promise.all(getFilteredFaces);
+    var t2 = performance.now();
+    console.log('all ran', t2 - t1);
+    return res;
   };
 };
 
@@ -166,16 +201,16 @@ export const detectFaceAction = async (frameData) => {
 // Enrolls a face
 export const processFaceAction = async (face, frameData) => {
   return async (dispatch, getState) => {
-    // Run quality filters
-    let t1 = performance.now();
+    // // Run quality filters
+    // let t1 = performance.now();
 
-    let passedFilters = dispatch(filterFaceAction(face));
-    let t2 = performance.now();
-    console.log('quality filter time', t2 - t1);
-    if (passedFilters == false) {
-      // Face failed filters, do not enroll
-      return Promise.resolve(false);
-    }
+    // let passedFilters = dispatch(filterFaceAction(face));
+    // let t2 = performance.now();
+    // console.log('quality filter time', t2 - t1);
+    // if (passedFilters == false) {
+    //   // Face failed filters, do not enroll
+    //   return Promise.resolve(false);
+    // }
 
     // If re-enrollment, use the new personId
     let newPersonId = getState().newEnrollment.newRgbPersonId;

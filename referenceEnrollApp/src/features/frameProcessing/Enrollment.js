@@ -12,6 +12,7 @@ import {CancellationToken, sleep} from '../../shared/helper';
 import CustomButton from '../../styles/CustomButton';
 import {ENROLL_RESULT} from '../../shared/constants';
 import {deleteEnrollmentAction} from '../userEnrollment/newEnrollmentAction';
+import configureStore from '../../app/store';
 
 function Enrollment(props) {
   // State
@@ -162,15 +163,84 @@ function Enrollment(props) {
   }
 
   const runEnrollment2 = async () => {
-    // take x pictures
-    let framesToCollect = CONFIG.ENROLL_SETTINGS.RGB_FRAMES_TOENROLL;
-    await sleep(1000);
-    let frames = await getFrames(framesToCollect);
-    await dispatchForEnrollment(frames);
-    // Begin enrollment
+    const timeoutInMs = CONFIG.ENROLL_SETTINGS.TIMEOUT_SECONDS * 1000;
 
-    // return error for now
-    return ENROLL_RESULT.error;
+    var timer = setTimeout(() => {
+      console.log('timeout triggers');
+      cancelToken.timeoutCancel();
+    }, timeoutInMs);
+
+    let rgbFramesToEnroll = CONFIG.ENROLL_SETTINGS.RGB_FRAMES_TOENROLL;
+    var totalEnrolled = 0;
+
+    // let camera adjust
+    await sleep(750);
+
+    // Begin enrollment
+    while (
+      totalEnrolled < rgbFramesToEnroll &&
+      cancelToken.isCancellationRequested == false
+    ) {
+      // take x pictures
+      let frames = await getFrames(rgbFramesToEnroll - totalEnrolled);
+      var numEnrolled = await dispatchForEnrollment(frames);
+      if (numEnrolled > 0) {
+        totalEnrolled += numEnrolled;
+        setRgbProgress(totalEnrolled);
+      }
+    }
+
+    let verified = false;
+
+    while (verified == false && cancelToken.isCancellationRequested == false) {
+      verified = await takePictureAndVerify();
+      console.log('Verify result:', verified);
+
+      if (verified) {
+        // update enrollment progress
+        setRgbProgress(++totalEnrolled);
+      }
+    }
+
+    console.log('Clearing timeout');
+    clearTimeout(timer);
+
+    if (verified == false) {
+      console.log('Verify failed');
+      /* 
+            If the face cannot be verified
+            Fail enrollment and delete all data
+            */
+
+      try {
+        let deleteResult = await dispatchDelete();
+        console.log('delete result', deleteResult);
+      } catch (err) {
+        console.log('delete failed', err);
+      }
+
+      // Determine type of failure result
+      if (cancelToken.isTimeoutCancellation) {
+        return ENROLL_RESULT.timeout;
+      } else if (cancelToken.isCancellationRequested) {
+        return ENROLL_RESULT.cancel;
+      }
+
+      return ENROLL_RESULT.error;
+    }
+
+    // Verify succeeded, dispatch train
+    let t1 = performance.now();
+
+    let trainResult = await dispatchTrain();
+
+    let t2 = performance.now();
+    console.log('train time', t2 - t1);
+    console.log('train result:', trainResult);
+
+    if (trainResult) {
+      return ENROLL_RESULT.success;
+    } else return ENROLL_RESULT.successNoTrain;
   };
 
   if (props.beginEnrollment && enrollStarted == false) {
@@ -181,9 +251,13 @@ function Enrollment(props) {
 
     setEnrollStarted(true);
 
+    var t1 = performance.now();
     runEnrollment2().then((enrollmentResult) => {
       console.log('Enrollment done', enrollmentResult);
       props.onCompleted(enrollmentResult);
+      var t2 = performance.now();
+
+      console.log('TOTAL:', t2 - t1);
     });
   }
 

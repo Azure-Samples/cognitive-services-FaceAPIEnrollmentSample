@@ -38,7 +38,7 @@ function EnrollProgress(props) {
   let y = height / 2;
 
   // 5 seconds to update the progress
-  let progressDuration = 5000;
+  let progressDuration = 2000;
 
   /*
     Progress is # of frames enrolled + 
