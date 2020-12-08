@@ -1,18 +1,20 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useState, useRef} from 'react';
 import {useDispatch} from 'react-redux';
 import {
   processFrameForVerifyAction,
-  processFrameForEnrollmentAction2,
+  processFaceAction,
+  detectFaceAction,
   trainAction,
 } from './processFrameAction';
 import {View, StyleSheet} from 'react-native';
 import EnrollProgress from '../progress/EnrollProgress';
 import {CONFIG} from '../../env/env.json';
-import {CancellationToken, sleep} from '../../shared/helper';
+import {AsyncLock, CancellationToken, sleep} from '../../shared/helper';
 import CustomButton from '../../styles/CustomButton';
 import {ENROLL_RESULT} from '../../shared/constants';
 import {deleteEnrollmentAction} from '../userEnrollment/newEnrollmentAction';
 import configureStore from '../../app/store';
+import {mutex} from '../../shared/constants';
 
 function Enrollment(props) {
   // State
@@ -20,10 +22,21 @@ function Enrollment(props) {
   const [rgbProgress, setRgbProgress] = useState(0);
   const [cancelToken, setCancelToken] = useState(null);
 
+  const progressRef = useRef(rgbProgress);
+
+  // Keeps the state and ref equal
+  function updateProgress(newProgress) {
+    console.log('enrolled', newProgress, 'frames.');
+    progressRef.current = newProgress;
+    setRgbProgress(newProgress);
+  }
+
   // Dispatch
   const dispatch = useDispatch();
-  const dispatchForEnrollment = async (frame) =>
-    dispatch(await processFrameForEnrollmentAction2(frame));
+  const dispatchForDetection = async (frame) =>
+    dispatch(await detectFaceAction(frame));
+  const dispatchForEnrollment = async (face, frame) =>
+    dispatch(await processFaceAction(face, frame));
   const dispatchForVerify = async (frame) =>
     dispatch(await processFrameForVerifyAction(frame));
   const dispatchDelete = async () => dispatch(await deleteEnrollmentAction());
@@ -149,19 +162,6 @@ function Enrollment(props) {
     } else return ENROLL_RESULT.successNoTrain;
   };
 
-  async function getFrames(framesToCollect) {
-    let frames = [];
-
-    for (var i = 0; i < framesToCollect; i++) {
-      let frame = await props.takePicture();
-      if (frame) {
-        frames.push(frame);
-      }
-    }
-
-    return frames;
-  }
-
   const runEnrollment2 = async () => {
     const timeoutInMs = CONFIG.ENROLL_SETTINGS.TIMEOUT_SECONDS * 1000;
 
@@ -171,23 +171,48 @@ function Enrollment(props) {
     }, timeoutInMs);
 
     let rgbFramesToEnroll = CONFIG.ENROLL_SETTINGS.RGB_FRAMES_TOENROLL;
-    var totalEnrolled = 0;
 
     // let camera adjust
     await sleep(750);
 
+    var tasks = [];
+
     // Begin enrollment
     while (
-      totalEnrolled < rgbFramesToEnroll &&
+      progressRef.current < rgbFramesToEnroll &&
       cancelToken.isCancellationRequested == false
     ) {
-      // take x pictures
-      let frames = await getFrames(rgbFramesToEnroll - totalEnrolled);
-      var numEnrolled = await dispatchForEnrollment(frames);
-      if (numEnrolled > 0) {
-        totalEnrolled += numEnrolled;
-        setRgbProgress(totalEnrolled);
+      console.log('progress ref is ', progressRef.current);
+
+      const Enroll = async (frame) => {
+        // send for detection
+        let face = await Promise.resolve(await dispatchForDetection(frame));
+        //lock
+        let release = await mutex.acquire();
+        console.log('locked');
+        if (face.faceId && progressRef.current < rgbFramesToEnroll) {
+          let enrolled = await Promise.resolve(
+            await dispatchForEnrollment(face, frame),
+          );
+          if (enrolled) {
+            updateProgress(progressRef.current + 1);
+          }
+        }
+        // unlock
+        release();
+        console.log('release');
+      };
+
+      let frame = await props.takePicture();
+      if (frame) {
+        tasks.push(Enroll(frame));
+        await sleep(1000);
       }
+    }
+
+    // wait for all tasks to complete
+    for (var task of tasks) {
+      await task;
     }
 
     let verified = false;
@@ -198,7 +223,7 @@ function Enrollment(props) {
 
       if (verified) {
         // update enrollment progress
-        setRgbProgress(++totalEnrolled);
+        updateProgress(progressRef.current + 1);
       }
     }
 
@@ -208,9 +233,9 @@ function Enrollment(props) {
     if (verified == false) {
       console.log('Verify failed');
       /* 
-            If the face cannot be verified
-            Fail enrollment and delete all data
-            */
+        If the face cannot be verified
+        Fail enrollment and delete all data
+      */
 
       try {
         let deleteResult = await dispatchDelete();

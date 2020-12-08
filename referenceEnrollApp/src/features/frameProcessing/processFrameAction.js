@@ -4,6 +4,7 @@ import {CONFIG} from '../../env/env.json';
 import * as constants from '../../shared/constants';
 import {filterFaceAction} from '../filtering/qualityFilteringAction';
 import {FEEDBACK} from '../filtering/filterFeedback';
+import {mutex} from '../../shared/constants';
 
 // Gets largest face from frame and enrolls
 export const processFrameForEnrollmentAction = async (frameData) => {
@@ -19,9 +20,18 @@ export const processFrameForEnrollmentAction = async (frameData) => {
       let t3 = performance.now();
 
       // Attempts to enroll face
+      // add a mutex
+
+      let release = await mutex.acquire();
+      console.log('lock enabled');
+
       let res = await Promise.resolve(
         dispatch(await processFaceAction(face, frameData)),
       );
+
+      release();
+
+      console.log('lock disabled');
 
       let t4 = performance.now();
 
@@ -201,6 +211,7 @@ export const detectFaceAction = async (frameData) => {
 // Enrolls a face
 export const processFaceAction = async (face, frameData) => {
   return async (dispatch, getState) => {
+    console.log('adding face');
     // // Run quality filters
     // let t1 = performance.now();
 
