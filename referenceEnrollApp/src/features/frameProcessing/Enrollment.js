@@ -1,10 +1,11 @@
 import React, {useEffect, useState, useRef} from 'react';
 import {useDispatch} from 'react-redux';
 import {
-  processFrameForVerifyAction,
+  verifyFaceAction,
   processFaceAction,
   detectFaceAction,
   trainAction,
+  processFrameForVerifyAction,
 } from './processFrameAction';
 import {View, StyleSheet} from 'react-native';
 import EnrollProgress from '../progress/EnrollProgress';
@@ -26,7 +27,7 @@ function Enrollment(props) {
 
   // Keeps the state and ref equal
   function updateProgress(newProgress) {
-    console.log('enrolled', newProgress, 'frames.');
+    console.log('processed', newProgress, 'frames.');
     progressRef.current = newProgress;
     setRgbProgress(newProgress);
   }
@@ -37,8 +38,8 @@ function Enrollment(props) {
     dispatch(await detectFaceAction(frame));
   const dispatchForEnrollment = async (face, frame) =>
     dispatch(await processFaceAction(face, frame));
-  const dispatchForVerify = async (frame) =>
-    dispatch(await processFrameForVerifyAction(frame));
+  const dispatchForVerify = async (face, frame) =>
+    dispatch(await verifyFaceAction(face, frame));
   const dispatchDelete = async () => dispatch(await deleteEnrollmentAction());
   const dispatchTrain = async () => dispatch(await trainAction());
 
@@ -175,67 +176,91 @@ function Enrollment(props) {
     // let camera adjust
     await sleep(750);
 
-    var tasks = [];
+    let tasks = [];
+    let enrollmentSucceeded = false;
+    let completedTaskCount = 0;
 
     // Begin enrollment
     while (
-      progressRef.current < rgbFramesToEnroll &&
+      !enrollmentSucceeded &&
       cancelToken.isCancellationRequested == false
     ) {
-      console.log('progress ref is ', progressRef.current);
-
-      const Enroll = async (frame) => {
-        // send for detection
+      const processFrame = async (frame) => {
+        // Send for detection
+        let t1 = performance.now();
         let face = await Promise.resolve(await dispatchForDetection(frame));
-        //lock
-        let release = await mutex.acquire();
-        console.log('locked');
-        if (face.faceId && progressRef.current < rgbFramesToEnroll) {
-          let enrolled = await Promise.resolve(
-            await dispatchForEnrollment(face, frame),
-          );
-          if (enrolled) {
-            updateProgress(progressRef.current + 1);
+        let t2 = performance.now();
+
+        console.log('Detection + filter time: ', t2 - t1);
+
+        if (face.faceId) {
+          // Lock, only enroll/verify 1 face at a time
+          let release = await mutex.acquire();
+          console.log('locked');
+
+          if (progressRef.current < rgbFramesToEnroll) {
+            // Send frame for enrollment
+            let t3 = performance.now();
+            let enrolled = await Promise.resolve(
+              await dispatchForEnrollment(face, frame),
+            );
+
+            let t4 = performance.now();
+
+            console.log('Add face time:', t4 - t3);
+
+            if (enrolled) {
+              updateProgress(progressRef.current + 1);
+            }
+          } else if (progressRef.current == rgbFramesToEnroll) {
+            // Send frame for verify
+            let t5 = performance.now();
+            let verified = await Promise.resolve(
+              await dispatchForVerify(face, frame),
+            );
+            let t6 = performance.now();
+            console.log('verify time:', t6 - t5);
+            if (verified) {
+              updateProgress(progressRef.current + 1);
+              enrollmentSucceeded = true;
+            }
           }
+
+          // Unlock
+          release();
+          console.log('released');
         }
-        // unlock
-        release();
-        console.log('release');
+
+        completedTaskCount++;
       };
 
       let frame = await props.takePicture();
       if (frame) {
-        tasks.push(Enroll(frame));
-        await sleep(1000);
+        // Prevent too many process requests
+        if (completedTaskCount > tasks.length - 3) {
+          tasks.push(processFrame(frame));
+        } else {
+          console.log(
+            'Skipping, completed',
+            completedTaskCount,
+            'of',
+            tasks.length,
+          );
+        }
+
+        // Pause between frame processing to not overload faceAPI requests
+        if (!enrollmentSucceeded) await sleep(500);
       }
     }
 
-    // wait for all tasks to complete
-    for (var task of tasks) {
-      await task;
-    }
-
-    let verified = false;
-
-    while (verified == false && cancelToken.isCancellationRequested == false) {
-      verified = await takePictureAndVerify();
-      console.log('Verify result:', verified);
-
-      if (verified) {
-        // update enrollment progress
-        updateProgress(progressRef.current + 1);
-      }
-    }
+    // Wait for all tasks to complete
+    //await Promise.all(tasks);
 
     console.log('Clearing timeout');
     clearTimeout(timer);
 
-    if (verified == false) {
-      console.log('Verify failed');
-      /* 
-        If the face cannot be verified
-        Fail enrollment and delete all data
-      */
+    if (enrollmentSucceeded == false) {
+      // Enrollment failed, delete all data
 
       try {
         let deleteResult = await dispatchDelete();
@@ -254,7 +279,7 @@ function Enrollment(props) {
       return ENROLL_RESULT.error;
     }
 
-    // Verify succeeded, dispatch train
+    // Enrollment succeeded, dispatch train
     let t1 = performance.now();
 
     let trainResult = await dispatchTrain();
@@ -270,9 +295,9 @@ function Enrollment(props) {
 
   if (props.beginEnrollment && enrollStarted == false) {
     /* 
-        Start Enrollment once parent component signals
-        enrollment can begin and check enrollment hasn't aready started
-        */
+      Start Enrollment once parent component signals
+      enrollment can begin and check enrollment hasn't aready started
+    */
 
     setEnrollStarted(true);
 
