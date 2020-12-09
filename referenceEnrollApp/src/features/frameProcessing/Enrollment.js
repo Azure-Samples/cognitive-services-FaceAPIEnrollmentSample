@@ -249,7 +249,7 @@ function Enrollment(props) {
         }
 
         // Pause between frame processing to not overload faceAPI requests
-        if (!enrollmentSucceeded) await sleep(500);
+        //if (!enrollmentSucceeded) await sleep(500);
       }
     }
 
