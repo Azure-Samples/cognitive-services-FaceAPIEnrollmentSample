@@ -171,14 +171,15 @@ function Enrollment(props) {
       cancelToken.timeoutCancel();
     }, timeoutInMs);
 
-    let rgbFramesToEnroll = CONFIG.ENROLL_SETTINGS.RGB_FRAMES_TOENROLL;
+    let rgbFramesToEnroll = CONFIG.ENROLL_SETTINGS.RGB_FRAMES_TOENROLL + 1;
 
     // let camera adjust
-    await sleep(750);
+    //await sleep(750);
 
     let tasks = [];
     let enrollmentSucceeded = false;
     let completedTaskCount = 0;
+    updateProgress(progressRef.current + 1);
 
     // Begin enrollment
     while (
@@ -198,31 +199,33 @@ function Enrollment(props) {
           let release = await mutex.acquire();
           console.log('locked');
 
-          if (progressRef.current < rgbFramesToEnroll) {
-            // Send frame for enrollment
-            let t3 = performance.now();
-            let enrolled = await Promise.resolve(
-              await dispatchForEnrollment(face, frame),
-            );
+          if (cancelToken.isCancellationRequested == false) {
+            if (progressRef.current < rgbFramesToEnroll) {
+              // Send frame for enrollment
+              let t3 = performance.now();
+              let enrolled = await Promise.resolve(
+                await dispatchForEnrollment(face, frame),
+              );
 
-            let t4 = performance.now();
+              let t4 = performance.now();
 
-            console.log('Add face time:', t4 - t3);
+              console.log('Add face time:', t4 - t3);
 
-            if (enrolled) {
-              updateProgress(progressRef.current + 1);
-            }
-          } else if (progressRef.current == rgbFramesToEnroll) {
-            // Send frame for verify
-            let t5 = performance.now();
-            let verified = await Promise.resolve(
-              await dispatchForVerify(face, frame),
-            );
-            let t6 = performance.now();
-            console.log('verify time:', t6 - t5);
-            if (verified) {
-              updateProgress(progressRef.current + 1);
-              enrollmentSucceeded = true;
+              if (enrolled) {
+                updateProgress(progressRef.current + 1);
+              }
+            } else if (progressRef.current == rgbFramesToEnroll) {
+              // Send frame for verify
+              let t5 = performance.now();
+              let verified = await Promise.resolve(
+                await dispatchForVerify(face, frame),
+              );
+              let t6 = performance.now();
+              console.log('verify time:', t6 - t5);
+              if (verified) {
+                updateProgress(progressRef.current + 1);
+                enrollmentSucceeded = true;
+              }
             }
           }
 
@@ -237,7 +240,7 @@ function Enrollment(props) {
       let frame = await props.takePicture();
       if (frame) {
         // Prevent too many process requests
-        if (completedTaskCount > tasks.length - 3) {
+        if (completedTaskCount > tasks.length - 5) {
           tasks.push(processFrame(frame));
         } else {
           console.log(
