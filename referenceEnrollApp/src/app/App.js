@@ -15,44 +15,11 @@ import {validatePersonGroup} from '../shared/helper';
 import {CONFIG} from '../env/env.json';
 const RNFS = require('react-native-fs');
 import * as constants from '../shared/constants';
-import {AsyncLock, sleep} from '../shared/helper';
-import {Mutex, Semaphore, withTimeout} from 'async-mutex';
 
 const Stack = createStackNavigator();
 const store = configureStore();
 
 const App = () => {
-  // const lock = new Mutex();
-
-  // async function tester(n) {
-  //   console.log('called tester');
-  //   var release = await lock.acquire();
-  //   console.log('locked');
-
-  //   console.log('Doin', n, 'work');
-  //   await sleep(1000);
-  //   console.log('going to unlock...');
-  //   release();
-  //   console.log('unlock');
-  // }
-
-  // async function waitall() {
-  //   var n1 = tester(1);
-  //   var n2 = tester(2);
-  //   var n3 = tester(3);
-  //   var n4 = tester(4);
-  //   await n1;
-  //   await n2;
-  //   await n3;
-  //   await n4;
-  // }
-
-  // waitall().then(() => {
-  //   console.log('done');
-  // });
-
-  console.log(process.env.FACEAPI_ENDPOINT);
-  console.log(process.env.FACEAPI_KEY);
   validatePersonGroup(CONFIG.PERSONGROUP_RGB).then((personGroupValidated) => {
     if (personGroupValidated === false) {
       throw new Error('Person group could not be validated');

@@ -82,12 +82,6 @@ function Enrollment(props) {
 
   // Runs entire enrollment flow
   const runEnrollment = async () => {
-    /*
-        sleep for a second before starting enrollment
-        allows user and camera to get situated so first frame is good 
-        */
-    await sleep(500);
-
     const timeoutInMs = CONFIG.ENROLL_SETTINGS.TIMEOUT_SECONDS * 1000;
 
     var timer = setTimeout(() => {
@@ -95,90 +89,13 @@ function Enrollment(props) {
       cancelToken.timeoutCancel();
     }, timeoutInMs);
 
-    // Enrollment flow begins
-    let rgbEnrollProgress = 0;
-
-    while (
-      rgbEnrollProgress < CONFIG.ENROLL_SETTINGS.RGB_FRAMES_TOENROLL &&
-      cancelToken.isCancellationRequested == false
-    ) {
-      let frameEnrollSucceeded = await takePictureAndEnroll();
-      if (frameEnrollSucceeded) {
-        // update enrollment progress
-        setRgbProgress(++rgbEnrollProgress);
-      }
-    }
-
-    // Verify
-    let verified = false;
-
-    while (verified == false && cancelToken.isCancellationRequested == false) {
-      verified = await takePictureAndVerify();
-      console.log('Verify result:', verified);
-
-      if (verified) {
-        // update enrollment progress
-        setRgbProgress(++rgbEnrollProgress);
-      }
-    }
-
-    console.log('Clearing timeout');
-    clearTimeout(timer);
-
-    if (verified == false) {
-      console.log('Verify failed');
-      /* 
-            If the face cannot be verified
-            Fail enrollment and delete all data
-            */
-
-      try {
-        let deleteResult = await dispatchDelete();
-        console.log('delete result', deleteResult);
-      } catch (err) {
-        console.log('delete failed', err);
-      }
-
-      // Determine type of failure result
-      if (cancelToken.isTimeoutCancellation) {
-        return ENROLL_RESULT.timeout;
-      } else if (cancelToken.isCancellationRequested) {
-        return ENROLL_RESULT.cancel;
-      }
-
-      return ENROLL_RESULT.error;
-    }
-
-    // Verify succeeded, dispatch train
-    let t1 = performance.now();
-
-    let trainResult = await dispatchTrain();
-
-    let t2 = performance.now();
-    console.log('train time', t2 - t1);
-    console.log('train result:', trainResult);
-
-    if (trainResult) {
-      return ENROLL_RESULT.success;
-    } else return ENROLL_RESULT.successNoTrain;
-  };
-
-  const runEnrollment2 = async () => {
-    const timeoutInMs = CONFIG.ENROLL_SETTINGS.TIMEOUT_SECONDS * 1000;
-
-    var timer = setTimeout(() => {
-      console.log('timeout triggers');
-      cancelToken.timeoutCancel();
-    }, timeoutInMs);
-
-    let rgbFramesToEnroll = CONFIG.ENROLL_SETTINGS.RGB_FRAMES_TOENROLL + 1;
-
-    // let camera adjust
-    //await sleep(750);
-
+    // Add one to start up progress bar
+    const rgbFramesToEnroll = CONFIG.ENROLL_SETTINGS.RGB_FRAMES_TOENROLL + 1;
     let tasks = [];
     let enrollmentSucceeded = false;
     let completedTaskCount = 0;
+
+    // Show initial progress
     updateProgress(progressRef.current + 1);
 
     // Begin enrollment
@@ -250,9 +167,6 @@ function Enrollment(props) {
             tasks.length,
           );
         }
-
-        // Pause between frame processing to not overload faceAPI requests
-        //if (!enrollmentSucceeded) await sleep(500);
       }
     }
 
@@ -305,7 +219,7 @@ function Enrollment(props) {
     setEnrollStarted(true);
 
     var t1 = performance.now();
-    runEnrollment2().then((enrollmentResult) => {
+    runEnrollment().then((enrollmentResult) => {
       console.log('Enrollment done', enrollmentResult);
       props.onCompleted(enrollmentResult);
       var t2 = performance.now();

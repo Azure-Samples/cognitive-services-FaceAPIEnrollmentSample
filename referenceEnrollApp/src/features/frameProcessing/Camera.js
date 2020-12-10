@@ -19,7 +19,6 @@ export default function Camera(props) {
   };
 
   async function takeBase64Picture() {
-    let t1 = performance.now();
     let frameData;
 
     try {
@@ -27,10 +26,6 @@ export default function Camera(props) {
     } catch (error) {
       console.log('Error taking picture:', error);
     }
-
-    let t2 = performance.now();
-
-    console.log('taking pic', t2 - t1);
 
     return frameData;
   }
