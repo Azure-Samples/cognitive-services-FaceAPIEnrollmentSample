@@ -147,7 +147,6 @@ function Enrollment(props) {
     }
 
     // Enrollment succeeded, dispatch train
-
     let trainResult = await dispatchTrain();
 
     console.log('train result:', trainResult);
