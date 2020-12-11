@@ -6,7 +6,7 @@ import {setUserInfo} from './saveUserInfoAction';
 export const checkEnrollmentExistsAction = (username) => {
   return async (dispatch) => {
     /*
-        This app writes to the enrollment directory path for demonstration only
+        This app writes to the enrollment directory path for demonstration only.
         Store existing enrollment information in a secured database. 
     */
     let path = RNFS.DocumentDirectoryPath + '/enrollment/' + username + '.txt';
@@ -85,7 +85,7 @@ export const newEnrollmentAction = () => {
 };
 
 // Deletes a person from large person group
-export const deleteEnrollmentAction = async () => {
+export const deleteEnrollmentAction = () => {
   return async (dispatch, getState) => {
     // Select the newer personId if it was a re-enrollment
     // otherwise select the only personId
@@ -97,7 +97,7 @@ export const deleteEnrollmentAction = async () => {
 
     if (!personId || personId == '') {
       console.log('pid is empty');
-      return Promise.resolve(false);
+      return false;
     }
 
     let username = getState().userInfo.username;
@@ -132,7 +132,7 @@ export const deleteEnrollmentAction = async () => {
           });
       }
 
-      return Promise.resolve(true);
+      return true;
     }
 
     if (response.status == '404') {
@@ -141,7 +141,7 @@ export const deleteEnrollmentAction = async () => {
       console.log('delete result', deleteResult);
 
       if (deleteResult.error.message.includes('Person is not found.')) {
-        return Promise.resolve(false);
+        return false;
       }
     }
 
@@ -151,7 +151,7 @@ export const deleteEnrollmentAction = async () => {
 };
 
 // Deletes the old enrollment if it was a re-enrollment
-export const deleteOldEnrollmentAction = async () => {
+export const deleteOldEnrollmentAction = () => {
   return async (dispatch, getState) => {
     let personIdOld = getState().userInfo.rgbPersonId;
     console.log('personId old', personIdOld);
@@ -165,7 +165,7 @@ export const deleteOldEnrollmentAction = async () => {
       personIdNew == ''
     ) {
       console.log('pid is empty');
-      return Promise.resolve(false);
+      return false;
     }
 
     let username = getState().userInfo.username;
@@ -209,7 +209,7 @@ export const deleteOldEnrollmentAction = async () => {
           console.log(err.message);
         });
 
-      return Promise.resolve(true);
+      return true;
     }
 
     if (response.status == '404') {
@@ -218,7 +218,7 @@ export const deleteOldEnrollmentAction = async () => {
       console.log('delete result', deleteResult);
 
       if (deleteResult.error.message.includes('Person is not found.')) {
-        return Promise.resolve(false);
+        return false;
       }
     }
 

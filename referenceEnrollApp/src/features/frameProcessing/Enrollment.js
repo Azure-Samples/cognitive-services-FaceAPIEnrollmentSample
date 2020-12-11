@@ -5,6 +5,7 @@ import {
   processFaceAction,
   detectFaceAction,
   trainAction,
+  getFilteredFaceAction,
 } from './processFrameAction';
 import {View, StyleSheet} from 'react-native';
 import EnrollProgress from '../progress/EnrollProgress';
@@ -21,7 +22,6 @@ function Enrollment(props) {
   const [rgbProgress, setRgbProgress] = useState(0);
   const [cancelToken, setCancelToken] = useState(null);
 
-  // reference to progress status
   const progressRef = useRef(rgbProgress);
 
   // Keeps the progress state/ref value equal
@@ -35,21 +35,21 @@ function Enrollment(props) {
 
   // Detection
   const dispatchForDetection = async (frame) =>
-    dispatch(await detectFaceAction(frame));
+    await dispatch(getFilteredFaceAction(frame));
 
   // Enrollment
   const dispatchForEnrollment = async (face, frame) =>
-    dispatch(await processFaceAction(face, frame));
+    await dispatch(processFaceAction(face, frame));
 
   // Verify
   const dispatchForVerify = async (face, frame) =>
-    dispatch(await verifyFaceAction(face, frame));
+    await dispatch(verifyFaceAction(face, frame));
 
   // Delete
-  const dispatchDelete = async () => dispatch(await deleteEnrollmentAction());
+  const dispatchDelete = async () => await dispatch(deleteEnrollmentAction());
 
   //Train
-  const dispatchTrain = async () => dispatch(await trainAction());
+  const dispatchTrain = async () => await dispatch(trainAction());
 
   useEffect(() => {
     /*
@@ -79,8 +79,7 @@ function Enrollment(props) {
 
     const processFrame = async (frame) => {
       // Send frame for detection
-      let face = await Promise.resolve(await dispatchForDetection(frame));
-
+      let face = await dispatchForDetection(frame);
       if (face.faceId) {
         // Lock, only enroll/verify 1 face at a time
         let release = await mutex.acquire();
@@ -88,18 +87,14 @@ function Enrollment(props) {
         if (cancelToken.isCancellationRequested == false) {
           if (progressRef.current < rgbFramesToEnroll) {
             // Send frame for enrollment
-            let enrolled = await Promise.resolve(
-              await dispatchForEnrollment(face, frame),
-            );
+            let enrolled = await dispatchForEnrollment(face, frame);
 
             if (enrolled) {
               updateProgress(progressRef.current + 1);
             }
           } else if (progressRef.current == rgbFramesToEnroll) {
             // Send frame for verify
-            let verified = await Promise.resolve(
-              await dispatchForVerify(face, frame),
-            );
+            let verified = await dispatchForVerify(face, frame);
             if (verified) {
               updateProgress(progressRef.current + 1);
               enrollmentSucceeded = true;
@@ -124,13 +119,6 @@ function Enrollment(props) {
         // Prevent too many process requests
         if (completedTaskCount > tasks.length - 5) {
           tasks.push(processFrame(frame));
-        } else {
-          console.log(
-            'Skipping, completed',
-            completedTaskCount,
-            'of',
-            tasks.length,
-          );
         }
       }
     }

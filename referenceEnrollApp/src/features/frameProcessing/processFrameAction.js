@@ -5,8 +5,23 @@ import * as constants from '../../shared/constants';
 import {filterFaceAction} from '../filtering/qualityFilteringAction';
 import {FEEDBACK} from '../filtering/filterFeedback';
 
+// Detects and Filters faces
+export const getFilteredFaceAction = (frameData) => {
+  return async (dispatch) => {
+    let face = await dispatch(detectFaceAction(frameData));
+    console.log('FACE', face);
+
+    if (face.faceId) {
+      let passedFilters = dispatch(filterFaceAction(face));
+      return passedFilters ? face : {};
+    }
+
+    return {};
+  };
+};
+
 // Detects a face
-export const detectFaceAction = async (frameData) => {
+export const detectFaceAction = (frameData) => {
   return async (dispatch) => {
     // Detect face
     let detectEndpoint =
@@ -33,8 +48,6 @@ export const detectFaceAction = async (frameData) => {
       let detectResult = JSON.parse(result);
       let faceToEnroll = getLargestFace(detectResult);
 
-      console.log('faceToEnroll: ', faceToEnroll);
-
       // If no face, report no face detected
       if (!faceToEnroll.faceId) {
         // dispatch no face detected message
@@ -44,18 +57,6 @@ export const detectFaceAction = async (frameData) => {
         return {};
       } else {
         console.log('Face found');
-
-        // Run quality filters
-        let t1 = performance.now();
-
-        let passedFilters = dispatch(filterFaceAction(faceToEnroll));
-        let t2 = performance.now();
-        console.log('quality filter time', t2 - t1);
-        if (passedFilters == false) {
-          // Face failed filters, return empty face object
-          return {};
-        }
-
         return faceToEnroll;
       }
     } else {
@@ -69,7 +70,7 @@ export const detectFaceAction = async (frameData) => {
 };
 
 // Enrolls a face
-export const processFaceAction = async (face, frameData) => {
+export const processFaceAction = (face, frameData) => {
   return async (dispatch, getState) => {
     console.log('adding face');
     // If re-enrollment, use the new personId
@@ -99,31 +100,19 @@ export const processFaceAction = async (face, frameData) => {
 
     console.log('AddFace status', response.status);
     if (response.status == '200') {
-      return Promise.resolve(true);
+      return true;
     } else {
       let result = await response.text();
       console.log('AddFace Failure', result);
       dispatch(enrollFeedbackAction("Couldn't enroll photo"));
-      return Promise.resolve(false);
+      return false;
     }
   };
 };
 
 // Verfies a face
-export const verifyFaceAction = async (face) => {
+export const verifyFaceAction = (face) => {
   return async (dispatch, getState) => {
-    // Run quality filters
-    let t1 = performance.now();
-
-    let passedFilters = dispatch(filterFaceAction(face));
-    let t2 = performance.now();
-    console.log('quality filter time', t2 - t1);
-
-    if (passedFilters == false) {
-      // Face failed filters, do not enroll
-      return Promise.resolve(false);
-    }
-
     dispatch(enrollFeedbackAction(FEEDBACK.verifying));
 
     // If re-enrollment, use the new personId
@@ -163,17 +152,17 @@ export const verifyFaceAction = async (face) => {
         verifyResult.isIdentical == true &&
         verifyResult.confidence >= CONFIG.ENROLL_SETTINGS.VERIFY_CONFIDENCE
       ) {
-        return Promise.resolve(true);
+        return true;
       }
     }
 
     dispatch(enrollFeedbackAction("Couldn't verify photo"));
-    return Promise.resolve(false);
+    return false;
   };
 };
 
 // Trains person group
-export const trainAction = async () => {
+export const trainAction = () => {
   return async (dispatch, getState) => {
     let maxAttempts = CONFIG.ENROLL_SETTINGS.TRAIN_ATTEMPTS;
     const maxStatusChecks = 50;

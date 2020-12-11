@@ -60,7 +60,7 @@ function Login({route, navigation}) {
   const saveUsername = async (username) =>
     dispatch(await saveUserInfoAction(username));
   const checkEnrollmentExists = async (username) =>
-    dispatch(checkEnrollmentExistsAction(username));
+    await dispatch(checkEnrollmentExistsAction(username));
 
   const signIn = async () => {
     setShowLoading(true);
