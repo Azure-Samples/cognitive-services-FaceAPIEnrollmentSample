@@ -4,63 +4,6 @@ import {CONFIG} from '../../env/env.json';
 import * as constants from '../../shared/constants';
 import {filterFaceAction} from '../filtering/qualityFilteringAction';
 import {FEEDBACK} from '../filtering/filterFeedback';
-import {mutex} from '../../shared/constants';
-
-// Gets largest face from frame and enrolls
-export const processFrameForEnrollmentAction = async (frameData) => {
-  return async (dispatch) => {
-    let t1 = performance.now();
-    let face = await Promise.resolve(
-      dispatch(await detectFaceAction(frameData)),
-    );
-    let t2 = performance.now();
-
-    console.log('detection time:', t2 - t1);
-    if (face.faceId) {
-      let t3 = performance.now();
-
-      // Attempts to enroll face
-      let res = await Promise.resolve(
-        dispatch(await processFaceAction(face, frameData)),
-      );
-      let t4 = performance.now();
-
-      console.log('enrollment time', t4 - t3);
-
-      return res;
-    }
-    // No face detected, no face enrolled
-    return false;
-  };
-};
-
-// Gets largest face from frame and verifies
-export const processFrameForVerifyAction = async (frameData) => {
-  return async (dispatch) => {
-    let t1 = performance.now();
-    let face = await Promise.resolve(
-      dispatch(await detectFaceAction(frameData)),
-    );
-
-    let t2 = performance.now();
-    console.log('detection time:', t2 - t1);
-
-    if (face.faceId) {
-      // Attempts to verify face
-
-      let t3 = performance.now();
-      var res = await Promise.resolve(
-        dispatch(await verifyFaceAction(face, frameData)),
-      );
-
-      let t4 = performance.now();
-      console.log('verify time', t4 - t3);
-      return res;
-    }
-    // No face detected, no face verified
-    return false;
-  };
-};
 
 // Detects a face
 export const detectFaceAction = async (frameData) => {
