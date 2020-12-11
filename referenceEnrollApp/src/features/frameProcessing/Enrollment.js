@@ -3,7 +3,6 @@ import {useDispatch} from 'react-redux';
 import {
   verifyFaceAction,
   processFaceAction,
-  detectFaceAction,
   trainAction,
   getFilteredFaceAction,
 } from './processFrameAction';
@@ -48,7 +47,7 @@ function Enrollment(props) {
   // Delete
   const dispatchDelete = async () => await dispatch(deleteEnrollmentAction());
 
-  //Train
+  // Train
   const dispatchTrain = async () => await dispatch(trainAction());
 
   useEffect(() => {
