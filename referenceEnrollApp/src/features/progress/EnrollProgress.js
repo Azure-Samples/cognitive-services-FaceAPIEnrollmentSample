@@ -42,7 +42,8 @@ function EnrollProgress(props) {
 
   /*
     Progress is # of frames enrolled + 
-    the verification check (1),
+    the verification check (1), +
+    1 for initial progress 
     converted to a percentage
   */
   let rgbProgress =

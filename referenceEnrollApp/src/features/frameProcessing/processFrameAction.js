@@ -9,7 +9,6 @@ import {FEEDBACK} from '../filtering/filterFeedback';
 export const getFilteredFaceAction = (frameData) => {
   return async (dispatch) => {
     let face = await dispatch(detectFaceAction(frameData));
-    console.log('FACE', face);
 
     if (face.faceId) {
       let passedFilters = dispatch(filterFaceAction(face));
@@ -61,8 +60,6 @@ export const detectFaceAction = (frameData) => {
       }
     } else {
       console.log('Detect failure: ', response);
-      let result = await response.text();
-      console.log(result);
       // return empty face object
       return {};
     }
@@ -72,7 +69,6 @@ export const detectFaceAction = (frameData) => {
 // Enrolls a face
 export const processFaceAction = (face, frameData) => {
   return async (dispatch, getState) => {
-    console.log('adding face');
     // If re-enrollment, use the new personId
     let newPersonId = getState().newEnrollment.newRgbPersonId;
     let personId =
