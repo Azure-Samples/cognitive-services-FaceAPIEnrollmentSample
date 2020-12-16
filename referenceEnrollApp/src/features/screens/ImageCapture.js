@@ -7,6 +7,7 @@ import Modal from '../../styles/Modal';
 import {deleteOldEnrollmentAction} from '../userEnrollment/newEnrollmentAction';
 import {StackActions} from '@react-navigation/native';
 import * as constants from '../../shared/constants';
+import {log} from '../../shared/helper';
 
 function ImageCapture({navigation}) {
   useEffect(() => {
@@ -28,9 +29,9 @@ function ImageCapture({navigation}) {
       case ENROLL_RESULT.successNoTrain:
       case ENROLL_RESULT.success:
         if (newEnrollInfo.newRgbPersonId) {
-          console.log('re enroll occurred updating info');
+          log('re enroll occurred updating info');
           updateInfo().then(() => {
-            console.log('info updated');
+            log('info updated');
           });
         }
 

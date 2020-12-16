@@ -16,6 +16,7 @@ import * as constants from '../../shared/constants';
 import Modal from '../../styles/Modal';
 import {newEnrollmentAction} from '../userEnrollment/newEnrollmentAction';
 import {StackActions} from '@react-navigation/native';
+import {log} from '../../shared/helper';
 
 function ManageProfile({navigation}) {
   const [modalProps, setModalProps] = useState(null);
@@ -56,7 +57,7 @@ function ManageProfile({navigation}) {
     try {
       deleteSucceeded = await dispatchDelete();
     } catch (error) {
-      console.log(error);
+      log(error);
       // error occured with deletion
       modalInfo.title = 'Something went wrong.';
       modalInfo.message =

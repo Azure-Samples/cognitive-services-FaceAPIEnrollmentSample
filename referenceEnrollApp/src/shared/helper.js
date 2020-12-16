@@ -40,11 +40,11 @@ async function validatePersonGroup(personGroupId) {
       personGroupExists = await createPersonGroup(personGroupId);
     }
   } catch {
-    console.log('An error occured');
+    log('An error occured');
     return false;
   }
 
-  console.log('personGroupExists:', personGroupExists);
+  log('personGroupExists:', personGroupExists);
   return personGroupExists;
 }
 
@@ -68,7 +68,7 @@ async function checkPersonGroupExists(personGroupId) {
     body.error &&
     body.error.message.includes('Large person group is not found.')
   ) {
-    console.log('person group not found');
+    log('person group not found');
     return false;
   } else if (response.status != '200') {
     throw new Error('failed to get person group');
@@ -130,6 +130,12 @@ async function sleep(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
+function log(...message) {
+  if (__DEV__) {
+    console.log(...message);
+  }
+}
+
 class CancellationToken {
   constructor() {
     this.isCancellationRequested = false;
@@ -150,5 +156,6 @@ export {
   validatePersonGroup,
   getTargetFace,
   sleep,
+  log,
   CancellationToken,
 };

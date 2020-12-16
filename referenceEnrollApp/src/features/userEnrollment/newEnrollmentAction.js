@@ -2,6 +2,7 @@ import * as constants from '../../shared/constants';
 import {CONFIG} from '../../env/env.json';
 var RNFS = require('react-native-fs');
 import {setUserInfo} from './saveUserInfoAction';
+import {log} from '../../shared/helper';
 
 export const checkEnrollmentExistsAction = (username) => {
   return async (dispatch) => {
@@ -66,11 +67,11 @@ export const newEnrollmentAction = () => {
     if (response.status == '200') {
       let result = await response.text();
       personId = JSON.parse(result).personId;
-      console.log('new pid', personId);
+      log('new pid', personId);
 
       infoSaved = true;
     } else {
-      console.log('Create person failure: ', response);
+      log('Create person failure: ', response);
       infoSaved = false;
     }
 
@@ -96,7 +97,7 @@ export const deleteEnrollmentAction = () => {
         : getState().userInfo.rgbPersonId;
 
     if (!personId || personId == '') {
-      console.log('pid is empty');
+      log('pid is empty');
       return false;
     }
 
@@ -119,16 +120,16 @@ export const deleteEnrollmentAction = () => {
     });
 
     if (response.status == '200') {
-      console.log('pid deleted');
+      log('pid deleted');
 
       // only delete file if this was new enrollment
       if (personId != newPersonId) {
         RNFS.unlink(path)
           .then(() => {
-            console.log('FILE DELETED');
+            log('FILE DELETED');
           })
           .catch((err) => {
-            console.log(err.message);
+            log(err.message);
           });
       }
 
@@ -138,7 +139,7 @@ export const deleteEnrollmentAction = () => {
     if (response.status == '404') {
       let result = await response.text();
       let deleteResult = JSON.parse(result);
-      console.log('delete result', deleteResult);
+      log('delete result', deleteResult);
 
       if (deleteResult.error.message.includes('Person is not found.')) {
         return false;
@@ -154,9 +155,9 @@ export const deleteEnrollmentAction = () => {
 export const deleteOldEnrollmentAction = () => {
   return async (dispatch, getState) => {
     let personIdOld = getState().userInfo.rgbPersonId;
-    console.log('personId old', personIdOld);
+    log('personId old', personIdOld);
     let personIdNew = getState().newEnrollment.newRgbPersonId;
-    console.log('personId new', personIdNew);
+    log('personId new', personIdNew);
 
     if (
       !personIdOld ||
@@ -164,7 +165,7 @@ export const deleteOldEnrollmentAction = () => {
       !personIdNew ||
       personIdNew == ''
     ) {
-      console.log('pid is empty');
+      log('pid is empty');
       return false;
     }
 
@@ -186,27 +187,27 @@ export const deleteOldEnrollmentAction = () => {
       },
     });
 
-    console.log('delete status', response.status);
+    log('delete status', response.status);
 
     if (response.status == '200') {
       // delete file
       RNFS.unlink(path)
         .then(() => {
-          console.log('FILE DELETED');
+          log('FILE DELETED');
         })
         .catch((err) => {
-          console.log(err.message);
+          log(err.message);
         });
 
       let mappingData = CONFIG.PERSONGROUP_RGB + ',' + personIdNew;
-      console.log('new mapping ', mappingData);
+      log('new mapping ', mappingData);
 
       RNFS.writeFile(path, mappingData, 'utf8')
         .then((success) => {
-          console.log('FILE WRITTEN');
+          log('FILE WRITTEN');
         })
         .catch((err) => {
-          console.log(err.message);
+          log(err.message);
         });
 
       return true;
@@ -215,7 +216,7 @@ export const deleteOldEnrollmentAction = () => {
     if (response.status == '404') {
       let result = await response.text();
       let deleteResult = JSON.parse(result);
-      console.log('delete result', deleteResult);
+      log('delete result', deleteResult);
 
       if (deleteResult.error.message.includes('Person is not found.')) {
         return false;

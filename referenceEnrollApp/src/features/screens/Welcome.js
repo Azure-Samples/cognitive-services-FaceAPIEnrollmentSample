@@ -7,7 +7,9 @@ import {CONFIG} from '../../env/env.json';
 import {useDispatch} from 'react-redux';
 import * as constants from '../../shared/constants';
 import {deletePersonGroup} from '../../shared/helper';
+import {Directions} from 'react-native-gesture-handler';
 var RNFS = require('react-native-fs');
+import {validatePersonGroup, log} from '../shared/helper';
 
 function Welcome({navigation}) {
   let dispatch = useDispatch();
@@ -25,6 +27,12 @@ function Welcome({navigation}) {
     };
     Dimensions.addEventListener('change', orientationCallback);
 
+    validatePersonGroup(CONFIG.PERSONGROUP_RGB).then((personGroupValidated) => {
+      if (personGroupValidated === false) {
+        navigation.navigate('Settings');
+      }
+    });
+
     return () => {
       Dimensions.removeEventListener('change', orientationCallback);
     };
@@ -34,7 +42,7 @@ function Welcome({navigation}) {
   const clearAllData = () => {
     RNFS.readDir(RNFS.DocumentDirectoryPath + '/enrollment/')
       .then((result) => {
-        console.log('files', result);
+        log('files', result);
 
         // stat the first file
         return result;
@@ -42,17 +50,17 @@ function Welcome({navigation}) {
       .then((result) => {
         for (let item of result) {
           if (item.isFile()) {
-            console.log('deleting', item.path);
+            log('deleting', item.path);
             RNFS.unlink(item.path);
           }
         }
       })
       .catch((err) => {
-        console.log(err.message, err.code);
+        log(err.message, err.code);
       });
 
     deletePersonGroup(CONFIG.PERSONGROUP_RGB).then((res) => {
-      console.log('Delete result:', res);
+      log('Delete result:', res);
     });
   };
 
@@ -71,10 +79,12 @@ function Welcome({navigation}) {
           style={
             isPortrait ? [styles.whiteBox, {height: '50%'}] : styles.whiteBox
           }>
-          <Caption style={styles.greyText}>
-            {' '}
-            Contoso | Real Estate & Security{' '}
-          </Caption>
+          <View style={{flex: 1, justifyContent: 'flex-start'}}>
+            <Caption style={styles.greyText}>
+              Contoso | Real Estate & Security
+            </Caption>
+          </View>
+
           <View style={styles.infoView}>
             <View style={styles.textPadding}>
               <Headline>An easier way to get into work</Headline>
@@ -116,10 +126,21 @@ function Welcome({navigation}) {
             />
           </View> */}
 
-          <Caption style={styles.greyText}>
-            Details at contoso.com/touchless-access{'\n\n'}
-            Contoso Privacy Statement
-          </Caption>
+          <View style={{flex: 1, justifyContent: 'flex-end'}}>
+            <View style={{flexDirection: 'row'}}>
+              <Caption style={styles.greyText}>
+                Details at contoso.com/touchless-access{'\n\n'}
+                Contoso Privacy Statement
+              </Caption>
+
+              <View style={{flex: 1, alignItems: 'flex-end'}}>
+                <CustomButton
+                  title="Settings"
+                  onPress={() => navigation.navigate('Settings')}
+                />
+              </View>
+            </View>
+          </View>
         </View>
 
         {isPortrait ? <View /> : <View style={styles.rightBox} />}
@@ -165,7 +186,6 @@ var styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'column',
     backgroundColor: 'white',
-    justifyContent: 'center',
     margin: 16,
     padding: 15,
     borderRadius: 4,

@@ -1,6 +1,7 @@
 import * as constants from '../../shared/constants';
 import {CONFIG} from '../../env/env.json';
 var RNFS = require('react-native-fs');
+import {log} from '../../shared/helper';
 
 export const saveUserInfoAction = (username) => {
   return async (dispatch, getState) => {
@@ -8,19 +9,19 @@ export const saveUserInfoAction = (username) => {
     let personId;
 
     let path = RNFS.DocumentDirectoryPath + '/enrollment/' + username + '.txt';
-    console.log('path', path);
+    log('path', path);
     let fileExists = await RNFS.exists(path);
     if (fileExists) {
-      console.log('exists');
+      log('exists');
       let mapping = await RNFS.readFile(path, 'utf8');
-      console.log('mapping', mapping);
+      log('mapping', mapping);
 
       if (mapping && mapping != '') {
         personId = mapping.split(',')[1];
       }
     }
 
-    console.log('pid');
+    log('pid');
 
     if (!personId) {
       let createPersonRgbEndpoint =
@@ -41,21 +42,21 @@ export const saveUserInfoAction = (username) => {
       if (response.status == '200') {
         let result = await response.text();
         personId = JSON.parse(result).personId;
-        console.log('new pid', personId);
+        log('new pid', personId);
 
         let mappingdata = CONFIG.PERSONGROUP_RGB + ',' + personId;
 
         RNFS.writeFile(path, mappingdata, 'utf8')
           .then((success) => {
-            console.log('FILE WRITTEN!');
+            log('FILE WRITTEN!');
           })
           .catch((err) => {
-            console.log(' ERRRR', err.message);
+            log(' ERRRR', err.message);
           });
 
         infoSaved = true;
       } else {
-        console.log('Create person failure: ', response);
+        log('Create person failure: ', response);
         infoSaved = false;
       }
     }

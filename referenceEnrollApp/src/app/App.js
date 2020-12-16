@@ -9,10 +9,10 @@ import Consent from '../features/screens/Consent';
 import Instruction from '../features/screens/Instruction';
 import Receipt from '../features/screens/Receipt';
 import ManageProfile from '../features/screens/ManageProfile';
+import Settings from '../features/screens/Settings';
 import {Provider} from 'react-redux';
 import configureStore from './store';
-import {validatePersonGroup} from '../shared/helper';
-import {CONFIG} from '../env/env.json';
+import {log} from '../shared/helper';
 const RNFS = require('react-native-fs');
 import * as constants from '../shared/constants';
 
@@ -20,12 +20,6 @@ const Stack = createStackNavigator();
 const store = configureStore();
 
 const App = () => {
-  validatePersonGroup(CONFIG.PERSONGROUP_RGB).then((personGroupValidated) => {
-    if (personGroupValidated === false) {
-      throw new Error('Person group could not be validated');
-    }
-  });
-
   /*
   To store username and personId information, this app writes the data
   to the enrollment directory created here. This is ONLY for demonstration purposes. 
@@ -33,7 +27,7 @@ const App = () => {
   A user's personId should be treated as a secret.
   */
   RNFS.mkdir(RNFS.DocumentDirectoryPath + '/enrollment/').then(
-    console.log('Enrollment directory exists.'),
+    log('Enrollment directory exists.'),
   );
 
   return (
@@ -45,6 +39,13 @@ const App = () => {
             name={constants.SCREENS.welcome}
             component={Welcome}
           />
+
+          <Stack.Screen
+            options={{headerShown: false}}
+            name={'Settings'}
+            component={Settings}
+          />
+
           <Stack.Screen
             options={{title: '', headerStyle: styles.header}}
             name={constants.SCREENS.manage}

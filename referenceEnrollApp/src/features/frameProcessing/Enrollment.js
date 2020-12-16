@@ -9,7 +9,7 @@ import {
 import {View, StyleSheet} from 'react-native';
 import EnrollProgress from '../progress/EnrollProgress';
 import {CONFIG} from '../../env/env.json';
-import {CancellationToken} from '../../shared/helper';
+import {CancellationToken, log, sleep} from '../../shared/helper';
 import CustomButton from '../../styles/CustomButton';
 import {ENROLL_RESULT} from '../../shared/constants';
 import {deleteEnrollmentAction} from '../userEnrollment/newEnrollmentAction';
@@ -63,7 +63,7 @@ function Enrollment(props) {
     const timeoutInMs = CONFIG.ENROLL_SETTINGS.TIMEOUT_SECONDS * 1000;
 
     let timer = setTimeout(() => {
-      console.log('timeout triggers');
+      log('timeout triggers');
       cancelToken.timeoutCancel();
     }, timeoutInMs);
 
@@ -72,6 +72,9 @@ function Enrollment(props) {
     let tasks = [];
     let enrollmentSucceeded = false;
     let completedTaskCount = 0;
+
+    // Give time for camera to adjust
+    await sleep(900);
 
     // Show initial progress
     updateProgress(progressRef.current + 1);
@@ -122,7 +125,7 @@ function Enrollment(props) {
       }
     }
 
-    console.log('Clearing timeout');
+    log('Clearing timeout');
     clearTimeout(timer);
 
     if (enrollmentSucceeded == false) {
@@ -130,9 +133,9 @@ function Enrollment(props) {
 
       try {
         let deleteResult = await dispatchDelete();
-        console.log('delete result', deleteResult);
+        log('delete result', deleteResult);
       } catch (err) {
-        console.log('delete failed', err);
+        log('delete failed', err);
       }
 
       // Determine type of failure result
@@ -148,7 +151,7 @@ function Enrollment(props) {
     // Enrollment succeeded, dispatch train
     let trainResult = await dispatchTrain();
 
-    console.log('train result:', trainResult);
+    log('train result:', trainResult);
 
     if (trainResult) {
       return ENROLL_RESULT.success;
@@ -168,12 +171,12 @@ function Enrollment(props) {
       props.onCompleted(enrollmentResult);
       let t2 = performance.now();
 
-      console.log('Total enrollment time:', t2 - t1);
+      log('Total enrollment time:', t2 - t1);
     });
   }
 
   function cancelEnrollment() {
-    console.log('Cancel clicked');
+    log('Cancel clicked');
     cancelToken.cancel();
   }
 
