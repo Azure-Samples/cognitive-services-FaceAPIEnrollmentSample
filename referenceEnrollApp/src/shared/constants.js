@@ -74,7 +74,7 @@ export const USER_AGENT =
   practices in the documentation for further recommendations.
 */
 
-export const FACEAPI_ENDPOINT = process.env.FACEAPI_ENDPOINT;
-export var FACEAPI_KEY = '';
+export const FACEAPI_ENDPOINT = process.env.FACEAPI_KEY;
+export var FACEAPI_KEY = process.env.FACEAPI_KEY;
 
 export const mutex = new Mutex();

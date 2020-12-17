@@ -9,7 +9,7 @@ import * as constants from '../../shared/constants';
 import {deletePersonGroup} from '../../shared/helper';
 import {Directions} from 'react-native-gesture-handler';
 var RNFS = require('react-native-fs');
-import {validatePersonGroup, log} from '../shared/helper';
+import {validatePersonGroup} from '../shared/helper';
 
 function Welcome({navigation}) {
   let dispatch = useDispatch();
@@ -42,7 +42,7 @@ function Welcome({navigation}) {
   const clearAllData = () => {
     RNFS.readDir(RNFS.DocumentDirectoryPath + '/enrollment/')
       .then((result) => {
-        log('files', result);
+        console.log('files', result);
 
         // stat the first file
         return result;
@@ -50,17 +50,17 @@ function Welcome({navigation}) {
       .then((result) => {
         for (let item of result) {
           if (item.isFile()) {
-            log('deleting', item.path);
+            console.log('deleting', item.path);
             RNFS.unlink(item.path);
           }
         }
       })
       .catch((err) => {
-        log(err.message, err.code);
+        console.log(err.message, err.code);
       });
 
     deletePersonGroup(CONFIG.PERSONGROUP_RGB).then((res) => {
-      log('Delete result:', res);
+      console.log('Delete result:', res);
     });
   };
 

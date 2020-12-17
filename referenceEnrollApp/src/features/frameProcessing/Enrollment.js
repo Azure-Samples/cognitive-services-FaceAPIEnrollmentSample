@@ -9,7 +9,7 @@ import {
 import {View, StyleSheet} from 'react-native';
 import EnrollProgress from '../progress/EnrollProgress';
 import {CONFIG} from '../../env/env.json';
-import {CancellationToken, log, sleep} from '../../shared/helper';
+import {CancellationToken, sleep} from '../../shared/helper';
 import CustomButton from '../../styles/CustomButton';
 import {ENROLL_RESULT} from '../../shared/constants';
 import {deleteEnrollmentAction} from '../userEnrollment/newEnrollmentAction';
@@ -63,7 +63,7 @@ function Enrollment(props) {
     const timeoutInMs = CONFIG.ENROLL_SETTINGS.TIMEOUT_SECONDS * 1000;
 
     let timer = setTimeout(() => {
-      log('timeout triggers');
+      console.log('timeout triggers');
       cancelToken.timeoutCancel();
     }, timeoutInMs);
 
@@ -125,7 +125,7 @@ function Enrollment(props) {
       }
     }
 
-    log('Clearing timeout');
+    console.log('Clearing timeout');
     clearTimeout(timer);
 
     if (enrollmentSucceeded == false) {
@@ -133,9 +133,9 @@ function Enrollment(props) {
 
       try {
         let deleteResult = await dispatchDelete();
-        log('delete result', deleteResult);
+        console.log('delete result', deleteResult);
       } catch (err) {
-        log('delete failed', err);
+        console.log('delete failed', err);
       }
 
       // Determine type of failure result
@@ -151,7 +151,7 @@ function Enrollment(props) {
     // Enrollment succeeded, dispatch train
     let trainResult = await dispatchTrain();
 
-    log('train result:', trainResult);
+    console.log('train result:', trainResult);
 
     if (trainResult) {
       return ENROLL_RESULT.success;
@@ -171,12 +171,12 @@ function Enrollment(props) {
       props.onCompleted(enrollmentResult);
       let t2 = performance.now();
 
-      log('Total enrollment time:', t2 - t1);
+      console.log('Total enrollment time:', t2 - t1);
     });
   }
 
   function cancelEnrollment() {
-    log('Cancel clicked');
+    console.log('Cancel clicked');
     cancelToken.cancel();
   }
 

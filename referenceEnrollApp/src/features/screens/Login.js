@@ -10,7 +10,6 @@ import Modal from '../../styles/Modal';
 import {checkEnrollmentExistsAction} from '../userEnrollment/newEnrollmentAction';
 import {StackActions} from '@react-navigation/native';
 import * as constants from '../../shared/constants';
-import {log} from '../../shared/helper';
 
 /*
     IMPORTANT: 
@@ -97,21 +96,21 @@ function Login({route, navigation}) {
 
     // Clear up any spaces in username
     let username = usernameInput.replace(/\s/g, '').toLowerCase();
-    log('username new ', username);
+    console.log('username new ', username);
 
     var lettersAndNumbers = /^[0-9a-zA-Z]+$/;
 
     if (!username || username == '' || !username.match(lettersAndNumbers)) {
-      log('username not allowed');
+      console.log('username not allowed');
       setModalProps(defaultModal);
       return;
     }
 
     let enrollmentExists = await checkEnrollmentExists(username);
-    log('enrollment Exists', enrollmentExists);
+    console.log('enrollment Exists', enrollmentExists);
     if (enrollmentExists) {
       if (newEnrollment) {
-        log('start path, enrollment exists');
+        console.log('start path, enrollment exists');
         // Enrollment already exists
         let modalInfo = {
           title: 'You are already enrolled',
@@ -132,7 +131,7 @@ function Login({route, navigation}) {
         };
         setModalProps(modalInfo);
       } else {
-        log('manage path, enrollment exists ');
+        console.log('manage path, enrollment exists ');
 
         // Take to manage page
         navigation.navigate(route.params.nextScreen);
@@ -140,7 +139,7 @@ function Login({route, navigation}) {
     } // enrollment doesn't exists
     else {
       if (newEnrollment) {
-        log('start path, new enrollment ');
+        console.log('start path, new enrollment ');
 
         // new enrollment and doesn't exist
         // take to instructions
@@ -153,7 +152,7 @@ function Login({route, navigation}) {
           setModalProps(defaultModal);
         }
       } else {
-        log('manage path, new enrollment ');
+        console.log('manage path, new enrollment ');
 
         // Show no profile exists modal
         // dont save info

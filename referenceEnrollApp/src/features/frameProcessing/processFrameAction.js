@@ -1,4 +1,4 @@
-import {getLargestFace, getTargetFace, log, sleep} from '../../shared/helper';
+import {getLargestFace, getTargetFace, sleep} from '../../shared/helper';
 import {enrollFeedbackAction} from '../feedback/enrollFeedbackAction';
 import {CONFIG} from '../../env/env.json';
 import * as constants from '../../shared/constants';
@@ -52,14 +52,14 @@ export const detectFaceAction = (frameData) => {
         // dispatch no face detected message
         dispatch(enrollFeedbackAction(FEEDBACK.noFaceDetected));
         // return empty face object
-        log('No face detected');
+        console.log('No face detected');
         return {};
       } else {
-        log('Face found');
+        console.log('Face found');
         return faceToEnroll;
       }
     } else {
-      log('Detect failure: ', response);
+      console.log('Detect failure: ', response);
       // return empty face object
       return {};
     }
@@ -94,12 +94,12 @@ export const processFaceAction = (face, frameData) => {
       body: frameData,
     });
 
-    log('AddFace status', response.status);
+    console.log('AddFace status', response.status);
     if (response.status == '200') {
       return true;
     } else {
       let result = await response.text();
-      log('AddFace Failure', result);
+      console.log('AddFace Failure', result);
       dispatch(enrollFeedbackAction("Couldn't enroll photo"));
       return false;
     }
@@ -138,7 +138,7 @@ export const verifyFaceAction = (face) => {
       body: JSON.stringify(requestBody),
     });
 
-    log('Verify response', response);
+    console.log('Verify response', response);
 
     if (response.status == '200') {
       let result = await response.text();
@@ -164,7 +164,7 @@ export const trainAction = () => {
     const maxStatusChecks = 50;
 
     for (let trainAttempts = 0; trainAttempts < maxAttempts; trainAttempts++) {
-      log('train attempt ', trainAttempts);
+      console.log('train attempt ', trainAttempts);
       // Train
       let tainEndpoint =
         constants.FACEAPI_ENDPOINT +
@@ -188,7 +188,7 @@ export const trainAction = () => {
           statusAttempts < maxStatusChecks && trainFailed == false;
           statusAttempts++
         ) {
-          log('train status attempt ', statusAttempts);
+          console.log('train status attempt ', statusAttempts);
 
           // Get training status
           let tainStatusEndpoint =

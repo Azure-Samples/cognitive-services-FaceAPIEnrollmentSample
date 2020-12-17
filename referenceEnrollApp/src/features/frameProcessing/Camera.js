@@ -2,7 +2,6 @@ import React, {useState} from 'react';
 import {View, StyleSheet} from 'react-native';
 import {RNCamera} from 'react-native-camera';
 import Enrollment from './Enrollment';
-import {log} from '../../shared/helper';
 
 // Camera component for Android
 export default function Camera(props) {
@@ -15,7 +14,7 @@ export default function Camera(props) {
         update state to begin enrollment
         in child component
         */
-    log('camera ready');
+    console.log('camera ready');
     setStartEnroll(true);
   };
 
@@ -25,7 +24,7 @@ export default function Camera(props) {
     try {
       frameData = await cameraRef.current.takePictureAsync({base64: true});
     } catch (error) {
-      log('Error taking picture:', error);
+      console.log('Error taking picture:', error);
     }
 
     return frameData;

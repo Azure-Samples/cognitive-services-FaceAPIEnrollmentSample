@@ -1,7 +1,6 @@
 import React, {useEffect, useState, useCallback} from 'react';
 import {View, StyleSheet, Text, Alert} from 'react-native';
 import VideoWeb from './VideoWeb';
-import {log} from '../../shared/helper';
 
 // Camera component for web
 // not yet implemented
@@ -12,7 +11,7 @@ export default function Camera() {
     navigator.mediaDevices.enumerateDevices().then((sourceInfos) => {
       let videoSourceId;
       let videoSource;
-      log('si', sourceInfos);
+      console.log('si', sourceInfos);
       for (let i = 0; i < sourceInfos.length; i++) {
         const sourceInfo = sourceInfos[i];
 
@@ -20,7 +19,7 @@ export default function Camera() {
         if (sourceInfo.kind == 'videoinput' && !videoSource) {
           videoSourceId = sourceInfo.deviceId;
           videoSource = sourceInfo.label;
-          log('source:', videoSource);
+          console.log('source:', videoSource);
         }
       }
 
@@ -30,11 +29,11 @@ export default function Camera() {
           video: {deviceId: videoSourceId ? {exact: videoSourceId} : undefined},
         })
         .then((stream) => {
-          log('Got stream', stream);
+          console.log('Got stream', stream);
           setMediaStream(stream);
         })
         .catch((error) => {
-          log('error', error);
+          console.log('error', error);
         });
     });
   }, []);
@@ -42,7 +41,7 @@ export default function Camera() {
   if (mediaStream) {
     const imageCapture = new ImageCapture(mediaStream.getVideoTracks()[0]);
     imageCapture.takePhoto().then((blob) => {
-      log('Blob', blob);
+      console.log('Blob', blob);
     });
     /*
     Enrollment support for web not yet implemented

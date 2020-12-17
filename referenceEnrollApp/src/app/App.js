@@ -12,7 +12,6 @@ import ManageProfile from '../features/screens/ManageProfile';
 import Settings from '../features/screens/Settings';
 import {Provider} from 'react-redux';
 import configureStore from './store';
-import {log} from '../shared/helper';
 const RNFS = require('react-native-fs');
 import * as constants from '../shared/constants';
 
@@ -27,7 +26,7 @@ const App = () => {
   A user's personId should be treated as a secret.
   */
   RNFS.mkdir(RNFS.DocumentDirectoryPath + '/enrollment/').then(
-    log('Enrollment directory exists.'),
+    console.log('Enrollment directory exists.'),
   );
 
   return (
