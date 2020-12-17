@@ -2,6 +2,7 @@ import UserAgent from 'react-native-user-agent';
 import {CONFIG} from '../env/env.json';
 
 import createQualityFilter from '../features/filtering/filters';
+import {Mutex} from 'async-mutex';
 
 const ROOT = 'face/v1.0/';
 
@@ -63,3 +64,17 @@ export const USER_AGENT =
   'ReferenceEnrollmentApp/20.11.20 ' +
   UserAgent.systemName +
   UserAgent.systemVersion;
+
+/*
+  For demo purposes, this app stores the FaceAPI endpoint and key 
+  as environment variables. This is ok for local testing and getting started 
+  with the app. For a production scenario, storing any key or secret as a environment 
+  variable is NOT secure. Do NOT create a release build of this app with 
+  FaceAPI key stored as an environment variable. Follow the best security 
+  practices in the documentation for further recommendations.
+*/
+
+export const FACEAPI_ENDPOINT = process.env.FACEAPI_ENDPOINT;
+export const FACEAPI_KEY = process.env.FACEAPI_KEY;
+
+export const mutex = new Mutex();

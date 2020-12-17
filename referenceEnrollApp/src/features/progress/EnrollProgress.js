@@ -33,21 +33,22 @@ function EnrollProgress(props) {
   let height = dim.height;
 
   // Radius changes based on orientation
-  let radius = isPortrait ? width / 2.2 : height / 3;
+  let radius = isPortrait ? width / 2.5 : height / 3;
   let x = width / 2;
   let y = height / 2;
 
   // 5 seconds to update the progress
-  let progressDuration = 5000;
+  let progressDuration = 3000;
 
   /*
     Progress is # of frames enrolled + 
-    the verification check (1),
+    the verification check (1), +
+    1 for initial progress 
     converted to a percentage
-    */
+  */
   let rgbProgress =
     (props.rgbProgressCount /
-      (CONFIG.ENROLL_SETTINGS.RGB_FRAMES_TOENROLL + 1)) *
+      (CONFIG.ENROLL_SETTINGS.RGB_FRAMES_TOENROLL + 2)) *
     100;
 
   if (rgbProgress == 100) {
@@ -82,7 +83,7 @@ function EnrollProgress(props) {
         <AnimatedCircularProgress
           size={radius * 2 + 5}
           duration={progressDuration}
-          width={40}
+          width={25}
           fill={rgbProgress}
           rotation={0}
           tintColor="green"

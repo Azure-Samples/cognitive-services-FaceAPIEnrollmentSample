@@ -20,7 +20,7 @@ function ImageCapture({navigation}) {
   const [modalProps, setModalProps] = useState(null);
 
   const dispatch = useDispatch();
-  const updateInfo = async () => dispatch(await deleteOldEnrollmentAction());
+  const updateInfo = async () => await dispatch(deleteOldEnrollmentAction());
 
   const onEnrollComplete = (enrollResult) => {
     let modalInfo = {};

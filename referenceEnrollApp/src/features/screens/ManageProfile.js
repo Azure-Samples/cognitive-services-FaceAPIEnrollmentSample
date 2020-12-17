@@ -44,9 +44,9 @@ function ManageProfile({navigation}) {
   }, []);
 
   const dispatch = useDispatch();
-  const dispatchDelete = async () => dispatch(await deleteEnrollmentAction());
+  const dispatchDelete = async () => await dispatch(deleteEnrollmentAction());
   const dispatchNewEnrollment = async () =>
-    dispatch(await newEnrollmentAction());
+    await dispatch(newEnrollmentAction());
 
   let deletePrints = async () => {
     // delete prints
@@ -121,12 +121,15 @@ function ManageProfile({navigation}) {
 
     setModalProps(modalInfo);
   };
-
+  let newEnrollmentCreated = false;
   let reEnroll = async () => {
     // create new personId
     // enroll with new personId
     // if succeeded delete old info and replace
-    await dispatchNewEnrollment();
+    if (!newEnrollmentCreated) {
+      newEnrollmentCreated = true;
+      await dispatchNewEnrollment();
+    }
     navigation.navigate(constants.SCREENS.instruction);
   };
 
