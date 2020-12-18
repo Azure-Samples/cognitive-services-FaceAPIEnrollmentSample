@@ -10,7 +10,6 @@ export default function createQualityFilter() {
     filters.push(FILTER_MAP[filter]);
   }
 
-  console.log('created filters', filters);
   return filters;
 }
 
