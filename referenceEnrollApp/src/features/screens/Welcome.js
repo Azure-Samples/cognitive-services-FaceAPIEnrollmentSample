@@ -1,13 +1,18 @@
 import React, {useEffect, useState} from 'react';
 
-import {View, StyleSheet, Dimensions, ImageBackground} from 'react-native';
+import {
+  View,
+  StyleSheet,
+  Alert,
+  Dimensions,
+  ImageBackground,
+} from 'react-native';
 import {Caption, Headline, Subheading1} from '../../styles/fontStyles';
 import CustomButton from '../../styles/CustomButton';
 import {CONFIG} from '../../env/env.json';
 import {useDispatch} from 'react-redux';
 import * as constants from '../../shared/constants';
 import {deletePersonGroup} from '../../shared/helper';
-import {Directions} from 'react-native-gesture-handler';
 var RNFS = require('react-native-fs');
 import {validatePersonGroup} from '../shared/helper';
 
@@ -28,8 +33,28 @@ function Welcome({navigation}) {
     Dimensions.addEventListener('change', orientationCallback);
 
     validatePersonGroup(CONFIG.PERSONGROUP_RGB).then((personGroupValidated) => {
-      if (personGroupValidated === false) {
-        navigation.navigate('Settings');
+      if (personGroupValidated == false) {
+        /* 
+          If production environment, alert should not be dismissable
+          for development and testing, expose settings page
+        */
+        let buttonOption =
+          CONFIG.ENVIRONMENT == 'dev'
+            ? [
+                {
+                  text: 'Settings',
+                  onPress: () => navigation.navigate('Settings'),
+                },
+              ]
+            : [];
+        Alert.alert(
+          'A problem occurred',
+          'Cannot connect to service',
+          buttonOption,
+          {
+            cancelable: false,
+          },
+        );
       }
     });
 
@@ -132,13 +157,6 @@ function Welcome({navigation}) {
                 Details at contoso.com/touchless-access{'\n\n'}
                 Contoso Privacy Statement
               </Caption>
-
-              <View style={{flex: 1, alignItems: 'flex-end'}}>
-                <CustomButton
-                  title="Settings"
-                  onPress={() => navigation.navigate('Settings')}
-                />
-              </View>
             </View>
           </View>
         </View>

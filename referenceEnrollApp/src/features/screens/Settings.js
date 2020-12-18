@@ -5,9 +5,13 @@ import {Headline, fontStyles, Subheading1} from '../../styles/fontStyles';
 import {validatePersonGroup} from '../shared/helper';
 import {CONFIG} from '../../env/env.json';
 import CustomButton from '../../styles/CustomButton';
-import Modal from '../../styles/Modal';
 import * as constants from '../../shared/constants';
 
+/*
+This page is for development or testing purposes only, 
+it exposes the faceAPI settings to the UI,
+The page should be removed for production
+*/
 function Settings({navigation}) {
   useEffect(() => {
     // Disables Android hardware back button
@@ -16,15 +20,19 @@ function Settings({navigation}) {
       BackHandler.removeEventListener('hardwareBackPress', () => true);
   }, []);
 
+  // State
   const [keyFocused, setKeyFocused] = useState(false);
+  const [endpointFocused, setEndpointFocused] = useState(false);
   const [keyInput, setKeyInput] = useState(constants.FACEAPI_KEY);
+  const [endpointInput, setEndpointInput] = useState(
+    constants.FACEAPI_ENDPOINT,
+  );
   const [error, setError] = useState(false);
-
-  const [modalProps, setModalProps] = useState(null);
 
   async function setValues() {
     setError(false);
     constants.FACEAPI_KEY = keyInput;
+    constants.FACEAPI_ENDPOINT = endpointInput;
     let validated = await validatePersonGroup(CONFIG.PERSONGROUP_RGB);
 
     if (validated) {
@@ -37,54 +45,66 @@ function Settings({navigation}) {
   return (
     <View style={styles.container}>
       <View style={styles.smallRow} />
+      <View style={styles.centerRow}>
+        <View style={[styles.column1, {flex: 3, maxWidth: 350}]}>
+          <Headline style={styles.headlineMargin}>Settings</Headline>
+          <Subheading1>FaceAPI credentials</Subheading1>
+          <TextInput
+            style={
+              endpointFocused
+                ? {...styles.textInputFocus, ...fontStyles.subheading1}
+                : {...styles.textInputStyle, ...fontStyles.subheading1}
+            }
+            placeholder="Endpoint"
+            secureTextEntry={false}
+            value={endpointInput == '' ? null : endpointInput}
+            onChangeText={(text) => {
+              setEndpointInput(text);
+              setError(false);
+            }}
+            onFocus={() => {
+              setEndpointFocused(true);
+            }}
+            onBlur={() => {
+              setEndpointFocused(false);
+            }}
+          />
 
-      {modalProps ? (
-        <Modal {...modalProps}></Modal>
-      ) : (
-        <View style={styles.centerRow}>
-          <View style={[styles.column1, {flex: 3, maxWidth: 300}]}>
-            <Headline style={styles.headlineMargin}>Enter FaceAPI Key</Headline>
+          <TextInput
+            style={
+              keyFocused
+                ? {...styles.textInputFocus, ...fontStyles.subheading1}
+                : {...styles.textInputStyle, ...fontStyles.subheading1}
+            }
+            placeholder="Subscription key"
+            secureTextEntry={true}
+            value={keyInput == '' ? null : keyInput}
+            onChangeText={(text) => {
+              setKeyInput(text);
+              setError(false);
+            }}
+            onFocus={() => {
+              setKeyFocused(true);
+            }}
+            onBlur={() => {
+              setKeyFocused(false);
+            }}
+          />
 
-            <TextInput
-              style={
-                keyFocused
-                  ? {...styles.textInputFocus, ...fontStyles.subheading1}
-                  : {...styles.textInputStyle, ...fontStyles.subheading1}
-              }
-              placeholder="Subscription key"
-              secureTextEntry={false}
-              value={keyInput == '' ? null : keyInput}
-              onChangeText={(text) => {
-                setKeyInput(text);
-                setError(false);
-              }}
-              onFocus={() => {
-                setKeyFocused(true);
-              }}
-              onBlur={() => {
-                setKeyFocused(false);
-              }}
-            />
+          {error ? (
+            <Subheading1 style={{marginTop: 20, color: 'red'}}>
+              Credentials are not valid
+            </Subheading1>
+          ) : (
+            <View style={{marginTop: 42}} />
+          )}
 
-            {error ? (
-              <Subheading1 style={{marginTop: 20, color: 'red'}}>
-                Key is invalid
-              </Subheading1>
-            ) : (
-              <View style={{marginTop: 42}} />
-            )}
-
-            <View style={styles.buttonStyle}>
-              <CustomButton
-                title="OK"
-                style={{width: 100}}
-                onPress={setValues}
-              />
-            </View>
+          <View style={styles.buttonStyle}>
+            <CustomButton title="OK" style={{width: 100}} onPress={setValues} />
           </View>
-          <View style={styles.column1} />
         </View>
-      )}
+        <View style={styles.column1} />
+      </View>
     </View>
   );
 }

@@ -68,13 +68,13 @@ export const USER_AGENT =
 /*
   For demo purposes, this app stores the FaceAPI endpoint and key 
   as environment variables. This is ok for local testing and getting started 
-  with the app. For a production scenario, storing any key or secret as a environment 
+  with the app. For a production scenario, storing any key or secret as an environment 
   variable is NOT secure. Do NOT create a release build of this app with 
   FaceAPI key stored as an environment variable. Follow the best security 
   practices in the documentation for further recommendations.
 */
 
-export const FACEAPI_ENDPOINT = process.env.FACEAPI_KEY;
+export var FACEAPI_ENDPOINT = process.env.FACEAPI_ENDPOINT;
 export var FACEAPI_KEY = process.env.FACEAPI_KEY;
 
 export const mutex = new Mutex();
