@@ -12,9 +12,8 @@ import CustomButton from '../../styles/CustomButton';
 import {CONFIG} from '../../env/env.json';
 import {useDispatch} from 'react-redux';
 import * as constants from '../../shared/constants';
-import {deletePersonGroup} from '../../shared/helper';
+import {deletePersonGroup, validatePersonGroup} from '../../shared/helper';
 var RNFS = require('react-native-fs');
-import {validatePersonGroup} from '../shared/helper';
 
 function Welcome({navigation}) {
   let dispatch = useDispatch();
@@ -26,6 +25,40 @@ function Welcome({navigation}) {
 
   const [isPortrait, setIsPortrait] = useState(checkIsPortrait());
 
+  const showAlert = () => {
+    // For development and testing environment, expose settings page
+    let buttonOption =
+      CONFIG.ENVIRONMENT == 'dev'
+        ? [
+            {
+              text: 'Settings',
+              onPress: () => navigation.navigate('Settings'),
+            },
+          ]
+        : [
+            {
+              text: 'Try again',
+              onPress: async () => {
+                let validated = await validatePersonGroup(
+                  CONFIG.PERSONGROUP_RGB,
+                );
+
+                if (validated == false) {
+                  showAlert();
+                }
+              },
+            },
+          ];
+    Alert.alert(
+      'A problem occurred',
+      'Cannot connect to service',
+      buttonOption,
+      {
+        cancelable: false,
+      },
+    );
+  };
+
   useEffect(() => {
     const orientationCallback = () => {
       setIsPortrait(checkIsPortrait());
@@ -34,27 +67,7 @@ function Welcome({navigation}) {
 
     validatePersonGroup(CONFIG.PERSONGROUP_RGB).then((personGroupValidated) => {
       if (personGroupValidated == false) {
-        /* 
-          If production environment, alert should not be dismissable
-          for development and testing, expose settings page
-        */
-        let buttonOption =
-          CONFIG.ENVIRONMENT == 'dev'
-            ? [
-                {
-                  text: 'Settings',
-                  onPress: () => navigation.navigate('Settings'),
-                },
-              ]
-            : [];
-        Alert.alert(
-          'A problem occurred',
-          'Cannot connect to service',
-          buttonOption,
-          {
-            cancelable: false,
-          },
-        );
+        showAlert();
       }
     });
 
@@ -152,12 +165,10 @@ function Welcome({navigation}) {
           </View> */}
 
           <View style={{flex: 1, justifyContent: 'flex-end'}}>
-            <View style={{flexDirection: 'row'}}>
-              <Caption style={styles.greyText}>
-                Details at contoso.com/touchless-access{'\n\n'}
-                Contoso Privacy Statement
-              </Caption>
-            </View>
+            <Caption style={styles.greyText}>
+              Details at contoso.com/touchless-access{'\n\n'}
+              Contoso Privacy Statement
+            </Caption>
           </View>
         </View>
 
