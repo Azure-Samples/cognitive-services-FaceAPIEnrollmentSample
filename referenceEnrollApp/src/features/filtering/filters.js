@@ -13,7 +13,7 @@ export default function createQualityFilter() {
   return filters;
 }
 
-function minimumFaceSize(detectResult) {
+export function minimumFaceSize(detectResult) {
   let rect = detectResult.faceRectangle;
   let faceArea = rect.width * rect.height;
 
@@ -24,7 +24,7 @@ function minimumFaceSize(detectResult) {
   return FEEDBACK.none;
 }
 
-function yaw(detectResult) {
+export function yaw(detectResult) {
   let yaw = detectResult.faceAttributes.headPose.yaw;
 
   if (yaw < THRESHOLDS.YAW.MIN || yaw > THRESHOLDS.YAW.MAX) {
@@ -34,7 +34,7 @@ function yaw(detectResult) {
   return FEEDBACK.none;
 }
 
-function pitch(detectResult) {
+export function pitch(detectResult) {
   let pitch = detectResult.faceAttributes.headPose.pitch;
 
   if (pitch < THRESHOLDS.PITCH.MIN || pitch > THRESHOLDS.PITCH.MAX) {
@@ -44,7 +44,7 @@ function pitch(detectResult) {
   return FEEDBACK.none;
 }
 
-function roll(detectResult) {
+export function roll(detectResult) {
   let roll = detectResult.faceAttributes.headPose.roll;
 
   if (roll < THRESHOLDS.ROLL.MIN || roll > THRESHOLDS.ROLL.MAX) {
@@ -54,7 +54,7 @@ function roll(detectResult) {
   return FEEDBACK.none;
 }
 
-function occlusionForehead(detectResult) {
+export function occlusionForehead(detectResult) {
   if (detectResult.faceAttributes.occlusion.foreheadOccluded) {
     return FEEDBACK.occlusion;
   }
@@ -62,7 +62,7 @@ function occlusionForehead(detectResult) {
   return FEEDBACK.none;
 }
 
-function occlusionEyes(detectResult) {
+export function occlusionEyes(detectResult) {
   if (detectResult.faceAttributes.occlusion.eyeOccluded) {
     return FEEDBACK.occlusion;
   }
@@ -70,7 +70,7 @@ function occlusionEyes(detectResult) {
   return FEEDBACK.none;
 }
 
-function occlusionMouth(detectResult) {
+export function occlusionMouth(detectResult) {
   if (detectResult.faceAttributes.occlusion.mouthOccluded) {
     return FEEDBACK.occlusion;
   }
@@ -78,7 +78,7 @@ function occlusionMouth(detectResult) {
   return FEEDBACK.none;
 }
 
-function exposure(detectResult) {
+export function exposure(detectResult) {
   let exposure = detectResult.faceAttributes.exposure.value;
 
   if (exposure < THRESHOLDS.EXPOSURE.UNDER) {
@@ -92,23 +92,23 @@ function exposure(detectResult) {
   return FEEDBACK.none;
 }
 
-function blur(detectResult) {
-  if (detectResult.faceAttributes.blur > THRESHOLDS.blur) {
+export function blur(detectResult) {
+  if (detectResult.faceAttributes.blur.value > THRESHOLDS.BLUR) {
     return FEEDBACK.blur;
   }
 
   return FEEDBACK.none;
 }
 
-function noise(detectResult) {
-  if (detectResult.faceAttributes.noise > THRESHOLDS.noise) {
+export function noise(detectResult) {
+  if (detectResult.faceAttributes.noise.value > THRESHOLDS.NOISE) {
     return FEEDBACK.noiseOrExposure;
   }
 
   return FEEDBACK.none;
 }
 
-function sunglasses(detectResult) {
+export function sunglasses(detectResult) {
   let attributes = detectResult.faceAttributes;
   if (attributes.glasses == 'Sunglasses') {
     let sunglassesConfidence = 0;
@@ -127,7 +127,7 @@ function sunglasses(detectResult) {
   return FEEDBACK.none;
 }
 
-function mask(detectResult) {
+export function mask(detectResult) {
   let maskConfidence = 0;
 
   for (let accessorie of detectResult.faceAttributes.accessories) {

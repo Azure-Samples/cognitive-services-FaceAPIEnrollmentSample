@@ -3,11 +3,18 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
-    "android": "react-native run-android",
-    "ios": "react-native run-ios",
+    "env:test": "node src/scripts/setEnvironment.js test",
+    "env:dev": "node  src/scripts/setEnvironment.js development",
+    "env:prod": "node  src/scripts/setEnvironment.js production",
+    "_android": "react-native run-android",
+    "_ios": "react-native run-ios",
+    "_test": "jest",
     "start": "react-native start",
-    "test": "jest",
+    "test": "npm run env:test && npm run _test",
     "web": "react-scripts start",
+    "android": "npm run env:dev && npm run _android",
+    "android:dev": "npm run env:dev && npm run _android",
+    "android:prod": "npm run env:prod && npm run _android",
     "lint": "eslint ."
   },
   "dependencies": {
@@ -53,10 +60,18 @@
     "eslint-plugin-react-hooks": "^4.0.0",
     "metro-react-native-babel-preset": "^0.62.0",
     "react-scripts": "^3.4.3",
-    "react-test-renderer": "16.13.1"
+    "react-test-renderer": "16.13.1",
+    "redux-mock-store": "^1.5.4"
   },
   "jest": {
-    "preset": "react-native"
+    "preset": "react-native",
+    "transformIgnorePatterns": [
+      "node_modules/(?!(jest-)?react-native|@?react-navigation)"
+    ],
+    "setupFiles": [
+      "./node_modules/react-native-gesture-handler/jestSetup.js",
+      "./setup.js"
+    ]
   },
   "browserslist": {
     "production": [

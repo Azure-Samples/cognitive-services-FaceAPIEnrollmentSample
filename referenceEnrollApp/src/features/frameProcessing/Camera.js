@@ -10,10 +10,10 @@ export default function Camera(props) {
 
   const onCameraReady = () => {
     /*
-        when camera signals ready,
-        update state to begin enrollment
-        in child component
-        */
+      when camera signals ready,
+      update state to begin enrollment
+      in child component
+    */
     console.log('camera ready');
     setStartEnroll(true);
   };

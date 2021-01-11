@@ -1,6 +1,6 @@
 import * as constants from '../../shared/constants';
 import {CONFIG} from '../../env/env.json';
-var RNFS = require('react-native-fs');
+import * as RNFS from 'react-native-fs';
 
 export const saveUserInfoAction = (username) => {
   return async (dispatch, getState) => {
@@ -19,8 +19,6 @@ export const saveUserInfoAction = (username) => {
         personId = mapping.split(',')[1];
       }
     }
-
-    console.log('pid');
 
     if (!personId) {
       let createPersonRgbEndpoint =
@@ -62,7 +60,7 @@ export const saveUserInfoAction = (username) => {
 
     let userInfo = {
       username: username,
-      personIdRgb: personId,
+      personIdRgb: !personId ? '' : personId,
       personidIr: '',
     };
 

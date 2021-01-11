@@ -6,7 +6,7 @@ function getLargestFace(detectResponse) {
     According to FaceAPI detect :
     A successful call returns an array of face entries
     ranked by face rectangle size in descending order.
-    */
+  */
   if (detectResponse.length > 0) {
     // return first face in array
     return detectResponse[0];

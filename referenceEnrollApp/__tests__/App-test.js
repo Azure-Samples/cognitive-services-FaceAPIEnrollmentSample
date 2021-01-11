@@ -4,11 +4,17 @@
 
 import 'react-native';
 import React from 'react';
-import App from '../src/App';
-
+import App from '../src/app/App';
 // Note: test renderer must be required after react-native.
-import renderer from 'react-test-renderer';
+import {act, create} from 'react-test-renderer';
 
-it('renders correctly', () => {
-  renderer.create(<App />);
+// Silences warnings
+jest.mock('react-native/Libraries/Animated/src/NativeAnimatedHelper');
+
+it('renders correctly', async () => {
+  // render the app
+  const result = create(<App />);
+  await act(async () => {
+    expect(result).toMatchSnapshot();
+  });
 });

@@ -19,15 +19,16 @@ const Stack = createStackNavigator();
 const store = configureStore();
 
 const App = () => {
+  console.log(process.env.FACEAPI_ENDPOINT);
+  console.log(process.env.FACEAPI_KEY);
+
   /*
   To store username and personId information, this app writes the data
   to the enrollment directory created here. This is ONLY for demonstration purposes. 
   Any user information and personId should be stored in a secured, encrypted database. 
   A user's personId should be treated as a secret.
   */
-  RNFS.mkdir(RNFS.DocumentDirectoryPath + '/enrollment/').then(
-    console.log('Enrollment directory exists.'),
-  );
+  RNFS.mkdir(RNFS.DocumentDirectoryPath + '/enrollment/');
 
   return (
     <Provider store={store}>
