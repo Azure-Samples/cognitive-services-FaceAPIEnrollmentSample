@@ -50,6 +50,8 @@
     "@babel/core": "^7.11.1",
     "@babel/runtime": "^7.11.2",
     "@react-native-community/eslint-config": "^2.0.0",
+    "@testing-library/jest-native": "^3.4.3",
+    "@testing-library/react-native": "^7.1.0",
     "babel-plugin-transform-inline-environment-variables": "^0.4.3",
     "babel-plugin-transform-remove-console": "^6.9.4",
     "eslint": "^7.2.0",
@@ -71,7 +73,8 @@
     "setupFiles": [
       "./node_modules/react-native-gesture-handler/jestSetup.js",
       "./setup.js"
-    ]
+    ],
+    "setupFilesAfterEnv": ["@testing-library/jest-native/extend-expect"]
   },
   "browserslist": {
     "production": [

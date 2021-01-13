@@ -1,0 +1,345 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Welcome screen renders correctly 1`] = `
+<View
+  style={
+    Object {
+      "alignItems": "center",
+      "backgroundColor": "#002C55",
+      "flex": 1,
+      "flexDirection": "row",
+      "justifyContent": "center",
+    }
+  }
+>
+  <View
+    style={
+      Object {
+        "flex": 1,
+        "flexDirection": "column",
+      }
+    }
+  >
+    <View
+      accessibilityIgnoresInvertColors={true}
+      style={
+        Object {
+          "backgroundColor": "#002C55",
+          "flex": 1,
+          "justifyContent": "center",
+          "resizeMode": "cover",
+          "width": "100%",
+        }
+      }
+    >
+      <Image
+        source={
+          Object {
+            "testUri": "../../../src/assets/bg_heroIllustration_welcome.png",
+          }
+        }
+        style={
+          Array [
+            Object {
+              "bottom": 0,
+              "left": 0,
+              "position": "absolute",
+              "right": 0,
+              "top": 0,
+            },
+            Object {
+              "height": undefined,
+              "width": "100%",
+            },
+            undefined,
+          ]
+        }
+      />
+    </View>
+    <View
+      style={
+        Object {
+          "flex": 1,
+        }
+      }
+    />
+  </View>
+  <View
+    style={
+      Object {
+        "alignItems": "flex-end",
+        "bottom": 0,
+        "flex": 1,
+        "flexDirection": "row",
+        "justifyContent": "center",
+        "left": 0,
+        "position": "absolute",
+        "right": 0,
+        "top": 0,
+      }
+    }
+  >
+    <View
+      style={
+        Array [
+          Object {
+            "backgroundColor": "white",
+            "borderRadius": 4,
+            "flex": 1,
+            "flexDirection": "column",
+            "margin": 16,
+            "padding": 15,
+          },
+          Object {
+            "height": "50%",
+          },
+        ]
+      }
+    >
+      <View
+        style={
+          Object {
+            "flex": 1,
+            "justifyContent": "flex-start",
+          }
+        }
+      >
+        <Text
+          style={
+            Object {
+              "color": "#77787B",
+              "fontFamily": "Roboto",
+              "fontSize": 12,
+              "fontStyle": "normal",
+              "fontWeight": "400",
+              "lineHeight": 16,
+            }
+          }
+        >
+          Contoso | Real Estate & Security
+        </Text>
+      </View>
+      <View
+        style={
+          Object {
+            "marginBottom": 20,
+            "marginTop": 15,
+          }
+        }
+      >
+        <View
+          style={
+            Object {
+              "marginBottom": 10,
+            }
+          }
+        >
+          <Text
+            style={
+              Object {
+                "fontFamily": "Roboto",
+                "fontSize": 24,
+                "fontStyle": "normal",
+                "fontWeight": "bold",
+                "lineHeight": 28,
+              }
+            }
+          >
+            An easier way to get into work
+          </Text>
+        </View>
+        <Text
+          style={
+            Object {
+              "color": "#77787B",
+              "fontFamily": "Roboto",
+              "fontSize": 16,
+              "fontStyle": "normal",
+              "fontWeight": "normal",
+              "lineHeight": 22,
+            }
+          }
+        >
+          You can now use face recognition instead of your badge to conveniently unlock building doors.
+        </Text>
+      </View>
+      <View
+        style={
+          Object {
+            "color": "red",
+            "paddingBottom": 20,
+          }
+        }
+      >
+        <View
+          accessible={true}
+          focusable={true}
+          onClick={[Function]}
+          onResponderGrant={[Function]}
+          onResponderMove={[Function]}
+          onResponderRelease={[Function]}
+          onResponderTerminate={[Function]}
+          onResponderTerminationRequest={[Function]}
+          onStartShouldSetResponder={[Function]}
+          style={
+            Object {
+              "opacity": 1,
+            }
+          }
+        >
+          <View
+            style={
+              Array [
+                Object {
+                  "alignItems": "center",
+                  "backgroundColor": "#0078D4",
+                  "borderRadius": 4,
+                  "paddingHorizontal": 15,
+                  "paddingVertical": 15,
+                },
+                undefined,
+              ]
+            }
+          >
+            <Text
+              style={
+                Object {
+                  "fontFamily": "Roboto",
+                  "fontSize": 16,
+                  "fontStyle": "normal",
+                  "fontWeight": "normal",
+                  "lineHeight": 22,
+                }
+              }
+            >
+              <Text
+                style={
+                  Object {
+                    "fontWeight": "bold",
+                  }
+                }
+              >
+                <Text
+                  style={
+                    Array [
+                      Object {
+                        "color": "white",
+                      },
+                      undefined,
+                    ]
+                  }
+                >
+                  Get started
+                </Text>
+              </Text>
+            </Text>
+          </View>
+        </View>
+      </View>
+      <View
+        style={
+          Object {
+            "color": "red",
+            "paddingBottom": 20,
+          }
+        }
+      >
+        <View
+          accessible={true}
+          focusable={true}
+          onClick={[Function]}
+          onResponderGrant={[Function]}
+          onResponderMove={[Function]}
+          onResponderRelease={[Function]}
+          onResponderTerminate={[Function]}
+          onResponderTerminationRequest={[Function]}
+          onStartShouldSetResponder={[Function]}
+          style={
+            Object {
+              "opacity": 1,
+            }
+          }
+        >
+          <View
+            style={
+              Array [
+                Object {
+                  "alignItems": "center",
+                  "backgroundColor": "#FFFFFF",
+                  "borderColor": "#0078D4",
+                  "borderRadius": 4,
+                  "borderWidth": 1,
+                  "paddingHorizontal": 15,
+                  "paddingVertical": 15,
+                },
+                undefined,
+              ]
+            }
+          >
+            <Text
+              style={
+                Object {
+                  "fontFamily": "Roboto",
+                  "fontSize": 16,
+                  "fontStyle": "normal",
+                  "fontWeight": "normal",
+                  "lineHeight": 22,
+                }
+              }
+            >
+              <Text
+                style={
+                  Object {
+                    "fontWeight": "bold",
+                  }
+                }
+              >
+                <Text
+                  style={
+                    Array [
+                      Object {
+                        "color": "#0078D4",
+                      },
+                      undefined,
+                    ]
+                  }
+                >
+                  Manage profile
+                </Text>
+              </Text>
+            </Text>
+          </View>
+        </View>
+      </View>
+      <View
+        style={
+          Object {
+            "flex": 1,
+            "justifyContent": "flex-end",
+          }
+        }
+      >
+        <Text
+          style={
+            Object {
+              "color": "#77787B",
+              "fontFamily": "Roboto",
+              "fontSize": 12,
+              "fontStyle": "normal",
+              "fontWeight": "400",
+              "lineHeight": 16,
+            }
+          }
+        >
+          Details at contoso.com/touchless-access
+          
+
+
+          Contoso Privacy Statement
+        </Text>
+      </View>
+    </View>
+    <View />
+  </View>
+</View>
+`;
