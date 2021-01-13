@@ -9,7 +9,7 @@ import {
 import {View, StyleSheet} from 'react-native';
 import EnrollProgress from '../progress/EnrollProgress';
 import {CONFIG} from '../../env/env.json';
-import {CancellationToken} from '../../shared/helper';
+import {CancellationToken, sleep} from '../../shared/helper';
 import CustomButton from '../../styles/CustomButton';
 import {ENROLL_RESULT} from '../../shared/constants';
 import {deleteEnrollmentAction} from '../userEnrollment/newEnrollmentAction';
@@ -72,6 +72,9 @@ function Enrollment(props) {
     let tasks = [];
     let enrollmentSucceeded = false;
     let completedTaskCount = 0;
+
+    // Give time for camera to adjust
+    await sleep(900);
 
     // Show initial progress
     updateProgress(progressRef.current + 1);

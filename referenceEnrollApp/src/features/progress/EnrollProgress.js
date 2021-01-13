@@ -83,11 +83,11 @@ function EnrollProgress(props) {
         <AnimatedCircularProgress
           size={radius * 2 + 5}
           duration={progressDuration}
-          width={25}
+          width={10}
           fill={rgbProgress}
           rotation={0}
-          tintColor="green"
-          backgroundColor="transparent"
+          tintColor="#65c368"
+          backgroundColor="white"
         />
       </View>
 

@@ -1,12 +1,18 @@
 import React, {useEffect, useState} from 'react';
 
-import {View, StyleSheet, Dimensions, ImageBackground} from 'react-native';
+import {
+  View,
+  StyleSheet,
+  Alert,
+  Dimensions,
+  ImageBackground,
+} from 'react-native';
 import {Caption, Headline, Subheading1} from '../../styles/fontStyles';
 import CustomButton from '../../styles/CustomButton';
 import {CONFIG} from '../../env/env.json';
 import {useDispatch} from 'react-redux';
 import * as constants from '../../shared/constants';
-import {deletePersonGroup} from '../../shared/helper';
+import {deletePersonGroup, validatePersonGroup} from '../../shared/helper';
 var RNFS = require('react-native-fs');
 
 function Welcome({navigation}) {
@@ -19,11 +25,51 @@ function Welcome({navigation}) {
 
   const [isPortrait, setIsPortrait] = useState(checkIsPortrait());
 
+  const showAlert = () => {
+    // For development and testing environment, expose settings page
+    let buttonOption =
+      CONFIG.ENVIRONMENT == 'dev'
+        ? [
+            {
+              text: 'Settings',
+              onPress: () => navigation.navigate('Settings'),
+            },
+          ]
+        : [
+            {
+              text: 'Try again',
+              onPress: async () => {
+                let validated = await validatePersonGroup(
+                  CONFIG.PERSONGROUP_RGB,
+                );
+
+                if (validated == false) {
+                  showAlert();
+                }
+              },
+            },
+          ];
+    Alert.alert(
+      'A problem occurred',
+      'Cannot connect to service',
+      buttonOption,
+      {
+        cancelable: false,
+      },
+    );
+  };
+
   useEffect(() => {
     const orientationCallback = () => {
       setIsPortrait(checkIsPortrait());
     };
     Dimensions.addEventListener('change', orientationCallback);
+
+    validatePersonGroup(CONFIG.PERSONGROUP_RGB).then((personGroupValidated) => {
+      if (personGroupValidated == false) {
+        showAlert();
+      }
+    });
 
     return () => {
       Dimensions.removeEventListener('change', orientationCallback);
@@ -71,10 +117,12 @@ function Welcome({navigation}) {
           style={
             isPortrait ? [styles.whiteBox, {height: '50%'}] : styles.whiteBox
           }>
-          <Caption style={styles.greyText}>
-            {' '}
-            Contoso | Real Estate & Security{' '}
-          </Caption>
+          <View style={{flex: 1, justifyContent: 'flex-start'}}>
+            <Caption style={styles.greyText}>
+              Contoso | Real Estate & Security
+            </Caption>
+          </View>
+
           <View style={styles.infoView}>
             <View style={styles.textPadding}>
               <Headline>An easier way to get into work</Headline>
@@ -116,10 +164,12 @@ function Welcome({navigation}) {
             />
           </View> */}
 
-          <Caption style={styles.greyText}>
-            Details at contoso.com/touchless-access{'\n\n'}
-            Contoso Privacy Statement
-          </Caption>
+          <View style={{flex: 1, justifyContent: 'flex-end'}}>
+            <Caption style={styles.greyText}>
+              Details at contoso.com/touchless-access{'\n\n'}
+              Contoso Privacy Statement
+            </Caption>
+          </View>
         </View>
 
         {isPortrait ? <View /> : <View style={styles.rightBox} />}
@@ -165,7 +215,6 @@ var styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'column',
     backgroundColor: 'white',
-    justifyContent: 'center',
     margin: 16,
     padding: 15,
     borderRadius: 4,
