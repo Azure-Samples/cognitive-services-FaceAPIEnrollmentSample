@@ -19,9 +19,6 @@ const Stack = createStackNavigator();
 const store = configureStore();
 
 const App = () => {
-  console.log(process.env.FACEAPI_ENDPOINT);
-  console.log(process.env.FACEAPI_KEY);
-
   /*
   To store username and personId information, this app writes the data
   to the enrollment directory created here. This is ONLY for demonstration purposes. 

@@ -48,7 +48,6 @@ describe('User enrollment unit tests', () => {
       .mockImplementationOnce(() => Promise.resolve(addPersonResponse));
 
     let savedInfo = await store.dispatch(saveUserInfoAction('username'));
-    // Expect person to be created and information saved in store
     expect(savedInfo).toBeTruthy();
     let expectedAction = [
       {

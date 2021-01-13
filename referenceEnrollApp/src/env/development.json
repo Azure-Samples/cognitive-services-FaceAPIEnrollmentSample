@@ -1,0 +1,41 @@
+{
+    "CONFIG": {
+        "PERSONGROUP_RGB": "enter your person group id here",
+        "PERSONGROUP_IR": "",
+        "RECOGNITION_MODEL_RGB": "recognition_03",
+        "ENROLL_SETTINGS": {
+            "RGB_FRAMES_TOENROLL": 5,
+            "IR_FRAMES_TOENROLL": 0,
+            "VERIFY_CONFIDENCE" : 0.6,
+            "TRAIN_ATTEMPTS" : 5,
+            "TIMEOUT_SECONDS" : 60 
+        },
+        "QUALITY_FILTER_SETTINGS": {
+            "MINIMUM_FACEAREA" : 3600,
+            "YAW": {
+                "MIN" :-25,
+                "MAX" :25
+            },
+            "PITCH": {
+                "MIN" :-25,
+                "MAX" :25
+            },
+            "ROLL": {
+                "MIN" :-20,
+                "MAX" :20
+            },
+            "OCCLUSION_FOREHEAD" : true,
+            "OCCLUSION_EYES" : true, 
+            "OCCLUSION_MOUTH" : true,
+            "BLUR" : 0.3, 
+            "NOISE" : 0.3,
+            "EXPOSURE" : {
+                "OVER": 0.75,
+                "UNDER": 0.25
+            },
+            "MASK_CONFIDENCE" : 0.7,
+            "SUNGLASSES_CONFIDENCE" : 0.7
+        },
+        "ENVIRONMENT" : "dev"
+    }
+}
