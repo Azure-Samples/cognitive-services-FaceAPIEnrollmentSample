@@ -3,19 +3,33 @@ import React from 'react';
 import {create, act} from 'react-test-renderer';
 import Welcome from '../../src/features/screens/Welcome';
 import Consent from '../../src/features/screens/Consent';
+import Instruction from '../../src/features/screens/Instruction';
+import ImageCapture from '../../src/features/screens/ImageCapture';
+import Receipt from '../../src/features/screens/Receipt';
+import ManageProfile from '../../src/features/screens/ManageProfile';
 import {SCREENS} from '../../src/shared/constants';
 import {render, fireEvent} from '@testing-library/react-native';
 import {Provider} from 'react-redux';
 import configureMockStore from 'redux-mock-store';
-import {NavigationContainer} from '@react-navigation/native';
 import Login from '../../src/features/screens/Login';
 import '@testing-library/jest-native/extend-expect';
+import {StackActions} from '@react-navigation/native';
+
+// Mocked store for screen component tests
+const mockStore = configureMockStore();
+const store = mockStore({
+  userInfo: {rgbPersonId: 123},
+  newEnrollment: {},
+  feedback: {message: ''},
+  newEnrollment: {},
+});
+
+// Mocked functions for testing navigation
+const navigate = jest.fn();
+const setOptions = jest.fn();
+const dispatch = jest.fn();
 
 describe('Welcome screen', () => {
-  const mockStore = configureMockStore();
-  const store = mockStore({userInfo: {rgbPersonId: 123}, newEnrollment: {}});
-  const navigate = jest.fn();
-
   it('renders correctly', () => {
     const tree = create(
       <Provider store={store}>
@@ -49,9 +63,6 @@ describe('Welcome screen', () => {
 });
 
 describe('Consent screen', () => {
-  const navigate = jest.fn();
-  const setOptions = jest.fn();
-
   it('navigates to login', () => {
     const {getByText} = render(
       <Consent navigation={{navigate, setOptions}}></Consent>,
@@ -63,18 +74,12 @@ describe('Consent screen', () => {
   });
 
   it('navigates back to welcome', async () => {
-    // replace with poptotop
-    const dispatch = jest.fn();
-    const setOptions = jest.fn();
-
     const {getByText, findByText, queryByText} = render(
       <Consent navigation={{dispatch, setOptions}}></Consent>,
     );
 
-    const popToTop = jest.fn();
-
     let modal = queryByText('Got it');
-    expect(modal).toBeNull(); // it doesn't exist
+    expect(modal).toBeNull();
 
     fireEvent.press(getByText('No, don’t create my face template'));
 
@@ -82,15 +87,11 @@ describe('Consent screen', () => {
     expect(modal).toBeTruthy();
 
     fireEvent.press(getByText('Close'));
-    expect(dispatch).toHaveBeenCalled();
+    expect(dispatch).toHaveBeenCalledWith(StackActions.popToTop());
   });
 });
 
 describe('Login screen', () => {
-  const setOptions = jest.fn();
-  const mockStore = configureMockStore();
-  const store = mockStore({userInfo: {rgbPersonId: 123}, newEnrollment: {}});
-
   it('requires username input', async () => {
     const {getByText, queryByText} = render(
       <Provider store={store}>
@@ -101,10 +102,8 @@ describe('Login screen', () => {
       </Provider>,
     );
 
-    //fireEvent.changeText(getByPlaceholderText('Username'), 'guest');
-    let res = fireEvent.press(getByText('Sign In'));
     await act(async () => {
-      res;
+      fireEvent.press(getByText('Sign In'));
     });
 
     let modal = getByText('Sign-in failed');
@@ -114,5 +113,56 @@ describe('Login screen', () => {
 
     modal = queryByText('Sign-in failed');
     expect(modal).toBeNull();
+  });
+});
+
+describe('Instructions screen', () => {
+  it('navigates to image capture screen', () => {
+    const {getByText} = render(
+      <Provider store={store}>
+        <Instruction navigation={{navigate, setOptions}} />
+      </Provider>,
+    );
+
+    fireEvent.press(getByText('Create my face template now'));
+    expect(navigate).toHaveBeenCalledWith(SCREENS.imageCapture);
+  });
+});
+
+describe('Image Capture screen', () => {
+  it('renders correctly', () => {
+    const rendered = create(
+      <Provider store={store}>
+        <ImageCapture navigation={{navigate, setOptions}} />
+      </Provider>,
+    ).toJSON();
+    expect(rendered).toBeTruthy();
+  });
+});
+
+describe('Receipt screen', () => {
+  it('renders correctly', () => {
+    const rendered = create(
+      <Receipt navigation={{navigate, setOptions}} />,
+    ).toJSON();
+    expect(rendered).toBeTruthy();
+  });
+
+  it('navigates back to welcome', () => {
+    const {getByText} = render(<Receipt navigation={{dispatch, setOptions}} />);
+
+    fireEvent.press(getByText('Back to home'));
+    expect(dispatch).toHaveBeenCalledWith(StackActions.popToTop());
+  });
+});
+
+describe('Manage profile screen', () => {
+  it('renders correctly', () => {
+    const rendered = create(
+      <Provider store={store}>
+        <ManageProfile navigation={{navigate, setOptions}} />
+      </Provider>,
+    ).toJSON();
+    expect(rendered).toBeTruthy();
   });
 });
