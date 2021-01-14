@@ -2,7 +2,7 @@ import React, {useState, useEffect} from 'react';
 
 import {View, StyleSheet, BackHandler, TextInput} from 'react-native';
 import {Headline, fontStyles, Subheading1} from '../../styles/fontStyles';
-import {validatePersonGroup} from '../shared/helper';
+import {validatePersonGroup} from '../../shared/helper';
 import {CONFIG} from '../../env/env.json';
 import CustomButton from '../../styles/CustomButton';
 import * as constants from '../../shared/constants';

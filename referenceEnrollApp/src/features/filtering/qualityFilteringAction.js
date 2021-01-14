@@ -11,7 +11,6 @@ export const filterFaceAction = (face) => {
 
       // Display feedback on screen
       dispatch(enrollFeedbackAction(feedback));
-
       if (feedback != FEEDBACK.none) {
         // A filter failed
         return false;
