@@ -11,14 +11,14 @@
             "TIMEOUT_SECONDS" : 60 
         },
         "QUALITY_FILTER_SETTINGS": {
-            "MINIMUM_FACEAREA" : 3600,
+            "MINIMUM_FACEAREA" : 10000,
             "YAW": {
-                "MIN" :-25,
-                "MAX" :25
+                "MIN" :-35,
+                "MAX" :35
             },
             "PITCH": {
-                "MIN" :-25,
-                "MAX" :25
+                "MIN" :-35,
+                "MAX" :35
             },
             "ROLL": {
                 "MIN" :-20,
@@ -27,8 +27,8 @@
             "OCCLUSION_FOREHEAD" : true,
             "OCCLUSION_EYES" : true, 
             "OCCLUSION_MOUTH" : true,
-            "BLUR" : 0.3, 
-            "NOISE" : 0.3,
+            "BLUR" : 0.4, 
+            "NOISE" : 0.4,
             "EXPOSURE" : {
                 "OVER": 0.75,
                 "UNDER": 0.25
