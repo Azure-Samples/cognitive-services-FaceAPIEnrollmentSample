@@ -29,6 +29,16 @@ const navigate = jest.fn();
 const setOptions = jest.fn();
 const dispatch = jest.fn();
 
+// Mock fetch so person group check succeeds
+global.fetch = jest.fn().mockImplementation(() =>
+  Promise.resolve({
+    status: 200,
+    text: function () {
+      return JSON.stringify('');
+    },
+  }),
+);
+
 describe('Welcome screen', () => {
   it('renders correctly', () => {
     const tree = create(
@@ -126,17 +136,6 @@ describe('Instructions screen', () => {
 
     fireEvent.press(getByText('Create my face template now'));
     expect(navigate).toHaveBeenCalledWith(SCREENS.imageCapture);
-  });
-});
-
-describe('Image Capture screen', () => {
-  it('renders correctly', () => {
-    const rendered = create(
-      <Provider store={store}>
-        <ImageCapture navigation={{navigate, setOptions}} />
-      </Provider>,
-    ).toJSON();
-    expect(rendered).toBeTruthy();
   });
 });
 
