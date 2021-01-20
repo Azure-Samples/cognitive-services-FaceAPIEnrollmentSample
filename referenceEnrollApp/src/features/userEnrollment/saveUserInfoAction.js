@@ -24,7 +24,7 @@ export const saveUserInfoAction = (username) => {
 
     if (!personId) {
       let createPersonRgbEndpoint =
-        CONFIG.FACEAPI_ENDPOINT +
+        constants.FACEAPI_ENDPOINT +
         constants.PERSON_ENDPOINT(CONFIG.PERSONGROUP_RGB);
 
       let requestBody = {name: 'person-name'};
@@ -33,7 +33,7 @@ export const saveUserInfoAction = (username) => {
         headers: {
           'Content-Type': 'application/json',
           Accept: 'application/json',
-          'Ocp-Apim-Subscription-Key': CONFIG.FACEAPI_KEY,
+          'Ocp-Apim-Subscription-Key': constants.FACEAPI_KEY,
         },
         body: JSON.stringify(requestBody),
       });
