@@ -57,8 +57,9 @@ function Login({route, navigation}) {
     route.params.nextScreen == constants.SCREENS.instruction;
 
   const dispatch = useDispatch();
-  const saveUsername = async (username) =>
-    dispatch(await saveUserInfoAction(username));
+  async function saveUsername(username) {
+    await dispatch(saveUserInfoAction(username));
+  }
   const checkEnrollmentExists = async (username) =>
     await dispatch(checkEnrollmentExistsAction(username));
 
@@ -75,7 +76,7 @@ function Login({route, navigation}) {
         2. User clicks start, but already has enrolled: take to manage page
         3. User clicks manage, but has never enrolled: take to consent page 
         4. User clicks manage, has already enrolled: continue to manage page
-        */
+    */
 
     let defaultModal = {
       title: 'Sign-in failed',
@@ -105,7 +106,6 @@ function Login({route, navigation}) {
       setModalProps(defaultModal);
       return;
     }
-
     let enrollmentExists = await checkEnrollmentExists(username);
     console.log('enrollment Exists', enrollmentExists);
     if (enrollmentExists) {

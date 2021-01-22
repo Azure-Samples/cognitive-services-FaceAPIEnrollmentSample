@@ -75,8 +75,8 @@ export const newEnrollmentAction = () => {
     }
 
     let newIds = {
-      personIdRgb: personId,
-      personidIr: '',
+      personIdRgb: !personId ? '' : personId,
+      personIdIr: '',
     };
 
     dispatch(setNewIds(newIds));
