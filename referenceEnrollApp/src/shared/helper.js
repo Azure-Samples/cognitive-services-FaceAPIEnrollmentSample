@@ -1,5 +1,5 @@
 import * as constants from './constants';
-import {CONFIG} from '../env/env.json';
+import { CONFIG } from '../env/env.json';
 
 function getLargestFace(detectResponse) {
   /* 
@@ -32,11 +32,14 @@ function getTargetFace(detectResponse) {
 }
 
 async function validatePersonGroup(personGroupId) {
+  console.log("ep", constants.FACEAPI_ENDPOINT);
+  console.log('key', constants.FACEAPI_KEY);
   // Create person group if it doesn't exist
   let personGroupExists = false;
   try {
     personGroupExists = await checkPersonGroupExists(personGroupId);
     if (personGroupExists === false) {
+      console.log("creating grroup");
       personGroupExists = await createPersonGroup(personGroupId);
     }
   } catch {

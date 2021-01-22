@@ -1,12 +1,13 @@
-import React, {useState} from 'react';
-import {View, StyleSheet} from 'react-native';
-import {RNCamera} from 'react-native-camera';
+import React, { useState } from 'react';
+import { View, StyleSheet } from 'react-native';
+import { RNCamera } from 'react-native-camera';
 import Enrollment from './Enrollment';
 
 // Camera component for Android
 export default function Camera(props) {
   const [startEnroll, setStartEnroll] = useState(false);
   let cameraRef = React.useRef(null);
+  console.log("Camera component renders");
 
   const onCameraReady = () => {
     /*
@@ -22,7 +23,7 @@ export default function Camera(props) {
     let frameData;
 
     try {
-      frameData = await cameraRef.current.takePictureAsync({base64: true});
+      frameData = await cameraRef.current.takePictureAsync({ base64: true });
     } catch (error) {
       console.log('Error taking picture:', error);
     }
@@ -36,7 +37,7 @@ export default function Camera(props) {
         ref={cameraRef}
         style={styles.camera}
         type={RNCamera.Constants.Type.front}
-        flashMode={RNCamera.Constants.FlashMode.on}
+        flashMode={RNCamera.Constants.FlashMode.off}
         onCameraReady={onCameraReady}
         captureAudio={false} // Required for iOS
         androidCameraPermissionOptions={{

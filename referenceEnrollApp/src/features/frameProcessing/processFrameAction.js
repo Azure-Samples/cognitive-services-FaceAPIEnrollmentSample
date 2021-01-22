@@ -1,9 +1,9 @@
-import {getLargestFace, getTargetFace, sleep} from '../../shared/helper';
-import {enrollFeedbackAction} from '../feedback/enrollFeedbackAction';
-import {CONFIG} from '../../env/env.json';
+import { getLargestFace, getTargetFace, sleep } from '../../shared/helper';
+import { enrollFeedbackAction } from '../feedback/enrollFeedbackAction';
+import { CONFIG } from '../../env/env.json';
 import * as constants from '../../shared/constants';
-import {filterFaceAction} from '../filtering/qualityFilteringAction';
-import {FEEDBACK} from '../filtering/filterFeedback';
+import { filterFaceAction } from '../filtering/qualityFilteringAction';
+import { FEEDBACK } from '../filtering/filterFeedback';
 
 // Detects and Filters faces
 export const getFilteredFaceAction = (frameData) => {
@@ -11,6 +11,7 @@ export const getFilteredFaceAction = (frameData) => {
     let face = await dispatch(detectFaceAction(frameData));
 
     if (face.faceId) {
+      console.log(face.faceAttributes);
       let passedFilters = dispatch(filterFaceAction(face));
       return passedFilters ? face : {};
     }

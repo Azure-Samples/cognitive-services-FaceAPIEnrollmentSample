@@ -1,19 +1,19 @@
-import React, {useEffect, useState, useRef} from 'react';
-import {useDispatch} from 'react-redux';
+import React, { useEffect, useState, useRef } from 'react';
+import { useDispatch } from 'react-redux';
 import {
   verifyFaceAction,
   processFaceAction,
   trainAction,
   getFilteredFaceAction,
 } from './processFrameAction';
-import {View, StyleSheet} from 'react-native';
+import { View, StyleSheet } from 'react-native';
 import EnrollProgress from '../progress/EnrollProgress';
-import {CONFIG} from '../../env/env.json';
-import {CancellationToken, sleep} from '../../shared/helper';
+import { CONFIG } from '../../env/env.json';
+import { CancellationToken, sleep } from '../../shared/helper';
 import CustomButton from '../../styles/CustomButton';
-import {ENROLL_RESULT} from '../../shared/constants';
-import {deleteEnrollmentAction} from '../userEnrollment/newEnrollmentAction';
-import {mutex} from '../../shared/constants';
+import { ENROLL_RESULT } from '../../shared/constants';
+import { deleteEnrollmentAction } from '../userEnrollment/newEnrollmentAction';
+import { mutex } from '../../shared/constants';
 
 function Enrollment(props) {
   // State
@@ -60,6 +60,7 @@ function Enrollment(props) {
 
   // Runs entire enrollment flow
   const runEnrollment = async () => {
+    console.log("Enrollment begins.");
     const timeoutInMs = CONFIG.ENROLL_SETTINGS.TIMEOUT_SECONDS * 1000;
 
     let timer = setTimeout(() => {
