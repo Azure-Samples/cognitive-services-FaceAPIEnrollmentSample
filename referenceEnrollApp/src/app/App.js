@@ -1,7 +1,7 @@
 import React from 'react';
-import {StyleSheet} from 'react-native';
-import {NavigationContainer} from '@react-navigation/native';
-import {createStackNavigator} from '@react-navigation/stack';
+import { StyleSheet } from 'react-native';
+import { NavigationContainer } from '@react-navigation/native';
+import { createStackNavigator, StackNavigationOptions } from '@react-navigation/stack';
 import ImageCapture from '../features/screens/ImageCapture';
 import Login from '../features/screens/Login';
 import Welcome from '../features/screens/Welcome';
@@ -10,10 +10,11 @@ import Instruction from '../features/screens/Instruction';
 import Receipt from '../features/screens/Receipt';
 import ManageProfile from '../features/screens/ManageProfile';
 import Settings from '../features/screens/Settings';
-import {Provider} from 'react-redux';
+import { Provider } from 'react-redux';
 import configureStore from './store';
 const RNFS = require('react-native-fs');
 import * as constants from '../shared/constants';
+
 
 const Stack = createStackNavigator();
 const store = configureStore();
@@ -32,47 +33,47 @@ const App = () => {
       <NavigationContainer>
         <Stack.Navigator>
           <Stack.Screen
-            options={{headerShown: false}}
+            options={{ headerShown: false, gestureEnabled: false }}
             name={constants.SCREENS.welcome}
             component={Welcome}
           />
 
           <Stack.Screen
-            options={{headerShown: false}}
+            options={{ headerShown: false, gestureEnabled: false }}
             name={'Settings'}
             component={Settings}
           />
 
           <Stack.Screen
-            options={{title: '', headerStyle: styles.header}}
+            options={{ title: '', headerStyle: styles.header, gestureEnabled: false }}
             name={constants.SCREENS.manage}
             component={ManageProfile}
           />
           <Stack.Screen
             options={{
               title: '',
-              headerStyle: styles.header,
+              headerStyle: styles.header, gestureEnabled: false
             }}
             name={constants.SCREENS.consent}
             component={Consent}
           />
           <Stack.Screen
-            options={{title: '', headerStyle: styles.header}}
+            options={{ title: '', headerStyle: styles.header, gestureEnabled: false }}
             name={constants.SCREENS.login}
             component={Login}
           />
           <Stack.Screen
-            options={{title: '', headerStyle: styles.header}}
+            options={{ title: '', headerStyle: styles.header, gestureEnabled: false }}
             name={constants.SCREENS.instruction}
             component={Instruction}
           />
           <Stack.Screen
-            options={{headerShown: false}}
+            options={{ headerShown: false, gestureEnabled: false }}
             name={constants.SCREENS.imageCapture}
             component={ImageCapture}
           />
           <Stack.Screen
-            options={{title: '', headerStyle: styles.header}}
+            options={{ title: '', headerStyle: styles.header, gestureEnabled: false }}
             name={constants.SCREENS.receipt}
             component={Receipt}
           />

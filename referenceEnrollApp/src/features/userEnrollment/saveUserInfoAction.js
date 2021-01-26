@@ -1,5 +1,5 @@
 import * as constants from '../../shared/constants';
-import {CONFIG} from '../../env/env.json';
+import { CONFIG } from '../../env/env.json';
 import * as RNFS from 'react-native-fs';
 
 export const saveUserInfoAction = (username) => {
@@ -25,7 +25,7 @@ export const saveUserInfoAction = (username) => {
         constants.FACEAPI_ENDPOINT +
         constants.PERSON_ENDPOINT(CONFIG.PERSONGROUP_RGB);
 
-      let requestBody = {name: 'person-name'};
+      let requestBody = { name: 'person-name' };
       let response = await fetch(createPersonRgbEndpoint, {
         method: 'POST',
         headers: {
@@ -43,15 +43,15 @@ export const saveUserInfoAction = (username) => {
 
         let mappingdata = CONFIG.PERSONGROUP_RGB + ',' + personId;
 
-        RNFS.writeFile(path, mappingdata, 'utf8')
-          .then((success) => {
-            console.log('FILE WRITTEN!');
-          })
-          .catch((err) => {
-            console.log(' ERRRR', err.message);
-          });
-
-        infoSaved = true;
+        try {
+          await RNFS.writeFile(path, mappingdata, 'utf8');
+          console.log("FILE WRITTEN");
+          infoSaved = true;
+        }
+        catch (error) {
+          console.log('Error writing file', error.message);
+          infoSaved = false;
+        }
       } else {
         console.log('Create person failure: ', response);
         infoSaved = false;
