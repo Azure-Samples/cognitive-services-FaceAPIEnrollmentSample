@@ -96,7 +96,7 @@ const fontStyles = StyleSheet.create({
     fontSize: 24,
     lineHeight: 28,
     fontFamily: 'Arial',
-    fontWeight: 'bold',
+    fontWeight: "500",
     fontStyle: 'normal',
   },
 });

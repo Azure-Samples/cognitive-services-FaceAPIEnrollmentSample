@@ -1,7 +1,7 @@
 import React from 'react';
 
-import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
-import {Subheading2} from './fontStyles';
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { Subheading2 } from './fontStyles';
 
 export default function CustomButton(props) {
   return (
