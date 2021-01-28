@@ -1,9 +1,9 @@
-import React, {useState, useEffect} from 'react';
-import {View, StyleSheet, Dimensions} from 'react-native';
-import {Svg, Defs, Rect, Mask, Circle} from 'react-native-svg';
-import {AnimatedCircularProgress} from 'react-native-circular-progress';
+import React, { useState, useEffect } from 'react';
+import { View, StyleSheet, Dimensions } from 'react-native';
+import { Svg, Defs, Rect, Mask, Circle } from 'react-native-svg';
+import { AnimatedCircularProgress } from 'react-native-circular-progress';
 import EnrollFeedback from '../feedback/EnrollFeedback';
-import {CONFIG} from '../../env/env.json';
+import { CONFIG } from '../../env/env.json';
 
 function EnrollProgress(props) {
   const checkIsPortrait = () => {
@@ -33,7 +33,7 @@ function EnrollProgress(props) {
   let height = dim.height;
 
   // Radius changes based on orientation
-  let radius = isPortrait ? width / 2.5 : height / 3;
+  let radius = isPortrait ? width / 2.1 : height / 3;
   let x = width / 2;
   let y = height / 2;
 
@@ -61,7 +61,7 @@ function EnrollProgress(props) {
 
   return (
     <View>
-      <View style={{position: 'absolute'}}>
+      <View style={{ position: 'absolute' }}>
         <Svg height={height} width={width}>
           <Defs>
             <Mask id="mask" x="0" y="0" height="100%" width="100%">
@@ -79,9 +79,9 @@ function EnrollProgress(props) {
         </Svg>
       </View>
 
-      <View style={([styles.root], {top: y - radius - 2, left: x - radius})}>
+      <View style={([styles.root], { top: y - radius - 2, left: x - radius })}>
         <AnimatedCircularProgress
-          size={radius * 2 + 5}
+          size={radius * 2}
           duration={progressDuration}
           width={10}
           fill={rgbProgress}
@@ -94,8 +94,8 @@ function EnrollProgress(props) {
       <View
         style={
           isPortrait
-            ? [styles.feedback, {top: 100}]
-            : [styles.feedback, {top: 5}]
+            ? [styles.feedback, { top: 100 }]
+            : [styles.feedback, { top: 5 }]
         }>
         <EnrollFeedback />
       </View>

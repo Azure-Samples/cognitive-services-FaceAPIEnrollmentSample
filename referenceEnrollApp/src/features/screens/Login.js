@@ -42,6 +42,7 @@ function Login({ route, navigation }) {
       headerLeft: () => {
         return (
           <HeaderBackButton
+            tintColor="white"
             disabled={modalProps != null}
             onPress={() => {
               navigation.dispatch(StackActions.popToTop());

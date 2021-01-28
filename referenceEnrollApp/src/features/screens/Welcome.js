@@ -20,17 +20,26 @@ function Welcome({ navigation }) {
   let dispatch = useDispatch();
 
   let whiteBoxHeight = "60%";
+  let imgContainerHeight = 375;
 
   const checkIsPortrait = () => {
     const dim = Dimensions.get('window');
     if (dim.width <= 600) {
+      console.log("small");
       whiteBoxHeight = "60%"
+      imgContainerHeight = dim.height / 2;
     }
     else if (dim.width > 600 && dim.width < 840) {
-      whiteBoxHeight = "40%"
+      console.log("medium")
+      whiteBoxHeight = "30%"
+      imgContainerHeight = dim.height;
+
     }
     else {
-      whiteBoxHeight = "100%"
+      console.log('large');
+      whiteBoxHeight = "90%" // or 70%
+      imgContainerHeight = dim.height;
+
     }
     return dim.height >= dim.width;
   };
@@ -120,7 +129,7 @@ function Welcome({ navigation }) {
       <View style={styles.backgroundColumn}>
 
         <View style={styles.backroundTopRow}>
-          <View style={styles.imgContainer}>
+          <View style={[styles.imgContainer, { height: imgContainerHeight, width: imgContainerHeight * 1.6 }]}>
             <Image
               source={require('../../assets/bg_heroIllustration_welcome.png')}
               style={styles.backgroundImage}
@@ -131,7 +140,9 @@ function Welcome({ navigation }) {
         {isPortrait ? <View style={styles.backgroundBottomRow} /> : <View />}
 
 
+
         <View style={isPortrait ? styles.boxContainerP : styles.boxContainerL}>
+          <View style={styles.leftBox} />
           <View
             style={[styles.whiteBox, { height: whiteBoxHeight }]}>
 
@@ -146,26 +157,30 @@ function Welcome({ navigation }) {
             </Subheading1>
             </View>
 
-            <View style={styles.buttons}>
-              <CustomButton
-                title="Get started"
-                onPress={() => {
-                  dispatch({ type: 'USER_LOGOUT' });
-                  navigation.navigate(constants.SCREENS.consent);
-                }}
-              />
-            </View>
-            <View style={styles.buttons}>
-              <CustomButton
-                whiteButton="true"
-                title="Manage profile"
-                onPress={() => {
-                  dispatch({ type: 'USER_LOGOUT' });
-                  navigation.navigate(constants.SCREENS.login, {
-                    nextScreen: constants.SCREENS.manage,
-                  });
-                }}
-              />
+            {/* changes column to row, center to stert */}
+            <View style={{ flexDirection: "column", flex: 2, justifyContent: "center" }}>
+
+              <View style={styles.buttons}>
+                <CustomButton
+                  title="Get started"
+                  onPress={() => {
+                    dispatch({ type: 'USER_LOGOUT' });
+                    navigation.navigate(constants.SCREENS.consent);
+                  }}
+                />
+              </View>
+              <View style={styles.buttons}>
+                <CustomButton
+                  whiteButton="true"
+                  title="Manage profile"
+                  onPress={() => {
+                    dispatch({ type: 'USER_LOGOUT' });
+                    navigation.navigate(constants.SCREENS.login, {
+                      nextScreen: constants.SCREENS.manage,
+                    });
+                  }}
+                />
+              </View>
             </View>
 
 
@@ -181,21 +196,19 @@ function Welcome({ navigation }) {
             <View style={{ flex: 1, justifyContent: 'flex-end' }}>
               <Caption style={styles.greyText}>
                 Details at contoso.com/touchless-access{'\n'}
-                  Contoso Privacy Statement
-                </Caption>
-            </View>
+                  Contoso Privacy Statement {'\n'}
+              </Caption>
 
-            <View style={{ flex: 1, justifyContent: 'flex-end' }}>
               <Caption style={styles.greyText}>
                 Contoso | Real Estate & Security
-                </Caption>
+              </Caption>
             </View>
 
 
 
           </View>
 
-          {isPortrait ? <View /> : <View style={styles.rightBox} />}
+          <View style={styles.rightBox} />
         </View>
 
 
@@ -235,7 +248,7 @@ var styles = StyleSheet.create({
     flex: 1,
   },
   boxContainerP: {
-    flex: 1,
+    flex: 12,
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'flex-end',
@@ -246,7 +259,7 @@ var styles = StyleSheet.create({
     top: 0,
   },
   whiteBox: {
-    flex: 1,
+    flex: 0, // change 0, 3 to 10
     flexDirection: 'column',
     backgroundColor: 'white',
     margin: 16,
@@ -254,22 +267,30 @@ var styles = StyleSheet.create({
     borderRadius: 4,
   },
   rightBox: {
-    flex: 1,
+    flex: 7, // changes 1 or 7
+  },
+  leftBox: {
+    flex: 2, // changes, 1 or 2
   },
   buttons: {
-    paddingBottom: 20,
+    //flex: 1, // doesn't allow wrapping 0 or 1
+    paddingRight: 20,
+    marginBottom: 20,
   },
   infoView: {
-    marginTop: 15,
-    marginBottom: 30,
+    flex: 2,
+    justifyContent: "flex-end",
+    marginBottom: 24,
   },
   textPadding: {
-    marginBottom: 16,
+    justifyContent: "flex-end",
+    paddingBottom: 16
   },
   boxContainerL: {
-    flex: 1,
+    flex: 12,
     flexDirection: 'row',
     position: 'absolute',
+    alignItems: "center",
     bottom: 0,
     left: 0,
     right: 0,

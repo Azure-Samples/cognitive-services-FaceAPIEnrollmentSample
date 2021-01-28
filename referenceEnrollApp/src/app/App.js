@@ -31,7 +31,7 @@ const App = () => {
   return (
     <Provider store={store}>
       <NavigationContainer>
-        <Stack.Navigator>
+        <Stack.Navigator screenOptions={{ title: '', gestureEnabled: false, headerStyle: { backgroundColor: '#0078D4' } }}>
           <Stack.Screen
             options={{ headerShown: false, gestureEnabled: false }}
             name={constants.SCREENS.welcome}
@@ -45,35 +45,26 @@ const App = () => {
           />
 
           <Stack.Screen
-            options={{ title: '', headerStyle: styles.header, gestureEnabled: false }}
             name={constants.SCREENS.manage}
             component={ManageProfile}
           />
           <Stack.Screen
-            options={{
-              title: '',
-              headerStyle: styles.header, gestureEnabled: false
-            }}
             name={constants.SCREENS.consent}
             component={Consent}
           />
           <Stack.Screen
-            options={{ title: '', headerStyle: styles.header, gestureEnabled: false }}
             name={constants.SCREENS.login}
             component={Login}
           />
           <Stack.Screen
-            options={{ title: '', headerStyle: styles.header, gestureEnabled: false }}
             name={constants.SCREENS.instruction}
             component={Instruction}
           />
           <Stack.Screen
-            options={{ headerShown: false, gestureEnabled: false }}
             name={constants.SCREENS.imageCapture}
             component={ImageCapture}
           />
           <Stack.Screen
-            options={{ title: '', headerStyle: styles.header, gestureEnabled: false }}
             name={constants.SCREENS.receipt}
             component={Receipt}
           />
@@ -82,11 +73,5 @@ const App = () => {
     </Provider>
   );
 };
-
-var styles = StyleSheet.create({
-  header: {
-    backgroundColor: '#0078D4',
-  },
-});
 
 export default App;

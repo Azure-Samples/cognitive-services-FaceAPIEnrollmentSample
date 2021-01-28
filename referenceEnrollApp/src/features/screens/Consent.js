@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   View,
   Image,
@@ -15,11 +15,11 @@ import {
 } from '../../styles/fontStyles';
 import CustomButton from '../../styles/CustomButton';
 import Modal from '../../styles/Modal';
-import {HeaderBackButton} from '@react-navigation/stack';
-import {StackActions} from '@react-navigation/native';
+import { HeaderBackButton } from '@react-navigation/stack';
+import { StackActions } from '@react-navigation/native';
 import * as constants from '../../shared/constants';
 
-function Consent({navigation}) {
+function Consent({ navigation }) {
   const getWidth = () => {
     return Dimensions.get('window').width;
   };
@@ -52,6 +52,7 @@ function Consent({navigation}) {
       headerLeft: () => {
         return (
           <HeaderBackButton
+            tintColor="white"
             disabled={showModal}
             onPress={() => {
               navigation.dispatch(StackActions.popToTop());
@@ -67,7 +68,7 @@ function Consent({navigation}) {
   let backToHome = () => {
     navigation.dispatch(StackActions.popToTop());
   };
-  let buttonRight = {title: 'Close', onPress: backToHome};
+  let buttonRight = { title: 'Close', onPress: backToHome };
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
@@ -77,209 +78,209 @@ function Consent({navigation}) {
           message={declineModalText}
           buttonRight={buttonRight}></Modal>
       ) : (
-        <View style={styles.centerColumn}>
-          <View style={styles.topSection}>
-            <View style={styles.imageBox}>
-              <Image
-                style={styles.imageFormat}
-                source={require('../../assets/bg_heroIllustration_request.png')}
-              />
+          <View style={styles.centerColumn}>
+            <View style={styles.topSection}>
+              <View style={styles.imageBox}>
+                <Image
+                  style={styles.imageFormat}
+                  source={require('../../assets/bg_heroIllustration_request.png')}
+                />
+              </View>
+
+              <View style={styles.textBox}>
+                <View style={{ flex: 2, flexDirection: 'column', padding: 20 }}>
+                  <Headline style={{ marginBottom: 10 }}>
+                    Enroll in touchless access today
+                </Headline>
+                  {screenWidth >= 500 ? (
+                    <Subheading2 style={styles.greyText}>
+                      Touchless access uses face recognition to let you
+                      conveniently unlock building doors using a face template.
+                    </Subheading2>
+                  ) : (
+                      <View />
+                    )}
+                </View>
+                <View style={{ flex: 1, flexDirection: 'column' }} />
+              </View>
             </View>
 
-            <View style={styles.textBox}>
-              <View style={{flex: 2, flexDirection: 'column', padding: 20}}>
-                <Headline style={{marginBottom: 10}}>
-                  Enroll in touchless access today
-                </Headline>
-                {screenWidth >= 500 ? (
-                  <Subheading2 style={styles.greyText}>
-                    Touchless access uses face recognition to let you
-                    conveniently unlock building doors using a face template.
-                  </Subheading2>
-                ) : (
+            <View style={styles.bottomSection}>
+              {screenWidth < 500 ? (
+                <Subheading2 style={styles.greyText}>
+                  Touchless access uses face recognition to let you conveniently
+                  unlock building doors using a face template.
+                </Subheading2>
+              ) : (
                   <View />
                 )}
-              </View>
-              <View style={{flex: 1, flexDirection: 'column'}} />
-            </View>
-          </View>
 
-          <View style={styles.bottomSection}>
-            {screenWidth < 500 ? (
-              <Subheading2 style={styles.greyText}>
-                Touchless access uses face recognition to let you conveniently
-                unlock building doors using a face template.
-              </Subheading2>
-            ) : (
-              <View />
-            )}
-
-            <View style={styles.row1}>
-              <View
-                style={
-                  screenWidth >= 550
-                    ? [styles.centerMain, {flex: 1}]
-                    : styles.centerMain
-                }>
-                <Title1>What is a face template?</Title1>
-                <Subheading1>
-                  A face template is a unique set of numbers that represent the
-                  distinctive features of your face.
+              <View style={styles.row1}>
+                <View
+                  style={
+                    screenWidth >= 550
+                      ? [styles.centerMain, { flex: 1 }]
+                      : styles.centerMain
+                  }>
+                  <Title1>What is a face template?</Title1>
+                  <Subheading1>
+                    A face template is a unique set of numbers that represent the
+                    distinctive features of your face.
                 </Subheading1>
+                </View>
+
+                <View style={[styles.column1, { minHeight: 150 }]}>
+                  <Image
+                    style={styles.imageFormat2}
+                    source={require('../../assets/img_faceTemp_l.png')}
+                  />
+                </View>
+              </View>
+              <View style={styles.row1}>
+                <View style={styles.column1}>
+                  <View style={styles.row1}>
+                    <Title1>What information gets stored?</Title1>
+                    <Subheading1>
+                      Only your face template gets stored. No one has access to
+                      your face template.
+                  </Subheading1>
+                  </View>
+                  <View style={styles.rowNoWrap}>
+                    <Image
+                      style={styles.iconFormat}
+                      source={require('../../assets/icon_camera.png')}
+                    />
+                    <View style={{ flex: 1, marginBottom: 20 }}>
+                      <Subheading1>
+                        If you choose to enroll, you’ll take a few photos of your
+                        face today to create one.
+                    </Subheading1>
+                    </View>
+                  </View>
+                  <View style={styles.rowNoWrap}>
+                    <Image
+                      style={styles.iconFormat}
+                      source={require('../../assets/icon_lock.png')}
+                    />
+                    <View style={{ flex: 1 }}>
+                      <Subheading1>
+                        Using face templates helps ensure that you always have
+                        building access, and it’s more secure than a badge.
+                    </Subheading1>
+                    </View>
+                  </View>
+                </View>
               </View>
 
-              <View style={[styles.column1, {minHeight: 150}]}>
-                <Image
-                  style={styles.imageFormat2}
-                  source={require('../../assets/img_faceTemp_l.png')}
+              <View style={styles.row1}>
+                <View style={styles.column1}>
+                  <Title1>We protect your privacy at every step</Title1>
+
+                  <View style={styles.row1}>
+                    <View style={{ ...styles.column1, ...styles.smallColumn }}>
+                      <View style={styles.rowNoWrap}>
+                        <Image
+                          style={styles.iconFormat}
+                          source={require('../../assets/img_shield.png')}
+                        />
+                        <View style={styles.wrap}>
+                          <Subheading2>
+                            Face templates are only used for building entry
+                        </Subheading2>
+                          <Subheading1 style={styles.subheadingMargin}>
+                            Your face template isn’t shared or used for any
+                            purpose besides building access.
+                        </Subheading1>
+                        </View>
+                      </View>
+                    </View>
+                    <View style={[styles.column1, styles.smallColumn]}>
+                      <View style={styles.rowNoWrap}>
+                        <Image
+                          style={styles.iconFormat}
+                          source={require('../../assets/img_lock.png')}
+                        />
+                        <View style={styles.wrap}>
+                          <Subheading2>
+                            Face templates are securely encrypted
+                        </Subheading2>
+                          <Subheading1 style={styles.subheadingMargin}>
+                            Your face template is encrypted following cloud
+                            security standards ISO 27018 and SOC 1, 2, 3.
+                        </Subheading1>
+                        </View>
+                      </View>
+                    </View>
+                    <View style={[styles.column1, styles.smallColumn]}>
+                      <View style={styles.rowNoWrap}>
+                        <Image
+                          style={styles.iconFormat}
+                          source={require('../../assets/img_clock.png')}
+                        />
+                        <View style={styles.wrap}>
+                          <Subheading2>
+                            Face templates are stored only during employment
+                        </Subheading2>
+                          <Subheading1 style={styles.subheadingMargin}>
+                            Your face template will be automatically deleted if
+                            you leave Contoso.
+                        </Subheading1>
+                        </View>
+                      </View>
+                    </View>
+                    <View style={[styles.column1, styles.smallColumn]}>
+                      <View style={styles.rowNoWrap}>
+                        <Image
+                          style={styles.iconFormat}
+                          source={require('../../assets/img_bin.png')}
+                        />
+                        <View style={styles.wrap}>
+                          <Subheading2>Delete your data anytime</Subheading2>
+                          <Subheading1 style={styles.subheadingMargin}>
+                            You can change your mind anytime and delete your face
+                            template.
+                        </Subheading1>
+                        </View>
+                      </View>
+                    </View>
+                  </View>
+                </View>
+              </View>
+            </View>
+            <View style={styles.bottomSection}>
+              <View style={styles.row1}>
+                <View style={styles.column1} style={{ flex: 2 }}>
+                  <Title1 style={styles.textPadding}>
+                    Ready to try touchless access?
+                </Title1>
+
+                  <Subheading1 style={styles.greyText}>
+                    Participation is optional. If you don’t want to enroll, you
+                    can continue to scan your badge for entry.
+                </Subheading1>
+                </View>
+                <View style={screenWidth > 500 ? styles.column1 : ''} />
+              </View>
+
+              <View style={styles.row1}>
+                <CustomButton
+                  title="Yes, create my face template"
+                  style={styles.buttonMargin}
+                  onPress={() => {
+                    navigation.navigate(constants.SCREENS.login, {
+                      nextScreen: constants.SCREENS.instruction,
+                    });
+                  }}
+                />
+                <CustomButton
+                  title="No, don’t create my face template"
+                  style={styles.buttonMargin}
+                  onPress={showDeclineModal}
                 />
               </View>
             </View>
-            <View style={styles.row1}>
-              <View style={styles.column1}>
-                <View style={styles.row1}>
-                  <Title1>What information gets stored?</Title1>
-                  <Subheading1>
-                    Only your face template gets stored. No one has access to
-                    your face template.
-                  </Subheading1>
-                </View>
-                <View style={styles.rowNoWrap}>
-                  <Image
-                    style={styles.iconFormat}
-                    source={require('../../assets/icon_camera.png')}
-                  />
-                  <View style={{flex: 1, marginBottom: 20}}>
-                    <Subheading1>
-                      If you choose to enroll, you’ll take a few photos of your
-                      face today to create one.
-                    </Subheading1>
-                  </View>
-                </View>
-                <View style={styles.rowNoWrap}>
-                  <Image
-                    style={styles.iconFormat}
-                    source={require('../../assets/icon_lock.png')}
-                  />
-                  <View style={{flex: 1}}>
-                    <Subheading1>
-                      Using face templates helps ensure that you always have
-                      building access, and it’s more secure than a badge.
-                    </Subheading1>
-                  </View>
-                </View>
-              </View>
-            </View>
-
-            <View style={styles.row1}>
-              <View style={styles.column1}>
-                <Title1>We protect your privacy at every step</Title1>
-
-                <View style={styles.row1}>
-                  <View style={{...styles.column1, ...styles.smallColumn}}>
-                    <View style={styles.rowNoWrap}>
-                      <Image
-                        style={styles.iconFormat}
-                        source={require('../../assets/img_shield.png')}
-                      />
-                      <View style={styles.wrap}>
-                        <Subheading2>
-                          Face templates are only used for building entry
-                        </Subheading2>
-                        <Subheading1 style={styles.subheadingMargin}>
-                          Your face template isn’t shared or used for any
-                          purpose besides building access.
-                        </Subheading1>
-                      </View>
-                    </View>
-                  </View>
-                  <View style={[styles.column1, styles.smallColumn]}>
-                    <View style={styles.rowNoWrap}>
-                      <Image
-                        style={styles.iconFormat}
-                        source={require('../../assets/img_lock.png')}
-                      />
-                      <View style={styles.wrap}>
-                        <Subheading2>
-                          Face templates are securely encrypted
-                        </Subheading2>
-                        <Subheading1 style={styles.subheadingMargin}>
-                          Your face template is encrypted following cloud
-                          security standards ISO 27018 and SOC 1, 2, 3.
-                        </Subheading1>
-                      </View>
-                    </View>
-                  </View>
-                  <View style={[styles.column1, styles.smallColumn]}>
-                    <View style={styles.rowNoWrap}>
-                      <Image
-                        style={styles.iconFormat}
-                        source={require('../../assets/img_clock.png')}
-                      />
-                      <View style={styles.wrap}>
-                        <Subheading2>
-                          Face templates are stored only during employment
-                        </Subheading2>
-                        <Subheading1 style={styles.subheadingMargin}>
-                          Your face template will be automatically deleted if
-                          you leave Contoso.
-                        </Subheading1>
-                      </View>
-                    </View>
-                  </View>
-                  <View style={[styles.column1, styles.smallColumn]}>
-                    <View style={styles.rowNoWrap}>
-                      <Image
-                        style={styles.iconFormat}
-                        source={require('../../assets/img_bin.png')}
-                      />
-                      <View style={styles.wrap}>
-                        <Subheading2>Delete your data anytime</Subheading2>
-                        <Subheading1 style={styles.subheadingMargin}>
-                          You can change your mind anytime and delete your face
-                          template.
-                        </Subheading1>
-                      </View>
-                    </View>
-                  </View>
-                </View>
-              </View>
-            </View>
           </View>
-          <View style={styles.bottomSection}>
-            <View style={styles.row1}>
-              <View style={styles.column1} style={{flex: 2}}>
-                <Title1 style={styles.textPadding}>
-                  Ready to try touchless access?
-                </Title1>
-
-                <Subheading1 style={styles.greyText}>
-                  Participation is optional. If you don’t want to enroll, you
-                  can continue to scan your badge for entry.
-                </Subheading1>
-              </View>
-              <View style={screenWidth > 500 ? styles.column1 : ''} />
-            </View>
-
-            <View style={styles.row1}>
-              <CustomButton
-                title="Yes, create my face template"
-                style={styles.buttonMargin}
-                onPress={() => {
-                  navigation.navigate(constants.SCREENS.login, {
-                    nextScreen: constants.SCREENS.instruction,
-                  });
-                }}
-              />
-              <CustomButton
-                title="No, don’t create my face template"
-                style={styles.buttonMargin}
-                onPress={showDeclineModal}
-              />
-            </View>
-          </View>
-        </View>
-      )}
+        )}
     </ScrollView>
   );
 }

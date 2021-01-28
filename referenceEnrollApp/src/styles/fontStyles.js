@@ -1,9 +1,11 @@
 import React from 'react';
-import { StyleSheet, Text } from 'react-native';
+import { StyleSheet, Text, Platform } from 'react-native';
 
+let useAndroidFont = Platform.OS == 'android';
+console.log("android", useAndroidFont);
 function Caption(props) {
   return (
-    <Text style={{ ...fontStyles.caption, ...props.style }}>
+    <Text style={[fontStyles.caption, props.style, useAndroidFont ? androidStyle.font : '']}>
       {props.children}
     </Text>
   );
@@ -12,7 +14,7 @@ function Caption(props) {
 function Body1({ children }) {
   return (
     <Caption>
-      <Text style={fontStyles.body1}>{children}</Text>
+      <Text style={[fontStyles.body1, useAndroidFont ? androidStyle.font : '']}>{children}</Text>
     </Caption>
   );
 }
@@ -20,7 +22,7 @@ function Body1({ children }) {
 function Body2(props) {
   return (
     <Body1>
-      <Text style={{ ...fontStyles.body2, ...props.style }}>
+      <Text style={[fontStyles.body2, props.style, useAndroidFont ? androidStyle.font : '']}>
         {props.children}
       </Text>
     </Body1>
@@ -29,7 +31,7 @@ function Body2(props) {
 
 function Subheading1(props) {
   return (
-    <Text style={{ ...fontStyles.subheading1, ...props.style }}>
+    <Text style={[fontStyles.subheading1, props.style, useAndroidFont ? androidStyle.font : '']}>
       {props.children}
     </Text>
   );
@@ -38,7 +40,7 @@ function Subheading1(props) {
 function Subheading2(props) {
   return (
     <Subheading1>
-      <Text style={{ ...fontStyles.subheading2, ...props.style }}>
+      <Text style={[fontStyles.subheading2, props.style, useAndroidFont ? androidStyle.font : '']}>
         {props.children}
       </Text>
     </Subheading1>
@@ -47,13 +49,13 @@ function Subheading2(props) {
 
 function Title1(props) {
   return (
-    <Text style={{ ...fontStyles.title1, ...props.style }}>{props.children}</Text>
+    <Text style={[fontStyles.title1, props.style, useAndroidFont ? androidStyle.font : '']}>{props.children}</Text>
   );
 }
 
 function Headline(props) {
   return (
-    <Text style={{ ...fontStyles.headline, ...props.style }}>
+    <Text style={[fontStyles.headline, props.style, useAndroidFont ? androidStyle.font : '']}>
       {props.children}
     </Text>
   );
@@ -99,6 +101,13 @@ const fontStyles = StyleSheet.create({
     fontWeight: "500",
     fontStyle: 'normal',
   },
+});
+
+// If Android, use Roboto font
+androidStyle = StyleSheet.create({
+  font: {
+    fontFamily: "Roboto"
+  }
 });
 
 export {
