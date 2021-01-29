@@ -4,7 +4,6 @@ import {create, act} from 'react-test-renderer';
 import Welcome from '../../src/features/screens/Welcome';
 import Consent from '../../src/features/screens/Consent';
 import Instruction from '../../src/features/screens/Instruction';
-import ImageCapture from '../../src/features/screens/ImageCapture';
 import Receipt from '../../src/features/screens/Receipt';
 import ManageProfile from '../../src/features/screens/ManageProfile';
 import {SCREENS} from '../../src/shared/constants';

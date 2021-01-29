@@ -1,20 +1,14 @@
-import React, { useEffect, useState } from 'react';
-import {
-  View,
-  StyleSheet,
-  Alert,
-  Dimensions,
-  Image,
-} from 'react-native';
-import { Caption, Headline, Subheading1 } from '../../styles/fontStyles';
+import React, {useEffect, useState} from 'react';
+import {View, StyleSheet, Alert, Dimensions, Image} from 'react-native';
+import {Caption, Headline, Subheading1} from '../../styles/fontStyles';
 import CustomButton from '../../styles/CustomButton';
-import { CONFIG } from '../../env/env.json';
-import { useDispatch } from 'react-redux';
+import {CONFIG} from '../../env/env.json';
+import {useDispatch} from 'react-redux';
 import * as constants from '../../shared/constants';
-import { deletePersonGroup, validatePersonGroup } from '../../shared/helper';
+import {deletePersonGroup, validatePersonGroup} from '../../shared/helper';
 var RNFS = require('react-native-fs');
 
-function Welcome({ navigation }) {
+function Welcome({navigation}) {
   let dispatch = useDispatch();
 
   const checkIsPortrait = () => {
@@ -28,7 +22,7 @@ function Welcome({ navigation }) {
     const dim = Dimensions.get('window');
     if (dim.width <= 600) {
       style = {
-        whiteBoxHeight: "60%",
+        whiteBoxHeight: '60%',
         imgContainerHeight: dim.height / 2,
         whiteBoxFlex: 0,
         rightBoxFlex: 1,
@@ -37,10 +31,9 @@ function Welcome({ navigation }) {
         buttonContext: 'center',
         buttonFlex: 0,
       };
-    }
-    else if (dim.width > 600 && dim.width < 840 && isPortrait) {
+    } else if (dim.width > 600 && dim.width < 840 && isPortrait) {
       style = {
-        whiteBoxHeight: "30%",
+        whiteBoxHeight: '30%',
         imgContainerHeight: dim.height,
         whiteBoxFlex: 10,
         rightBoxFlex: 1,
@@ -49,10 +42,9 @@ function Welcome({ navigation }) {
         buttonContext: 'flex-start',
         buttonFlex: 1,
       };
-    }
-    else {
+    } else {
       style = {
-        whiteBoxHeight: dim.height < 500 ? "90%" : "70%",
+        whiteBoxHeight: dim.height < 500 ? '90%' : '70%',
         imgContainerHeight: dim.height,
         whiteBoxFlex: dim.height < 500 ? 7 : 3,
         rightBoxFlex: 7,
@@ -64,7 +56,7 @@ function Welcome({ navigation }) {
     }
 
     return style;
-  }
+  };
 
   const [isPortrait, setIsPortrait] = useState(checkIsPortrait());
   const [responsiveStyles, setResponsiveStyles] = useState(setStyles());
@@ -74,25 +66,25 @@ function Welcome({ navigation }) {
     let buttonOption =
       CONFIG.ENVIRONMENT == 'dev'
         ? [
-          {
-            text: 'Settings',
-            onPress: () => navigation.navigate('Settings'),
-          },
-        ]
-        : [
-          {
-            text: 'Try again',
-            onPress: async () => {
-              let validated = await validatePersonGroup(
-                CONFIG.PERSONGROUP_RGB,
-              );
-
-              if (validated == false) {
-                showAlert();
-              }
+            {
+              text: 'Settings',
+              onPress: () => navigation.navigate('Settings'),
             },
-          },
-        ];
+          ]
+        : [
+            {
+              text: 'Try again',
+              onPress: async () => {
+                let validated = await validatePersonGroup(
+                  CONFIG.PERSONGROUP_RGB,
+                );
+
+                if (validated == false) {
+                  showAlert();
+                }
+              },
+            },
+          ];
     Alert.alert(
       'A problem occurred',
       'Cannot connect to service',
@@ -150,9 +142,15 @@ function Welcome({ navigation }) {
   return (
     <View style={styles.container}>
       <View style={styles.backgroundColumn}>
-
         <View style={styles.backroundTopRow}>
-          <View style={[styles.imgContainer, { height: responsiveStyles.imgContainerHeight, width: responsiveStyles.imgContainerHeight * 1.6 }]}>
+          <View
+            style={[
+              styles.imgContainer,
+              {
+                height: responsiveStyles.imgContainerHeight,
+                width: responsiveStyles.imgContainerHeight * 1.6,
+              },
+            ]}>
             <Image
               source={require('../../assets/bg_heroIllustration_welcome.png')}
               style={styles.backgroundImage}
@@ -162,14 +160,16 @@ function Welcome({ navigation }) {
 
         {isPortrait ? <View style={styles.backgroundBottomRow} /> : <View />}
 
-
-
         <View style={isPortrait ? styles.boxContainerP : styles.boxContainerL}>
-          <View style={{ flex: responsiveStyles.leftBoxFlex }} />
+          <View style={{flex: responsiveStyles.leftBoxFlex}} />
           <View
-            style={[styles.whiteBox, { height: responsiveStyles.whiteBoxHeight, flex: responsiveStyles.whiteBoxFlex }]}>
-
-
+            style={[
+              styles.whiteBox,
+              {
+                height: responsiveStyles.whiteBoxHeight,
+                flex: responsiveStyles.whiteBoxFlex,
+              },
+            ]}>
             <View style={styles.infoView}>
               <View style={styles.textPadding}>
                 <Headline>An easier way to get into work</Headline>
@@ -177,27 +177,33 @@ function Welcome({ navigation }) {
               <Subheading1 style={styles.greyText}>
                 You can now use face recognition instead of your badge to
                 conveniently unlock building doors.
-            </Subheading1>
+              </Subheading1>
             </View>
 
             {/* changes column to row, center to stert */}
-            <View style={{ flexDirection: responsiveStyles.buttonDirection, flex: 2, justifyContent: responsiveStyles.buttonContext }}>
-
-              <View style={[styles.buttons, { flex: responsiveStyles.buttonFlex }]}>
+            <View
+              style={{
+                flexDirection: responsiveStyles.buttonDirection,
+                flex: 2,
+                justifyContent: responsiveStyles.buttonContext,
+              }}>
+              <View
+                style={[styles.buttons, {flex: responsiveStyles.buttonFlex}]}>
                 <CustomButton
                   title="Get started"
                   onPress={() => {
-                    dispatch({ type: 'USER_LOGOUT' });
+                    dispatch({type: 'USER_LOGOUT'});
                     navigation.navigate(constants.SCREENS.consent);
                   }}
                 />
               </View>
-              <View style={[styles.buttons, { flex: responsiveStyles.buttonFlex }]}>
+              <View
+                style={[styles.buttons, {flex: responsiveStyles.buttonFlex}]}>
                 <CustomButton
                   whiteButton="true"
                   title="Manage profile"
                   onPress={() => {
-                    dispatch({ type: 'USER_LOGOUT' });
+                    dispatch({type: 'USER_LOGOUT'});
                     navigation.navigate(constants.SCREENS.login, {
                       nextScreen: constants.SCREENS.manage,
                     });
@@ -205,8 +211,8 @@ function Welcome({ navigation }) {
                 />
               </View>
 
-              <View style={[styles.buttons, { flex: responsiveStyles.buttonFlex }]}>
-
+              <View
+                style={[styles.buttons, {flex: responsiveStyles.buttonFlex}]}>
                 {/* This is for testing purposes */}
 
                 {/* <CustomButton
@@ -214,14 +220,13 @@ function Welcome({ navigation }) {
                   title="Delete all data"
                   onPress={clearAllData}
                 /> */}
-
               </View>
             </View>
 
-            <View style={{ flex: 1, justifyContent: 'flex-end' }}>
+            <View style={{flex: 1, justifyContent: 'flex-end'}}>
               <Caption style={styles.greyText}>
                 Details at contoso.com/touchless-access{'\n'}
-                  Contoso Privacy Statement {'\n'}
+                Contoso Privacy Statement {'\n'}
               </Caption>
 
               <Caption style={styles.greyText}>
@@ -230,10 +235,10 @@ function Welcome({ navigation }) {
             </View>
           </View>
 
-          <View style={{ flex: responsiveStyles.rightBoxFlex }} />
+          <View style={{flex: responsiveStyles.rightBoxFlex}} />
         </View>
       </View>
-    </View >
+    </View>
   );
 }
 
@@ -241,7 +246,7 @@ var styles = StyleSheet.create({
   container: {
     flex: 1,
     flexDirection: 'row',
-    backgroundColor: '#002C55'
+    backgroundColor: '#002C55',
   },
   backgroundColumn: {
     flex: 1,
@@ -250,17 +255,17 @@ var styles = StyleSheet.create({
   backroundTopRow: {
     flex: 1,
     flexDirection: 'row',
-    justifyContent: "flex-end",
+    justifyContent: 'flex-end',
   },
   imgContainer: {
     marginTop: -30,
     height: 375, // Image has a 1.6 aspect ratio
-    width: 600,  // 375 X 600 = 1.6 AR
+    width: 600, // 375 X 600 = 1.6 AR
   },
   backgroundImage: {
     flex: 1,
     width: '100%',
-    resizeMode: "contain",
+    resizeMode: 'contain',
   },
   backgroundBottomRow: {
     flex: 1,
@@ -291,18 +296,18 @@ var styles = StyleSheet.create({
   },
   infoView: {
     flex: 2,
-    justifyContent: "center",
+    justifyContent: 'center',
     marginBottom: 24,
   },
   textPadding: {
-    justifyContent: "flex-end",
-    paddingBottom: 16
+    justifyContent: 'flex-end',
+    paddingBottom: 16,
   },
   boxContainerL: {
     flex: 12,
     flexDirection: 'row',
     position: 'absolute',
-    alignItems: "center",
+    alignItems: 'center',
     bottom: 0,
     left: 0,
     right: 0,

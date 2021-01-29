@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, {useState, useEffect} from 'react';
 
-import { View, StyleSheet, BackHandler, TextInput } from 'react-native';
-import { Headline, fontStyles, Subheading1 } from '../../styles/fontStyles';
-import { validatePersonGroup } from '../../shared/helper';
-import { CONFIG } from '../../env/env.json';
+import {View, StyleSheet, BackHandler, TextInput} from 'react-native';
+import {Headline, fontStyles, Subheading1} from '../../styles/fontStyles';
+import {validatePersonGroup} from '../../shared/helper';
+import {CONFIG} from '../../env/env.json';
 import CustomButton from '../../styles/CustomButton';
 import * as constants from '../../shared/constants';
 
@@ -12,7 +12,7 @@ This page is for development or testing purposes only,
 it exposes the faceAPI settings to the UI,
 The page should be removed for production
 */
-function Settings({ navigation }) {
+function Settings({navigation}) {
   useEffect(() => {
     // Disables Android hardware back button
     BackHandler.addEventListener('hardwareBackPress', () => true);
@@ -46,14 +46,14 @@ function Settings({ navigation }) {
     <View style={styles.container}>
       <View style={styles.smallRow} />
       <View style={styles.centerRow}>
-        <View style={[styles.column1, { flex: 3, maxWidth: 350 }]}>
+        <View style={[styles.column1, {flex: 3, maxWidth: 350}]}>
           <Headline style={styles.headlineMargin}>Settings</Headline>
           <Subheading1>FaceAPI credentials</Subheading1>
           <TextInput
             style={
               endpointFocused
-                ? { ...styles.textInputFocus, ...fontStyles.subheading1 }
-                : { ...styles.textInputStyle, ...fontStyles.subheading1 }
+                ? {...styles.textInputFocus, ...fontStyles.subheading1}
+                : {...styles.textInputStyle, ...fontStyles.subheading1}
             }
             placeholder="Endpoint"
             secureTextEntry={false}
@@ -73,8 +73,8 @@ function Settings({ navigation }) {
           <TextInput
             style={
               keyFocused
-                ? { ...styles.textInputFocus, ...fontStyles.subheading1 }
-                : { ...styles.textInputStyle, ...fontStyles.subheading1 }
+                ? {...styles.textInputFocus, ...fontStyles.subheading1}
+                : {...styles.textInputStyle, ...fontStyles.subheading1}
             }
             placeholder="Subscription key"
             secureTextEntry={true}
@@ -92,15 +92,15 @@ function Settings({ navigation }) {
           />
 
           {error ? (
-            <Subheading1 style={{ marginTop: 20, color: 'red' }}>
+            <Subheading1 style={{marginTop: 20, color: 'red'}}>
               Credentials are not valid
             </Subheading1>
           ) : (
-              <View style={{ marginTop: 42 }} />
-            )}
+            <View style={{marginTop: 42}} />
+          )}
 
           <View style={styles.buttonStyle}>
-            <CustomButton title="OK" style={{ width: 100 }} onPress={setValues} />
+            <CustomButton title="OK" style={{width: 100}} onPress={setValues} />
           </View>
         </View>
         <View style={styles.column1} />

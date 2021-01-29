@@ -1,15 +1,15 @@
-import React, { useState, useEffect } from 'react';
-import { View, StyleSheet, BackHandler, ScrollView, Image } from 'react-native';
-import { useDispatch } from 'react-redux';
-import { Caption, Headline, Subheading1 } from '../../styles/fontStyles';
+import React, {useState, useEffect} from 'react';
+import {View, StyleSheet, BackHandler, ScrollView, Image} from 'react-native';
+import {useDispatch} from 'react-redux';
+import {Caption, Headline, Subheading1} from '../../styles/fontStyles';
 import CustomButton from '../../styles/CustomButton';
-import { HeaderBackButton } from '@react-navigation/stack';
+import {HeaderBackButton} from '@react-navigation/stack';
 import Modal from '../../styles/Modal';
-import { deleteEnrollmentAction } from '../userEnrollment/newEnrollmentAction';
-import { StackActions } from '@react-navigation/native';
+import {deleteEnrollmentAction} from '../userEnrollment/newEnrollmentAction';
+import {StackActions} from '@react-navigation/native';
 import * as constants from '../../shared/constants';
 
-function Instruction({ navigation }) {
+function Instruction({navigation}) {
   const [showModal, setShowModal] = useState(false);
 
   const dispatch = useDispatch();
@@ -52,8 +52,8 @@ function Instruction({ navigation }) {
   let modalInfo = {
     title: 'Leave without saving?',
     message: 'You won’t be enrolled, and your information won’t be saved.',
-    buttonRight: { title: 'Yes, leave', onPress: cancel },
-    buttonLeft: { title: 'No, keep enrolling', onPress: stay },
+    buttonRight: {title: 'Yes, leave', onPress: cancel},
+    buttonLeft: {title: 'No, keep enrolling', onPress: stay},
   };
 
   return (
@@ -62,78 +62,78 @@ function Instruction({ navigation }) {
       {showModal ? (
         <Modal {...modalInfo}></Modal>
       ) : (
-          <View style={styles.centerRow}>
-            <View style={styles.column1}>
-              <Caption>Step 2 of 3</Caption>
+        <View style={styles.centerRow}>
+          <View style={styles.column1}>
+            <Caption>Step 2 of 3</Caption>
 
-              <Headline style={styles.headlineMargin}>
-                Tips for creating a face template
+            <Headline style={styles.headlineMargin}>
+              Tips for creating a face template
             </Headline>
 
-              <Subheading1>
-                We’ll take several photos in a row. These photos will only be used
-                to create your face template. They will not be stored.
+            <Subheading1>
+              We’ll take several photos in a row. These photos will only be used
+              to create your face template. They will not be stored.
             </Subheading1>
 
-              <View style={styles.picturesRow}>
-                <View style={[styles.column1, styles.smallColumn]}>
-                  <View style={{ height: 200 }}>
-                    <Image
-                      style={styles.imgFormat}
-                      source={require('../../assets/img_tip_faceVisible.png')}
-                    />
-                  </View>
-                  <View style={{ height: 100 }}>
-                    <Subheading1>
-                      The camera works best when your face is fully visible and
-                      the photos show how you look on a typical day
-                  </Subheading1>
-                  </View>
+            <View style={styles.picturesRow}>
+              <View style={[styles.column1, styles.smallColumn]}>
+                <View style={{height: 200}}>
+                  <Image
+                    style={styles.imgFormat}
+                    source={require('../../assets/img_tip_faceVisible.png')}
+                  />
                 </View>
-                <View style={[styles.column1, styles.smallColumn]}>
-                  <View style={{ height: 200 }}>
-                    <Image
-                      style={styles.imgFormat}
-                      source={require('../../assets/img_tip_lookAhead.png')}
-                    />
-                  </View>
-                  <View style={{ height: 100 }}>
-                    <Subheading1>
-                      Look straight ahead and center your face in the frame
+                <View style={{height: 100}}>
+                  <Subheading1>
+                    The camera works best when your face is fully visible and
+                    the photos show how you look on a typical day
                   </Subheading1>
-                  </View>
-                </View>
-                <View style={[styles.column1, styles.smallColumn]}>
-                  <View style={{ height: 200 }}>
-                    <Image
-                      style={styles.imgFormat}
-                      source={require('../../assets/img_tip_onlyPerson.png')}
-                    />
-                  </View>
-                  <View style={{ height: 100 }}>
-                    <Subheading1>
-                      Make sure you’re the only person in view
-                  </Subheading1>
-                  </View>
                 </View>
               </View>
-
-              <CustomButton
-                title="Create my face template now"
-                style={styles.buttonStyle}
-                onPress={() => {
-                  navigation.navigate(constants.SCREENS.imageCapture);
-                }}
-              />
-
-              <Subheading1 style={styles.greyText}>
-                Some accessories can obscure parts of your face, such as a cap,
-                sunglasses, or a face mask, so you might need to adjust these
-                while taking the photos.
-            </Subheading1>
+              <View style={[styles.column1, styles.smallColumn]}>
+                <View style={{height: 200}}>
+                  <Image
+                    style={styles.imgFormat}
+                    source={require('../../assets/img_tip_lookAhead.png')}
+                  />
+                </View>
+                <View style={{height: 100}}>
+                  <Subheading1>
+                    Look straight ahead and center your face in the frame
+                  </Subheading1>
+                </View>
+              </View>
+              <View style={[styles.column1, styles.smallColumn]}>
+                <View style={{height: 200}}>
+                  <Image
+                    style={styles.imgFormat}
+                    source={require('../../assets/img_tip_onlyPerson.png')}
+                  />
+                </View>
+                <View style={{height: 100}}>
+                  <Subheading1>
+                    Make sure you’re the only person in view
+                  </Subheading1>
+                </View>
+              </View>
             </View>
+
+            <CustomButton
+              title="Create my face template now"
+              style={styles.buttonStyle}
+              onPress={() => {
+                navigation.navigate(constants.SCREENS.imageCapture);
+              }}
+            />
+
+            <Subheading1 style={styles.greyText}>
+              Some accessories can obscure parts of your face, such as a cap,
+              sunglasses, or a face mask, so you might need to adjust these
+              while taking the photos.
+            </Subheading1>
           </View>
-        )}
+        </View>
+      )}
     </ScrollView>
   );
 }

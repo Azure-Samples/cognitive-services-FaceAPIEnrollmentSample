@@ -1,5 +1,5 @@
 import * as constants from './constants';
-import { CONFIG } from '../env/env.json';
+import {CONFIG} from '../env/env.json';
 
 function getLargestFace(detectResponse) {
   /* 

@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, {useState, useEffect} from 'react';
 
-import { View, StyleSheet, BackHandler, ScrollView, Image } from 'react-native';
+import {View, StyleSheet, BackHandler, ScrollView, Image} from 'react-native';
 import {
   Caption,
   Headline,
@@ -10,10 +10,10 @@ import {
   Body2,
 } from '../../styles/fontStyles';
 import CustomButton from '../../styles/CustomButton';
-import { StackActions } from '@react-navigation/native';
-import { HeaderBackButton } from '@react-navigation/stack';
+import {StackActions} from '@react-navigation/native';
+import {HeaderBackButton} from '@react-navigation/stack';
 
-function Receipt({ navigation }) {
+function Receipt({navigation}) {
   React.useLayoutEffect(() => {
     // Back button goes to Welcome page
     navigation.setOptions({
@@ -42,7 +42,7 @@ function Receipt({ navigation }) {
       <View style={styles.smallRow} />
       <View style={styles.centerRow}>
         <View style={styles.column1}>
-          <View style={{ marginBottom: 30 }}>
+          <View style={{marginBottom: 30}}>
             <Caption>Step 3 of 3</Caption>
 
             <View style={styles.headlineMargin}>
@@ -70,15 +70,15 @@ function Receipt({ navigation }) {
                 </Body2>
               </View>
               <View style={styles.borderLine}>
-                <View style={[styles.rowNoFlex, { height: 100 }]}>
-                  <View style={[{ flex: 1 }]}>
-                    <View style={{ marginBottom: 10 }}>
+                <View style={[styles.rowNoFlex, {height: 100}]}>
+                  <View style={[{flex: 1}]}>
+                    <View style={{marginBottom: 10}}>
                       <Subheading2>Your face template</Subheading2>
                     </View>
 
                     <Body1>Used to unlock touchless access doors</Body1>
                   </View>
-                  <View style={{ flex: 1 }}>
+                  <View style={{flex: 1}}>
                     <Image
                       style={styles.imgFormat}
                       source={require('../../assets/img_faceTemp_s.png')}
@@ -146,7 +146,7 @@ function Receipt({ navigation }) {
                 </Body1>
               </View>
               <View style={styles.borderLine}>
-                <View style={{ height: 127, marginBottom: 10 }}>
+                <View style={{height: 127, marginBottom: 10}}>
                   <Image
                     style={styles.imgFormat}
                     source={require('../../assets/img_sensorLights.png')}
