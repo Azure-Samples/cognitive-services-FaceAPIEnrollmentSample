@@ -7,7 +7,7 @@
     "env:dev": "node  src/scripts/setEnvironment.js development",
     "env:prod": "node  src/scripts/setEnvironment.js production",
     "_android": "react-native run-android",
-    "_ios": "react-native run-ios --device 'iPhone'",
+    "_ios": "react-native run-ios",
     "_test": "jest",
     "start": "react-native start",
     "test": "npm run env:test && npm run _test",
