@@ -1,12 +1,10 @@
 import React, { useEffect, useState } from 'react';
-
 import {
   View,
   StyleSheet,
   Alert,
   Dimensions,
   Image,
-  ImageBackground,
 } from 'react-native';
 import { Caption, Headline, Subheading1 } from '../../styles/fontStyles';
 import CustomButton from '../../styles/CustomButton';
@@ -19,25 +17,17 @@ var RNFS = require('react-native-fs');
 function Welcome({ navigation }) {
   let dispatch = useDispatch();
 
-  let responsiveStyles = {
-    whiteBoxHeight: "60%",
-    imgContainerHeight: 375,
-    whiteBoxFlex: 1,
-    rightBoxFlex: 1,
-    leftBoxFlex: 1,
-    buttonDirection: 'column',
-    buttonContext: 'center'
-  };
-
   const checkIsPortrait = () => {
     const dim = Dimensions.get('window');
     return dim.height >= dim.width;
   };
 
-  const determineScreenWidth = () => {
+  const setStyles = () => {
+    let style;
+
     const dim = Dimensions.get('window');
     if (dim.width <= 600) {
-      responsiveStyles = {
+      style = {
         whiteBoxHeight: "60%",
         imgContainerHeight: dim.height / 2,
         whiteBoxFlex: 0,
@@ -47,12 +37,9 @@ function Welcome({ navigation }) {
         buttonContext: 'center',
         buttonFlex: 0,
       };
-      return 'small';
     }
-    else if (dim.width > 600 && dim.width < 840) {
-      console.log('medium');
-
-      responsiveStyles = {
+    else if (dim.width > 600 && dim.width < 840 && isPortrait) {
+      style = {
         whiteBoxHeight: "30%",
         imgContainerHeight: dim.height,
         whiteBoxFlex: 10,
@@ -62,29 +49,25 @@ function Welcome({ navigation }) {
         buttonContext: 'flex-start',
         buttonFlex: 1,
       };
-
-      return 'medium';
     }
     else {
-      console.log('large');
-
-      responsiveStyles = {
-        whiteBoxHeight: "70%", // this needs chanding
+      style = {
+        whiteBoxHeight: dim.height < 500 ? "90%" : "70%",
         imgContainerHeight: dim.height,
-        whiteBoxFlex: 3, // this needs changing 
+        whiteBoxFlex: dim.height < 500 ? 7 : 3,
         rightBoxFlex: 7,
-        leftBoxFlex: 2,
+        leftBoxFlex: dim.height < 500 ? 0 : 2,
         buttonDirection: 'column',
         buttonContext: 'center',
         buttonFlex: 0,
       };
-      return 'large';
     }
 
+    return style;
   }
 
   const [isPortrait, setIsPortrait] = useState(checkIsPortrait());
-  const [screenWidth, setScreenWidth] = useState(determineScreenWidth());
+  const [responsiveStyles, setResponsiveStyles] = useState(setStyles());
 
   const showAlert = () => {
     // For development and testing environment, expose settings page
@@ -123,7 +106,7 @@ function Welcome({ navigation }) {
   useEffect(() => {
     const orientationCallback = () => {
       setIsPortrait(checkIsPortrait());
-      setScreenWidth(determineScreenWidth());
+      setResponsiveStyles(setStyles());
     };
     Dimensions.addEventListener('change', orientationCallback);
 
@@ -182,7 +165,7 @@ function Welcome({ navigation }) {
 
 
         <View style={isPortrait ? styles.boxContainerP : styles.boxContainerL}>
-          <View style={styles.leftBox, { flex: responsiveStyles.leftBoxFlex }} />
+          <View style={{ flex: responsiveStyles.leftBoxFlex }} />
           <View
             style={[styles.whiteBox, { height: responsiveStyles.whiteBoxHeight, flex: responsiveStyles.whiteBoxFlex }]}>
 
@@ -221,17 +204,19 @@ function Welcome({ navigation }) {
                   }}
                 />
               </View>
+
+              <View style={[styles.buttons, { flex: responsiveStyles.buttonFlex }]}>
+
+                {/* This is for testing purposes */}
+
+                {/* <CustomButton
+                  whiteButton="true"
+                  title="Delete all data"
+                  onPress={clearAllData}
+                /> */}
+
+              </View>
             </View>
-
-
-            {/* This is for testing purposes */}
-            {/* <View style={styles.buttons}>
-            <CustomButton
-              whiteButton="true"
-              title="Delete all data"
-              onPress={clearAllData}
-            />
-          </View> */}
 
             <View style={{ flex: 1, justifyContent: 'flex-end' }}>
               <Caption style={styles.greyText}>
@@ -243,18 +228,11 @@ function Welcome({ navigation }) {
                 Contoso | Real Estate & Security
               </Caption>
             </View>
-
-
-
           </View>
 
-          <View style={styles.rightBox, { flex: responsiveStyles.rightBoxFlex }} />
+          <View style={{ flex: responsiveStyles.rightBoxFlex }} />
         </View>
-
-
       </View>
-
-
     </View >
   );
 }
@@ -299,27 +277,21 @@ var styles = StyleSheet.create({
     top: 0,
   },
   whiteBox: {
-    flex: 0, // change 0, 3 to 10
+    flex: 0,
     flexDirection: 'column',
     backgroundColor: 'white',
     margin: 16,
     padding: 24,
     borderRadius: 4,
   },
-  rightBox: {
-    flex: 7, // changes 1 or 7
-  },
-  leftBox: {
-    flex: 2, // changes, 1 or 2
-  },
   buttons: {
-    flex: 0, // doesn't allow wrapping 0 or 1
+    flex: 0,
     paddingRight: 20,
     marginBottom: 20,
   },
   infoView: {
     flex: 2,
-    justifyContent: "flex-end",
+    justifyContent: "center",
     marginBottom: 24,
   },
   textPadding: {
