@@ -19,33 +19,72 @@ var RNFS = require('react-native-fs');
 function Welcome({ navigation }) {
   let dispatch = useDispatch();
 
-  let whiteBoxHeight = "60%";
-  let imgContainerHeight = 375;
+  let responsiveStyles = {
+    whiteBoxHeight: "60%",
+    imgContainerHeight: 375,
+    whiteBoxFlex: 1,
+    rightBoxFlex: 1,
+    leftBoxFlex: 1,
+    buttonDirection: 'column',
+    buttonContext: 'center'
+  };
 
   const checkIsPortrait = () => {
     const dim = Dimensions.get('window');
-    if (dim.width <= 600) {
-      console.log("small");
-      whiteBoxHeight = "60%"
-      imgContainerHeight = dim.height / 2;
-    }
-    else if (dim.width > 600 && dim.width < 840) {
-      console.log("medium")
-      whiteBoxHeight = "30%"
-      imgContainerHeight = dim.height;
-
-    }
-    else {
-      console.log('large');
-      whiteBoxHeight = "90%" // or 70%
-      imgContainerHeight = dim.height;
-
-    }
     return dim.height >= dim.width;
   };
 
-  const [isPortrait, setIsPortrait] = useState(checkIsPortrait());
+  const determineScreenWidth = () => {
+    const dim = Dimensions.get('window');
+    if (dim.width <= 600) {
+      responsiveStyles = {
+        whiteBoxHeight: "60%",
+        imgContainerHeight: dim.height / 2,
+        whiteBoxFlex: 0,
+        rightBoxFlex: 1,
+        leftBoxFlex: 1,
+        buttonDirection: 'column',
+        buttonContext: 'center',
+        buttonFlex: 0,
+      };
+      return 'small';
+    }
+    else if (dim.width > 600 && dim.width < 840) {
+      console.log('medium');
 
+      responsiveStyles = {
+        whiteBoxHeight: "30%",
+        imgContainerHeight: dim.height,
+        whiteBoxFlex: 10,
+        rightBoxFlex: 1,
+        leftBoxFlex: 1,
+        buttonDirection: 'row',
+        buttonContext: 'flex-start',
+        buttonFlex: 1,
+      };
+
+      return 'medium';
+    }
+    else {
+      console.log('large');
+
+      responsiveStyles = {
+        whiteBoxHeight: "70%", // this needs chanding
+        imgContainerHeight: dim.height,
+        whiteBoxFlex: 3, // this needs changing 
+        rightBoxFlex: 7,
+        leftBoxFlex: 2,
+        buttonDirection: 'column',
+        buttonContext: 'center',
+        buttonFlex: 0,
+      };
+      return 'large';
+    }
+
+  }
+
+  const [isPortrait, setIsPortrait] = useState(checkIsPortrait());
+  const [screenWidth, setScreenWidth] = useState(determineScreenWidth());
 
   const showAlert = () => {
     // For development and testing environment, expose settings page
@@ -84,6 +123,7 @@ function Welcome({ navigation }) {
   useEffect(() => {
     const orientationCallback = () => {
       setIsPortrait(checkIsPortrait());
+      setScreenWidth(determineScreenWidth());
     };
     Dimensions.addEventListener('change', orientationCallback);
 
@@ -129,7 +169,7 @@ function Welcome({ navigation }) {
       <View style={styles.backgroundColumn}>
 
         <View style={styles.backroundTopRow}>
-          <View style={[styles.imgContainer, { height: imgContainerHeight, width: imgContainerHeight * 1.6 }]}>
+          <View style={[styles.imgContainer, { height: responsiveStyles.imgContainerHeight, width: responsiveStyles.imgContainerHeight * 1.6 }]}>
             <Image
               source={require('../../assets/bg_heroIllustration_welcome.png')}
               style={styles.backgroundImage}
@@ -142,9 +182,9 @@ function Welcome({ navigation }) {
 
 
         <View style={isPortrait ? styles.boxContainerP : styles.boxContainerL}>
-          <View style={styles.leftBox} />
+          <View style={styles.leftBox, { flex: responsiveStyles.leftBoxFlex }} />
           <View
-            style={[styles.whiteBox, { height: whiteBoxHeight }]}>
+            style={[styles.whiteBox, { height: responsiveStyles.whiteBoxHeight, flex: responsiveStyles.whiteBoxFlex }]}>
 
 
             <View style={styles.infoView}>
@@ -158,9 +198,9 @@ function Welcome({ navigation }) {
             </View>
 
             {/* changes column to row, center to stert */}
-            <View style={{ flexDirection: "column", flex: 2, justifyContent: "center" }}>
+            <View style={{ flexDirection: responsiveStyles.buttonDirection, flex: 2, justifyContent: responsiveStyles.buttonContext }}>
 
-              <View style={styles.buttons}>
+              <View style={[styles.buttons, { flex: responsiveStyles.buttonFlex }]}>
                 <CustomButton
                   title="Get started"
                   onPress={() => {
@@ -169,7 +209,7 @@ function Welcome({ navigation }) {
                   }}
                 />
               </View>
-              <View style={styles.buttons}>
+              <View style={[styles.buttons, { flex: responsiveStyles.buttonFlex }]}>
                 <CustomButton
                   whiteButton="true"
                   title="Manage profile"
@@ -208,7 +248,7 @@ function Welcome({ navigation }) {
 
           </View>
 
-          <View style={styles.rightBox} />
+          <View style={styles.rightBox, { flex: responsiveStyles.rightBoxFlex }} />
         </View>
 
 
@@ -273,7 +313,7 @@ var styles = StyleSheet.create({
     flex: 2, // changes, 1 or 2
   },
   buttons: {
-    //flex: 1, // doesn't allow wrapping 0 or 1
+    flex: 0, // doesn't allow wrapping 0 or 1
     paddingRight: 20,
     marginBottom: 20,
   },

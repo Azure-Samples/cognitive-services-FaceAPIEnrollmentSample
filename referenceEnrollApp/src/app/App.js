@@ -61,6 +61,7 @@ const App = () => {
             component={Instruction}
           />
           <Stack.Screen
+            options={{ headerShown: false }}
             name={constants.SCREENS.imageCapture}
             component={ImageCapture}
           />

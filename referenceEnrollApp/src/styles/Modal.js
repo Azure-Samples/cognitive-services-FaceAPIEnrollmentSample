@@ -1,8 +1,8 @@
 import React from 'react';
 
-import {View, StyleSheet} from 'react-native';
+import { View, StyleSheet } from 'react-native';
 import CustomButton from './CustomButton';
-import {Subheading1, Title1} from './fontStyles';
+import { Subheading1, Title1 } from './fontStyles';
 
 export default function Modal(props) {
   return (
@@ -19,8 +19,8 @@ export default function Modal(props) {
               style={styles.buttonStyle}
             />
           ) : (
-            <View />
-          )}
+              <View />
+            )}
 
           {props.buttonRight ? (
             <CustomButton
@@ -30,8 +30,8 @@ export default function Modal(props) {
               style={styles.buttonStyle}
             />
           ) : (
-            <View />
-          )}
+              <View />
+            )}
         </View>
       </View>
     </View>
@@ -49,7 +49,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'grey',
     justifyContent: 'center',
     alignItems: 'center',
-    paddingHorizontal: 30,
+    paddingHorizontal: 10,
   },
   modal: {
     backgroundColor: '#FFFFFF',
