@@ -60,7 +60,6 @@ function Enrollment(props) {
 
   // Runs entire enrollment flow
   const runEnrollment = async () => {
-    console.log("Enrollment begins.");
     const timeoutInMs = CONFIG.ENROLL_SETTINGS.TIMEOUT_SECONDS * 1000;
 
     let timer = setTimeout(() => {

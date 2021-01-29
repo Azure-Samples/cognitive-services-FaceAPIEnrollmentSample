@@ -1,7 +1,7 @@
 import React from 'react';
 import { StyleSheet } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
-import { createStackNavigator, StackNavigationOptions } from '@react-navigation/stack';
+import { createStackNavigator } from '@react-navigation/stack';
 import ImageCapture from '../features/screens/ImageCapture';
 import Login from '../features/screens/Login';
 import Welcome from '../features/screens/Welcome';
@@ -33,13 +33,13 @@ const App = () => {
       <NavigationContainer>
         <Stack.Navigator screenOptions={{ title: '', gestureEnabled: false, headerStyle: { backgroundColor: '#0078D4' } }}>
           <Stack.Screen
-            options={{ headerShown: false, gestureEnabled: false }}
+            options={{ headerShown: false }}
             name={constants.SCREENS.welcome}
             component={Welcome}
           />
 
           <Stack.Screen
-            options={{ headerShown: false, gestureEnabled: false }}
+            options={{ headerShown: false }}
             name={'Settings'}
             component={Settings}
           />

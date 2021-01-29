@@ -77,7 +77,7 @@ function Settings({ navigation }) {
                 : { ...styles.textInputStyle, ...fontStyles.subheading1 }
             }
             placeholder="Subscription key"
-            secureTextEntry={false}
+            secureTextEntry={true}
             value={keyInput == '' ? null : keyInput}
             onChangeText={(text) => {
               setKeyInput(text);

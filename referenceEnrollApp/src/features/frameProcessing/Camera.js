@@ -7,7 +7,6 @@ import Enrollment from './Enrollment';
 export default function Camera(props) {
   const [startEnroll, setStartEnroll] = useState(false);
   let cameraRef = React.useRef(null);
-  console.log("Camera component renders");
 
   const onCameraReady = () => {
     /*

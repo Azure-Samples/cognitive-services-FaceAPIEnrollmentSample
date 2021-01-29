@@ -11,7 +11,6 @@ export const getFilteredFaceAction = (frameData) => {
     let face = await dispatch(detectFaceAction(frameData));
 
     if (face.faceId) {
-      console.log(face.faceAttributes);
       let passedFilters = dispatch(filterFaceAction(face));
       return passedFilters ? face : {};
     }
