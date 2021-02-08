@@ -15,6 +15,9 @@
     "android": "npm run env:dev && npm run _android",
     "android:dev": "npm run env:dev && npm run _android",
     "android:prod": "npm run env:prod && npm run _android",
+    "ios": "npm run env:dev && npm run _ios",
+    "ios:dev": "npm run env:dev && npm run _ios",
+    "ios:prod": "npm run env:prod && npm run _ios",
     "lint": "eslint ."
   },
   "dependencies": {

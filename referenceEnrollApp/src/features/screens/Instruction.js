@@ -21,6 +21,7 @@ function Instruction({navigation}) {
       headerLeft: () => {
         return (
           <HeaderBackButton
+            tintColor="white"
             disabled={showModal}
             onPress={() => {
               setShowModal(true);

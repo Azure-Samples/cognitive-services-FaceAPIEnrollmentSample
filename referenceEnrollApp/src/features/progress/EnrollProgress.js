@@ -31,9 +31,16 @@ function EnrollProgress(props) {
   let dim = Dimensions.get('window');
   let width = dim.width;
   let height = dim.height;
+  let radius;
 
-  // Radius changes based on orientation
-  let radius = isPortrait ? width / 2.5 : height / 3;
+  if (isPortrait && width >= 640) {
+    radius = width / 2.5;
+  } else if (isPortrait) {
+    radius = width / 2.1;
+  } else {
+    radius = height / 3;
+  }
+
   let x = width / 2;
   let y = height / 2;
 
@@ -81,7 +88,7 @@ function EnrollProgress(props) {
 
       <View style={([styles.root], {top: y - radius - 2, left: x - radius})}>
         <AnimatedCircularProgress
-          size={radius * 2 + 5}
+          size={radius * 2}
           duration={progressDuration}
           width={10}
           fill={rgbProgress}

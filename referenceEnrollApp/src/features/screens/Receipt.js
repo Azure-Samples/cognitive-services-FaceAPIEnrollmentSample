@@ -20,6 +20,7 @@ function Receipt({navigation}) {
       headerLeft: () => {
         return (
           <HeaderBackButton
+            tintColor="white"
             onPress={() => {
               navigation.dispatch(StackActions.popToTop());
             }}

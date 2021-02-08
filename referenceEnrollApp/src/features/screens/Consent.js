@@ -52,6 +52,7 @@ function Consent({navigation}) {
       headerLeft: () => {
         return (
           <HeaderBackButton
+            tintColor="white"
             disabled={showModal}
             onPress={() => {
               navigation.dispatch(StackActions.popToTop());

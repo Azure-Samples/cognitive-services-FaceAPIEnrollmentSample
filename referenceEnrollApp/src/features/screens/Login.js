@@ -42,6 +42,7 @@ function Login({route, navigation}) {
       headerLeft: () => {
         return (
           <HeaderBackButton
+            tintColor="white"
             disabled={modalProps != null}
             onPress={() => {
               navigation.dispatch(StackActions.popToTop());
@@ -58,7 +59,7 @@ function Login({route, navigation}) {
 
   const dispatch = useDispatch();
   async function saveUsername(username) {
-    await dispatch(saveUserInfoAction(username));
+    return await dispatch(saveUserInfoAction(username));
   }
   const checkEnrollmentExists = async (username) =>
     await dispatch(checkEnrollmentExistsAction(username));

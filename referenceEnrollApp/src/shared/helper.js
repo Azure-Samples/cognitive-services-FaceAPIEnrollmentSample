@@ -40,7 +40,6 @@ async function validatePersonGroup(personGroupId) {
       personGroupExists = await createPersonGroup(personGroupId);
     }
   } catch {
-    console.log('An error occured');
     return false;
   }
 

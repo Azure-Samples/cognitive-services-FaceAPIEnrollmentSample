@@ -43,15 +43,14 @@ export const saveUserInfoAction = (username) => {
 
         let mappingdata = CONFIG.PERSONGROUP_RGB + ',' + personId;
 
-        RNFS.writeFile(path, mappingdata, 'utf8')
-          .then((success) => {
-            console.log('FILE WRITTEN!');
-          })
-          .catch((err) => {
-            console.log(' ERRRR', err.message);
-          });
-
-        infoSaved = true;
+        try {
+          await RNFS.writeFile(path, mappingdata, 'utf8');
+          console.log('FILE WRITTEN');
+          infoSaved = true;
+        } catch (error) {
+          console.log('Error writing file', error.message);
+          infoSaved = false;
+        }
       } else {
         console.log('Create person failure: ', response);
         infoSaved = false;

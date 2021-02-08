@@ -9,7 +9,7 @@ export default function Modal(props) {
     <View style={styles.container}>
       <View style={styles.modal}>
         <Title1 style={styles.blueText}>{props.title}</Title1>
-        <Subheading1>{props.message}</Subheading1>
+        <Subheading1 style={styles.modalText}>{props.message}</Subheading1>
         <View style={styles.buttons}>
           {props.buttonLeft ? (
             <CustomButton
@@ -49,7 +49,10 @@ const styles = StyleSheet.create({
     backgroundColor: 'grey',
     justifyContent: 'center',
     alignItems: 'center',
-    paddingHorizontal: 30,
+    paddingHorizontal: 10,
+  },
+  modalText: {
+    maxWidth: 350,
   },
   modal: {
     backgroundColor: '#FFFFFF',

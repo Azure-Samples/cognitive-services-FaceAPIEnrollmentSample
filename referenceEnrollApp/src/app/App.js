@@ -30,39 +30,29 @@ const App = () => {
   return (
     <Provider store={store}>
       <NavigationContainer>
-        <Stack.Navigator>
+        <Stack.Navigator
+          screenOptions={{
+            title: '',
+            gestureEnabled: false,
+            headerStyle: {backgroundColor: '#0078D4'},
+          }}>
           <Stack.Screen
             options={{headerShown: false}}
             name={constants.SCREENS.welcome}
             component={Welcome}
           />
-
           <Stack.Screen
             options={{headerShown: false}}
             name={'Settings'}
             component={Settings}
           />
-
           <Stack.Screen
-            options={{title: '', headerStyle: styles.header}}
             name={constants.SCREENS.manage}
             component={ManageProfile}
           />
+          <Stack.Screen name={constants.SCREENS.consent} component={Consent} />
+          <Stack.Screen name={constants.SCREENS.login} component={Login} />
           <Stack.Screen
-            options={{
-              title: '',
-              headerStyle: styles.header,
-            }}
-            name={constants.SCREENS.consent}
-            component={Consent}
-          />
-          <Stack.Screen
-            options={{title: '', headerStyle: styles.header}}
-            name={constants.SCREENS.login}
-            component={Login}
-          />
-          <Stack.Screen
-            options={{title: '', headerStyle: styles.header}}
             name={constants.SCREENS.instruction}
             component={Instruction}
           />
@@ -71,21 +61,11 @@ const App = () => {
             name={constants.SCREENS.imageCapture}
             component={ImageCapture}
           />
-          <Stack.Screen
-            options={{title: '', headerStyle: styles.header}}
-            name={constants.SCREENS.receipt}
-            component={Receipt}
-          />
+          <Stack.Screen name={constants.SCREENS.receipt} component={Receipt} />
         </Stack.Navigator>
       </NavigationContainer>
     </Provider>
   );
 };
-
-var styles = StyleSheet.create({
-  header: {
-    backgroundColor: '#0078D4',
-  },
-});
 
 export default App;
