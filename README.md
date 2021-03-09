@@ -9,19 +9,17 @@ name : FaceAPI Enrollment Sample
 urlFragment: faceapi-enrollment-sample
 ---
 
-# Build an enrollment app for Android with React Native
+# Build an enrollment app for Android and iOS with React Native
 
 This guide will show you how to get started with the sample Face enrollment application. The app demonstrates best practices for obtaining meaningful consent to enroll users into a face recognition service and acquire high-accuracy face data. An integrated system could use an enrollment app like this to provide touchless access control, identity verification, attendance tracking, personalization kiosk, or identity verification, based on their face data.
 
 When launched, the application shows users a detailed consent screen. If the user gives consent, the app prompts for a username and password and then captures a high-quality face image using the device's camera.
 
-The sample enrollment app is written using JavaScript and the React Native framework. It can currently be deployed on Android devices; more deployment options are coming in the future.
+The sample enrollment app is written using JavaScript and the React Native framework. It can currently be deployed on Android and iOS devices; more deployment options are coming in the future.
 
 <img src="./media/beginning.GIF" alt="begin" width="300"/> 
 
 <img src="./media/enrolling.JPG" alt="enrolling" width="300"/> 
-
-
 
 ## Getting Started
 
@@ -30,16 +28,21 @@ The sample enrollment app is written using JavaScript and the React Native frame
 * An Azure subscription – [Create one for free](https://azure.microsoft.com/free/cognitive-services/).  
 * Once you have your Azure subscription, [create a Face resource](https://portal.azure.com/#create/Microsoft.CognitiveServicesFace) in the Azure portal to get your key and endpoint. After it deploys, select **Go to resource**.  
   * You'll need the key and endpoint from the resource you created to connect your application to Face API.  
-  * For local development and testing, you can paste the API key and endpoint into the configuration file. For final deployment, store the API key in a secure location and never in the code.  
+  * For local development and testing only, the API key and endpoint are environment variables. For final deployment, store the API key in a secure location and never in the code or environment variables.
 
 > [!IMPORTANT]
 > These subscription keys are used to access your Cognitive Service API. Do not share your keys. Store them securely, for example, using Azure Key Vault. We also recommend regenerating these keys regularly. Only one key is necessary to make an API call. When regenerating the first key, you can use the second key for continued access to the service.
 
-### Installation
+
+<details>
+<summary>Android Quickstart</summary>
+
+### Installation 
 
 1. Clone the git repository for the [sample enrollment app](https://github.com/azure-samples/cognitive-services-FaceAPIEnrollmentSample).
-1. To set up your development environment, follow the <a href="https://reactnative.dev/docs/environment-setup"  title="React Native documentation"  target="_blank">React Native documentation <span class="docon docon-navigate-external x-hidden-focus"></span></a>. Select **React Native CLI Quickstart** as your development OS and select **Android** as the target OS. Complete the sections **Installing dependencies** and **Android development environment**.
-1. Open the env.json file in your preferred text editor, such as [Visual Studio Code](https://code.visualstudio.com/), and add your endpoint and key. You can get your endpoint and key in the Azure portal under the **Overview** tab of your resource. This step is only for local testing purposes&mdash;don't check in your Face API key to your remote repository.
+1. To set up your development environment, follow the <a href="https://reactnative.dev/docs/environment-setup"  title="React Native documentation"  target="_blank">React Native documentation <span class="docon docon-navigate-external x-hidden-focus"></span></a>. Select **React Native CLI Quickstart**. Select your development OS and **Android** as the target OS. Complete the sections **Installing dependencies** and **Android development environment**.
+1. Download your preferred text editor such as [Visual Studio Code](https://code.visualstudio.com/).
+1. Retrieve your FaceAPI endpoint and key in the Azure portal under the **Overview** tab of your resource. Don't check in your Face API key to your remote repository.
 1. Run the app using either the Android Virtual Device emulator from Android Studio, or your own Android device. To test your app on a physical device, follow the relevant <a href="https://reactnative.dev/docs/running-on-device"  title="React Native documentation"  target="_blank">React Native documentation <span class="docon docon-navigate-external x-hidden-focus"></span></a>.
 
 ### Quickstart
@@ -48,10 +51,48 @@ The sample enrollment app is written using JavaScript and the React Native frame
 1. ```cd cognitive-services-FaceAPIEnrollmentSample```
 1. ```cd referenceEnrollApp```
 1. ```npm install```
-1. start the metro bundler : ```npx react-native start```
 1. Either set up an Android Vitrual Device emulator on Android Studio, or plug in your Android device via USB. To check your device is recognized run: ```adb devices```
+1. Fill out all relevant values, such as your person group name, in the ```env.json``` file.
+1. Set the FaceAPI key and endpoint as environment values. This is for local development purposes only. You can set environment variables when starting Metro bundler:  
+
+    Windows example:  
+
+    ```set "FACEAPI_ENDPOINT=<FaceAPI endpoint>" && set "FACEAPI_KEY=<FaceAPI key>" && npm start```
+
+    macOS example:  
+
+    ```export FACEAPI_ENDPOINT=<FaceAPI endpoint> && export FACEAPI_KEY= <FaceAPI key> &&  npm start``` 
+
 1. Run ```npx react-native run-android```. This will build and launch the app onto the emulator or device. 
-1. Fill out all relevant values in the ```env.json``` file. 
+
+</details>
+
+
+<details>
+<summary> iOS Quickstart </summary>
+
+### Installation 
+
+1. Clone the git repository for the [sample enrollment app](https://github.com/azure-samples/cognitive-services-FaceAPIEnrollmentSample).
+1. To set up your development environment, follow the <a href="https://reactnative.dev/docs/environment-setup"  title="React Native documentation"  target="_blank">React Native documentation <span class="docon docon-navigate-external x-hidden-focus"></span></a>. Select **React Native CLI Quickstart**. Select **macOS** as your development OS and **iOS** as the target OS. Complete the section **Installing dependencies**.
+1. Download your preferred text editor such as [Visual Studio Code](https://code.visualstudio.com/). You will also need to download XCode. 
+1. Retrieve your FaceAPI endpoint and key in the Azure portal under the **Overview** tab of your resource. Don't check in your Face API key to your remote repository.
+1. Run the app using either a simulated device from XCode, or your own iOS device. To test your app on a physical device, follow the relevant <a href="https://reactnative.dev/docs/running-on-device"  title="React Native documentation"  target="_blank">React Native documentation <span class="docon docon-navigate-external x-hidden-focus"></span></a>.
+
+### Quickstart
+
+1. ```git clone https://github.com/Azure-Samples/cognitive-services-FaceAPIEnrollmentSample.git```
+1. ```cd cognitive-services-FaceAPIEnrollmentSample```
+1. ```cd referenceEnrollApp```
+1. ```npm install```
+1. ```cd ios```
+1. ```pod install```
+1. Fill out all relevant values, such as your person group name, in the ```env.json``` file.
+1. Set the FaceAPI key and endpoint as environment values. This is for local development purposes only. You can set environment variables when starting Metro bundler:  
+    ```export FACEAPI_ENDPOINT=<FaceAPI endpoint> && export FACEAPI_KEY= <FaceAPI key> &&  npm start``` 
+1. Either build and run the app through XCode on a simulator, or plug in your iOS device via USB and run ```npm run ios --device <device name>```. This will build and launch the app onto the simulated or physical or device. 
+</details>
+
 
 ## Create an enrollment experience  
 
@@ -82,7 +123,8 @@ To extend the app's functionality to cover the full enrollment experience, read 
 
 ## Deploy the enrollment app
 
-### Android
+<details>
+<summary>Android</summary>
 
 First, make sure that your app is ready for production deployment: remove any keys or secrets from the app code and make sure you have followed the [security best practices](https://docs.microsoft.com/azure/cognitive-services/cognitive-services-security?tabs=command-line%2Ccsharp).
 
@@ -91,6 +133,15 @@ When you're ready to release your app for production, you'll generate a release-
 Follow the <a href="https://developer.android.com/studio/publish/preparing#publishing-build"  title="Prepare for release"  target="_blank">Prepare for release <span class="docon docon-navigate-external x-hidden-focus"></span></a> documentation to learn how to generate a private key, sign your application, and generate a release APK.  
 
 Once you've created a signed APK, see the <a href="https://developer.android.com/studio/publish"  title="Publish your app"  target="_blank">Publish your app <span class="docon docon-navigate-external x-hidden-focus"></span></a> documentation to learn more about how to release your app.
+</details>
+
+<details>
+<summary>iOS</summary>
+
+First, make sure that your app is ready for production deployment: remove any keys or secrets from the app code and make sure you have followed the [security best practices](https://docs.microsoft.com/azure/cognitive-services/cognitive-services-security?tabs=command-line%2Ccsharp). To prepare for distribution, you will need to create an app icon, a launch screen, and configure deployment info settings. Follow the [documentation from XCode](https://developer.apple.com/documentation/xcode/preparing_your_app_for_distribution) to prepare your app for distribution. 
+
+When you're ready to release your app for production, you'll build an archive of your app. Follow the [XCode documentation](https://developer.apple.com/documentation/xcode/distributing_your_app_for_beta_testing_and_releases) on how to create an archive build and options for distributing your app.  
+</details>
 
 ## Resources
 
