@@ -90,7 +90,7 @@ The sample enrollment app is written using JavaScript and the React Native frame
 1. Fill out all relevant values, such as your person group name, in the ```development.json``` file.
 1. Set the FaceAPI key and endpoint as environment values. This is for local development purposes only. You can set environment variables when starting Metro bundler:  
     ```export FACEAPI_ENDPOINT=<FaceAPI endpoint> && export FACEAPI_KEY= <FaceAPI key> &&  npm start``` 
-1. Either build and run the app through Xcode on a simulator, or plug in your iOS device via USB and run ```npm run ios --device <device name>```. This will build and launch the app onto the simulated or physical or device. 
+1. Either build and run the app through Xcode on a simulator, or plug in your iOS device via USB and run ```npm run ios --device <device name>```. This will build and launch the app onto the simulated or physical device. 
 </details>
 
 
