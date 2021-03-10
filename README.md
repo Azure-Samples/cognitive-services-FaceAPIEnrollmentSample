@@ -52,7 +52,7 @@ The sample enrollment app is written using JavaScript and the React Native frame
 1. ```cd referenceEnrollApp```
 1. ```npm install```
 1. Either set up an Android Vitrual Device emulator on Android Studio, or plug in your Android device via USB. To check your device is recognized run: ```adb devices```
-1. Fill out all relevant values, such as your person group name, in the ```env.json``` file.
+1. Fill out all relevant values, such as your person group name, in the ```development.json``` file.
 1. Set the FaceAPI key and endpoint as environment values. This is for local development purposes only. You can set environment variables when starting Metro bundler:  
 
     Windows example:  
@@ -87,7 +87,7 @@ The sample enrollment app is written using JavaScript and the React Native frame
 1. ```npm install```
 1. ```cd ios```
 1. ```pod install```
-1. Fill out all relevant values, such as your person group name, in the ```env.json``` file.
+1. Fill out all relevant values, such as your person group name, in the ```development.json``` file.
 1. Set the FaceAPI key and endpoint as environment values. This is for local development purposes only. You can set environment variables when starting Metro bundler:  
     ```export FACEAPI_ENDPOINT=<FaceAPI endpoint> && export FACEAPI_KEY= <FaceAPI key> &&  npm start``` 
 1. Either build and run the app through Xcode on a simulator, or plug in your iOS device via USB and run ```npm run ios --device <device name>```. This will build and launch the app onto the simulated or physical or device. 
