@@ -92,12 +92,12 @@ function Consent({ navigation }) {
                   <View style={{ flex: 0.5, alignContent: "center", justifyContent: "center", flexDirection: 'column', padding: 30 }}>
                     <Headline style={{ marginBottom: 10 }}>
                       Enroll in touchless access today
-                  </Headline>
+                    </Headline>
 
-                    <Subheading2 style={styles.greyText}>
+                    <Subheading1 style={styles.greyText}>
                       Touchless access uses face recognition to let you
-                      conveniently unlock building doors using a face template.
-                  </Subheading2>
+                      conveniently unlock building doors using a <Subheading2>face template</Subheading2>.
+                   </Subheading1>
                   </View>
                 </View>
                 ) : (<View />)}
@@ -105,45 +105,33 @@ function Consent({ navigation }) {
             </View>
 
             <View style={styles.bottomSection}>
-              {screenWidth < 500 ? (
-                <Subheading2 style={styles.greyText}>
-                  Touchless access uses face recognition to let you conveniently
-                  unlock building doors using a face template.
-                </Subheading2>
-              ) : (
-                  <View />
-                )}
+
+              {(screenWidth < 640) ?
+                (<View>
+
+                  <Headline style={{ marginBottom: 10 }}>
+                    Enroll in touchless access today
+                  </Headline>
+
+                  <Subheading1 style={styles.greyText}>
+                    Touchless access uses face recognition to let you
+                      conveniently unlock building doors using a <Subheading2>face template</Subheading2>.
+                   </Subheading1>
+                </View>
+                ) : (<View />)}
 
               <View style={styles.row1}>
                 <View
                   style={
-                    screenWidth >= 550
-                      ? [styles.centerMain, { flex: 1 }]
+                    screenWidth >= 640
+                      ? [styles.centerMain, { flex: 1.5 }]
                       : styles.centerMain
                   }>
-                  <Title1>What is a face template?</Title1>
-                  <Subheading1>
+                  <Title1 style={styles.textPadding}>What is a face template?</Title1>
+                  <Subheading1 style={styles.textPadding}>
                     A face template is a unique set of numbers that represent the
                     distinctive features of your face.
-                </Subheading1>
-                </View>
-
-                <View style={[styles.column1, { minHeight: 150 }]}>
-                  <Image
-                    style={styles.imageFormat2}
-                    source={require('../../assets/img_faceTemp_l.png')}
-                  />
-                </View>
-              </View>
-              <View style={styles.row1}>
-                <View style={styles.column1}>
-                  <View style={styles.row1}>
-                    <Title1>What information gets stored?</Title1>
-                    <Subheading1>
-                      Only your face template gets stored. No one has access to
-                      your face template.
                   </Subheading1>
-                  </View>
                   <View style={styles.rowNoWrap}>
                     <Image
                       style={styles.iconFormat}
@@ -168,6 +156,18 @@ function Consent({ navigation }) {
                     </Subheading1>
                     </View>
                   </View>
+                  <Title1 style={styles.headingPadding}>What information gets stored?</Title1>
+                  <Subheading1>
+                    Only your face template gets stored. No one has access to
+                    your face template.
+                  </Subheading1>
+                </View>
+
+                <View style={[styles.column1, { minHeight: 150 }]}>
+                  <Image
+                    style={styles.imageFormat2}
+                    source={require('../../assets/img_faceTemp_l.png')}
+                  />
                 </View>
               </View>
 
@@ -312,10 +312,8 @@ var styles = StyleSheet.create({
     flexDirection: 'column',
     marginBottom: 16,
     borderRadius: 4,
-    padding: 30,
-    paddingTop: 20,
-    marginLeft: 30,
-    marginRight: 30,
+    paddingLeft: 20,
+    paddingRight: 20,
   },
   textBox: {
     flex: 1,
@@ -361,7 +359,6 @@ var styles = StyleSheet.create({
     flexDirection: 'row',
     flexWrap: 'wrap',
     marginBottom: 10,
-    marginTop: 10,
   },
   centerMain: {
     justifyContent: 'center',
@@ -369,7 +366,6 @@ var styles = StyleSheet.create({
   column1: {
     flex: 1,
     flexDirection: 'column',
-    margin: 10,
   },
   smallColumn: {
     maxWidth: 300,
@@ -384,8 +380,11 @@ var styles = StyleSheet.create({
     right: 0,
   },
   textPadding: {
-    marginBottom: 10,
-    marginTop: 30,
+    marginBottom: 12,
+    //marginTop: 30,
+  },
+  headingPadding: {
+    marginTop: 30
   },
   subheadingMargin: {
     color: '#6E6E6E',

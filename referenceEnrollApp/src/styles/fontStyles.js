@@ -1,5 +1,5 @@
 import React from 'react';
-import {StyleSheet, Text, Platform} from 'react-native';
+import { StyleSheet, Text, Platform } from 'react-native';
 
 let useAndroidFont = Platform.OS == 'android';
 console.log('android', useAndroidFont);
@@ -16,7 +16,7 @@ function Caption(props) {
   );
 }
 
-function Body1({children}) {
+function Body1({ children }) {
   return (
     <Caption>
       <Text style={[fontStyles.body1, useAndroidFont ? androidStyle.font : '']}>
@@ -119,7 +119,7 @@ const fontStyles = StyleSheet.create({
   },
 
   subheading2: {
-    fontWeight: 'bold',
+    fontWeight: '500',
   },
   title1: {
     fontSize: 20,
