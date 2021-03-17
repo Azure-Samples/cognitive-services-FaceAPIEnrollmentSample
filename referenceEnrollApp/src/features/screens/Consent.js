@@ -82,15 +82,15 @@ function Consent({ navigation }) {
             <View style={styles.topSection}>
               <View style={styles.imageBox}>
                 <Image
-                  style={[styles.imageFormat, { width: screenWidth, height: screenWidth / 2 }]}
+                  style={[styles.imageFormat, { width: (screenWidth > 840 ? 840 : screenWidth), height: (screenWidth > 840 ? 420 : screenWidth / 2) }]}
                   source={require('../../assets/bg_heroIllustration_request.png')}
                 />
               </View>
 
               {(screenWidth >= 640) ?
                 (<View style={styles.textBox}>
-                  <View style={{ flex: 0.5, alignContent: "center", justifyContent: "center", flexDirection: 'column', padding: 30 }}>
-                    <Headline style={{ marginBottom: 10 }}>
+                  <View style={{ flex: 0.5, justifyContent: "center", padding: 30 }}>
+                    <Headline style={styles.textPadding}>
                       Enroll in touchless access today
                     </Headline>
 
@@ -109,7 +109,7 @@ function Consent({ navigation }) {
               {(screenWidth < 640) ?
                 (<View style={styles.headingPadding}>
 
-                  <Headline style={{ marginBottom: 10 }}>
+                  <Headline style={styles.textPadding}>
                     Enroll in touchless access today
                   </Headline>
 
@@ -220,7 +220,7 @@ function Consent({ navigation }) {
                         </Subheading2>
                           <Subheading1 style={styles.subheadingMargin}>
                             Your face template is encrypted following cloud
-                            security standards ISO 27018 and SOC 1, 2, 3.
+                            security standards <Subheading2>ISO 27018</Subheading2> and <Subheading2>SOC 1, 2, 3</Subheading2>.
                         </Subheading1>
                         </View>
                       </View>
@@ -269,7 +269,7 @@ function Consent({ navigation }) {
                     Ready to try touchless access?
                 </Title1>
 
-                  <Subheading1 style={[styles.greyText, { marginBottom: 10 }]}>
+                  <Subheading1 style={[styles.greyText, styles.textPadding]}>
                     Participation is optional. If you don’t want to enroll, you
                     can continue to scan your badge for entry.
                 </Subheading1>
