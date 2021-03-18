@@ -82,7 +82,7 @@ function Consent({ navigation }) {
             <View style={styles.topSection}>
               <View style={styles.imageBox}>
                 <Image
-                  style={[styles.imageFormat, { width: (screenWidth > 840 ? 840 : screenWidth), height: (screenWidth > 840 ? 420 : screenWidth / 2) }]}
+                  style={[{ width: (screenWidth > 840 ? 840 : screenWidth), height: (screenWidth > 840 ? 420 : screenWidth / 2) }, styles.imageFormat]}
                   source={require('../../assets/bg_heroIllustration_request.png')}
                 />
               </View>
@@ -148,7 +148,7 @@ function Consent({ navigation }) {
                       style={styles.iconFormat}
                       source={require('../../assets/icon_camera.png')}
                     />
-                    <View style={{ flex: 1, marginBottom: 20 }}>
+                    <View style={[styles.greyText, { flex: 1, marginBottom: 20 }]}>
                       <Subheading1>
                         If you choose to enroll, you’ll take a few photos of your
                         face today to create one.
@@ -161,7 +161,7 @@ function Consent({ navigation }) {
                       source={require('../../assets/icon_lock.png')}
                     />
                     <View style={{ flex: 1 }}>
-                      <Subheading1>
+                      <Subheading1 style={styles.greyText}>
                         Using face templates helps ensure that you always have
                         building access, and it’s more secure than a badge.
                     </Subheading1>
@@ -307,7 +307,7 @@ var styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#E5E5E5',
+    backgroundColor: '#F1F1F1',
   },
   centerColumn: {
     maxWidth: 840,
@@ -350,8 +350,6 @@ var styles = StyleSheet.create({
     alignItems: 'center',
   },
   imageFormat: {
-    height: 400,
-    width: 800,
     flexDirection: 'row',
     resizeMode: 'contain',
   },
