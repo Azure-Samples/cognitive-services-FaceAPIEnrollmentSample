@@ -1,16 +1,29 @@
-import React, {useState, useEffect} from 'react';
-import {View, StyleSheet, BackHandler, ScrollView, Image} from 'react-native';
-import {useDispatch} from 'react-redux';
-import {Caption, Headline, Subheading1} from '../../styles/fontStyles';
+import React, { useState, useEffect } from 'react';
+import { View, StyleSheet, Dimensions, BackHandler, ScrollView, Image } from 'react-native';
+import { useDispatch } from 'react-redux';
+import { Caption, Headline, Subheading1 } from '../../styles/fontStyles';
 import CustomButton from '../../styles/CustomButton';
-import {HeaderBackButton} from '@react-navigation/stack';
+import { HeaderBackButton } from '@react-navigation/stack';
 import Modal from '../../styles/Modal';
-import {deleteEnrollmentAction} from '../userEnrollment/newEnrollmentAction';
-import {StackActions} from '@react-navigation/native';
+import { deleteEnrollmentAction } from '../userEnrollment/newEnrollmentAction';
+import { StackActions } from '@react-navigation/native';
 import * as constants from '../../shared/constants';
 
-function Instruction({navigation}) {
+function Instruction({ navigation }) {
   const [showModal, setShowModal] = useState(false);
+
+  const setWidth = () => {
+    const dim = Dimensions.get('window');
+    console.log("width", dim.width);
+    return dim.width;
+  };
+
+  const [screenWidth, setScreenWidth] = useState(setWidth());
+
+  var imgHeight = screenWidth <= 600 ? (screenWidth - 24) * (640 / 1040) : 150;
+  var flexDir = screenWidth <= 600 ? "column" : "row";
+  var imgPad = screenWidth <= 600 ? 0 : 12;
+  var buttonFlex = screenWidth <= 600 ? 0 : 8;
 
   const dispatch = useDispatch();
   const dispatchDelete = async () => dispatch(await deleteEnrollmentAction());
@@ -38,11 +51,20 @@ function Instruction({navigation}) {
     navigation.dispatch(StackActions.popToTop());
   };
 
+
   useEffect(() => {
+
+    const orientationCallback = () => {
+      setScreenWidth(setWidth());
+    };
+    Dimensions.addEventListener('change', orientationCallback);
+
     // Disables Android hardware back button
     BackHandler.addEventListener('hardwareBackPress', () => true);
-    return () =>
+    return () => {
       BackHandler.removeEventListener('hardwareBackPress', () => true);
+      Dimensions.removeEventListener('change', orientationCallback);
+    }
   }, []);
 
   let stay = () => {
@@ -52,113 +74,122 @@ function Instruction({navigation}) {
   let modalInfo = {
     title: 'Leave without saving?',
     message: 'You won’t be enrolled, and your information won’t be saved.',
-    buttonRight: {title: 'Yes, leave', onPress: cancel},
-    buttonLeft: {title: 'No, keep enrolling', onPress: stay},
+    buttonRight: { title: 'Yes, leave', onPress: cancel },
+    buttonLeft: { title: 'No, keep enrolling', onPress: stay },
   };
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
-      <View style={styles.smallRow} />
       {showModal ? (
         <Modal {...modalInfo}></Modal>
       ) : (
-        <View style={styles.centerRow}>
-          <View style={styles.column1}>
-            <Caption>Step 2 of 3</Caption>
+          <View style={styles.centerRow}>
+            <View style={styles.column1}>
 
-            <Headline style={styles.headlineMargin}>
-              Tips for creating a face template
-            </Headline>
+              <View style={{ flexDirection: "row" }}>
+                <View style={{ flex: 8, flexDirection: "column" }}>
+                  <Caption>Step 2 of 3</Caption>
 
-            <Subheading1>
-              We’ll take several photos in a row. These photos will only be used
-              to create your face template. They will not be stored.
+                  <Headline style={styles.headlineMargin}>
+                    Tips for creating a face template
+                  </Headline>
+
+                  <Subheading1>
+                    We’ll take several photos in a row. These photos will only be used
+                    to create your face template. They will not be stored.
+                  </Subheading1>
+                </View>
+                <View style={{ flex: 0 }}></View>
+              </View>
+
+              <View style={[styles.picturesRow, { flexDirection: flexDir }]}>
+                <View style={[styles.column1, styles.smallColumn, { paddingRight: imgPad }]}>
+                  <View style={{ height: imgHeight }}>
+                    <Image
+                      style={styles.imgFormat}
+                      source={require('../../assets/img_tip_faceVisible.png')}
+                    />
+                  </View>
+                  <View style={styles.textStyle}>
+                    <Subheading1>
+                      The camera works best when your face is fully visible and
+                      the photos show how you look on a typical day
+                  </Subheading1>
+                  </View>
+                </View>
+                <View style={[styles.column1, styles.smallColumn, { paddingRight: imgPad }]}>
+                  <View style={{ height: imgHeight }}>
+                    <Image
+                      style={styles.imgFormat}
+                      source={require('../../assets/img_tip_lookAhead.png')}
+                    />
+                  </View>
+                  <View style={styles.textStyle}>
+                    <Subheading1>
+                      Look straight ahead and center your face in the frame
+                  </Subheading1>
+                  </View>
+                </View>
+                <View style={[styles.column1, styles.smallColumn]}>
+                  <View style={{ height: imgHeight }}>
+                    <Image
+                      style={styles.imgFormat}
+                      source={require('../../assets/img_tip_onlyPerson.png')}
+                    />
+                  </View>
+                  <View style={[styles.textStyle, { height: 40 }]}>
+                    <Subheading1>
+                      Make sure you’re the only person in view
+                  </Subheading1>
+                  </View>
+                </View>
+              </View>
+
+              <View style={{ flexDirection: 'row', marginTop: 32 }}>
+
+                <View style={{ flex: 4, marginRight: 12 }}>
+
+                  <CustomButton
+                    title="Create my face template now"
+                    style={styles.buttonStyle}
+                    onPress={() => {
+                      navigation.navigate(constants.SCREENS.imageCapture);
+                    }}
+                  />
+                </View>
+                <View style={{ flex: buttonFlex }}></View>
+              </View>
+
+              <Subheading1 style={styles.greyText}>
+                Some accessories can obscure parts of your face, such as a cap,
+                sunglasses, or a face mask, so you might need to adjust these
+                while taking the photos.
             </Subheading1>
-
-            <View style={styles.picturesRow}>
-              <View style={[styles.column1, styles.smallColumn]}>
-                <View style={{height: 200}}>
-                  <Image
-                    style={styles.imgFormat}
-                    source={require('../../assets/img_tip_faceVisible.png')}
-                  />
-                </View>
-                <View style={{height: 100}}>
-                  <Subheading1>
-                    The camera works best when your face is fully visible and
-                    the photos show how you look on a typical day
-                  </Subheading1>
-                </View>
-              </View>
-              <View style={[styles.column1, styles.smallColumn]}>
-                <View style={{height: 200}}>
-                  <Image
-                    style={styles.imgFormat}
-                    source={require('../../assets/img_tip_lookAhead.png')}
-                  />
-                </View>
-                <View style={{height: 100}}>
-                  <Subheading1>
-                    Look straight ahead and center your face in the frame
-                  </Subheading1>
-                </View>
-              </View>
-              <View style={[styles.column1, styles.smallColumn]}>
-                <View style={{height: 200}}>
-                  <Image
-                    style={styles.imgFormat}
-                    source={require('../../assets/img_tip_onlyPerson.png')}
-                  />
-                </View>
-                <View style={{height: 100}}>
-                  <Subheading1>
-                    Make sure you’re the only person in view
-                  </Subheading1>
-                </View>
-              </View>
             </View>
-
-            <CustomButton
-              title="Create my face template now"
-              style={styles.buttonStyle}
-              onPress={() => {
-                navigation.navigate(constants.SCREENS.imageCapture);
-              }}
-            />
-
-            <Subheading1 style={styles.greyText}>
-              Some accessories can obscure parts of your face, such as a cap,
-              sunglasses, or a face mask, so you might need to adjust these
-              while taking the photos.
-            </Subheading1>
           </View>
-        </View>
-      )}
-    </ScrollView>
+        )
+      }
+    </ScrollView >
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flexGrow: 1,
-    backgroundColor: '#E5E5E5',
+    backgroundColor: 'white',
     flexDirection: 'column',
   },
   centerRow: {
-    flex: 0,
+    flex: 12,
     flexDirection: 'row',
     alignSelf: 'center',
-    paddingLeft: 60,
-    paddingRight: 60,
+    paddingLeft: 12,
+    paddingRight: 12,
     maxWidth: 840,
-  },
-  smallRow: {
-    height: 50,
+    paddingTop: 80,
   },
   column1: {
-    flex: 1,
     flexDirection: 'column',
-    paddingRight: 20,
   },
   imgFormat: {
     flex: 1,
@@ -168,12 +199,10 @@ const styles = StyleSheet.create({
     resizeMode: 'contain',
   },
   smallColumn: {
-    maxWidth: 300,
-    minWidth: 300,
+    flex: 4,
   },
   picturesRow: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
+    flexDirection: 'column',
     marginTop: 50,
   },
   headlineMargin: {
@@ -187,6 +216,10 @@ const styles = StyleSheet.create({
     paddingVertical: 20,
     color: '#6E6E6E',
   },
+  textStyle: {
+    paddingTop: 8,
+    height: 100
+  }
 });
 
 export default Instruction;

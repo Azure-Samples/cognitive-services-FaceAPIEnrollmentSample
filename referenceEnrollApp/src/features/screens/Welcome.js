@@ -109,6 +109,7 @@ function Welcome({ navigation }) {
     });
 
     return () => {
+      console.log("removing frm welcome")
       Dimensions.removeEventListener('change', orientationCallback);
     };
   }, []);
