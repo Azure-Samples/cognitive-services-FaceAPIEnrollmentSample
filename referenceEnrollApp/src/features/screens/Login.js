@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 
 import { View, StyleSheet, BackHandler, TextInput, Dimensions } from 'react-native';
 import { saveUserInfoAction } from '../userEnrollment/saveUserInfoAction';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { Caption, Headline, fontStyles, Title1 } from '../../styles/fontStyles';
 import CustomButton from '../../styles/CustomButton';
 import { HeaderBackButton } from '@react-navigation/stack';
@@ -10,6 +10,7 @@ import Modal from '../../styles/Modal';
 import { checkEnrollmentExistsAction } from '../userEnrollment/newEnrollmentAction';
 import { StackActions } from '@react-navigation/native';
 import * as constants from '../../shared/constants';
+import { getIsPortrait } from '../portrait/isPortrait';
 
 /*
     IMPORTANT: 
@@ -23,6 +24,7 @@ import * as constants from '../../shared/constants';
     a secret.
 */
 function Login({ route, navigation }) {
+
   useEffect(() => {
     // Disables Android hardware back button
     BackHandler.addEventListener('hardwareBackPress', () => true);
@@ -36,8 +38,9 @@ function Login({ route, navigation }) {
   const [modalProps, setModalProps] = useState(null);
   const [showLoading, setShowLoading] = useState(false);
 
+  getIsPortrait();
   var screenWidth = Dimensions.get('window').width;
-  var paddingLeft = screenWidth >= 640 ? 60 : 16;
+  var paddingLeft = screenWidth > 600 ? 60 : 16;
 
   React.useLayoutEffect(() => {
     // Back button goes to Welcome page
@@ -237,7 +240,7 @@ function Login({ route, navigation }) {
                 />
               </View>
             </View>
-            { screenWidth > 640 ? (<View style={styles.column1} />) : <View />}
+            { screenWidth > 600 ? (<View style={styles.column1} />) : <View />}
           </View>
         )
       }
@@ -265,7 +268,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'center',
     alignSelf: 'center',
-    //paddingLeft: 60,
     maxWidth: 840,
     paddingTop: 80,
     backgroundColor: "white"

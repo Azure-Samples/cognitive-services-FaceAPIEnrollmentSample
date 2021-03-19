@@ -7,19 +7,18 @@ import { useDispatch } from 'react-redux';
 import * as constants from '../../shared/constants';
 import { deletePersonGroup, validatePersonGroup } from '../../shared/helper';
 var RNFS = require('react-native-fs');
+import { getIsPortrait } from "../portrait/isPortrait";
+
 
 function Welcome({ navigation }) {
-  let dispatch = useDispatch();
 
-  const checkIsPortrait = () => {
-    const dim = Dimensions.get('window');
-    return dim.height >= dim.width;
-  };
+  let dispatch = useDispatch();
+  const isPortrait = getIsPortrait();
 
   const setStyles = () => {
     let style;
-
     const dim = Dimensions.get('window');
+
     if (dim.width <= 600) {
       style = {
         whiteBoxHeight: '60%',
@@ -30,6 +29,7 @@ function Welcome({ navigation }) {
         buttonDirection: 'column',
         buttonContext: 'center',
         buttonFlex: 0,
+        num: 1,
       };
     } else if (dim.width > 600 && dim.width < 840 && isPortrait) {
       style = {
@@ -41,6 +41,7 @@ function Welcome({ navigation }) {
         buttonDirection: 'row',
         buttonContext: 'flex-start',
         buttonFlex: 1,
+        num: 2,
       };
     } else {
       style = {
@@ -52,14 +53,14 @@ function Welcome({ navigation }) {
         buttonDirection: 'column',
         buttonContext: 'center',
         buttonFlex: 0,
+        num: 3,
       };
     }
 
     return style;
   };
 
-  const [isPortrait, setIsPortrait] = useState(checkIsPortrait());
-  const [responsiveStyles, setResponsiveStyles] = useState(setStyles());
+  var responsiveStyles = setStyles();
 
   const showAlert = () => {
     // For development and testing environment, expose settings page
@@ -96,12 +97,6 @@ function Welcome({ navigation }) {
   };
 
   useEffect(() => {
-    const orientationCallback = () => {
-      setIsPortrait(checkIsPortrait());
-      setResponsiveStyles(setStyles());
-    };
-    Dimensions.addEventListener('change', orientationCallback);
-
     validatePersonGroup(CONFIG.PERSONGROUP_RGB).then((personGroupValidated) => {
       if (personGroupValidated == false) {
         showAlert();
@@ -109,7 +104,6 @@ function Welcome({ navigation }) {
     });
 
     return () => {
-      console.log("removing frm welcome")
       Dimensions.removeEventListener('change', orientationCallback);
     };
   }, []);
@@ -139,7 +133,7 @@ function Welcome({ navigation }) {
       console.log('Delete result:', res);
     });
   };
-
+  console.log(responsiveStyles.num);
   return (
     <View style={styles.container}>
       <View style={styles.backgroundColumn}>

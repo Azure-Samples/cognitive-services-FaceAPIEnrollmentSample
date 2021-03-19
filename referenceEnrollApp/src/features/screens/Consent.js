@@ -18,14 +18,14 @@ import Modal from '../../styles/Modal';
 import { HeaderBackButton } from '@react-navigation/stack';
 import { StackActions } from '@react-navigation/native';
 import * as constants from '../../shared/constants';
+import { getIsPortrait } from "../portrait/isPortrait";
 
 function Consent({ navigation }) {
-  const getWidth = () => {
-    return Dimensions.get('window').width;
-  };
 
-  const [screenWidth, setScreenWidth] = useState(getWidth());
   const [showModal, setShowModal] = useState(false);
+  // needed for rerendering screenWidth
+  getIsPortrait();
+  const screenWidth = Dimensions.get('window').width;
 
   const showDeclineModal = () => {
     setShowModal(true);
@@ -35,14 +35,8 @@ function Consent({ navigation }) {
     // Disables Android hardware back button
     BackHandler.addEventListener('hardwareBackPress', () => true);
 
-    const orientationCallback = () => {
-      setScreenWidth(getWidth());
-    };
-    Dimensions.addEventListener('change', orientationCallback);
-
     return () => {
       BackHandler.removeEventListener('hardwareBackPress', () => true);
-      Dimensions.removeEventListener('change', orientationCallback);
     };
   }, []);
 

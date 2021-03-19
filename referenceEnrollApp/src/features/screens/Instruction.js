@@ -5,21 +5,17 @@ import { Caption, Headline, Subheading1 } from '../../styles/fontStyles';
 import CustomButton from '../../styles/CustomButton';
 import { HeaderBackButton } from '@react-navigation/stack';
 import Modal from '../../styles/Modal';
+import { useSelector } from 'react-redux';
 import { deleteEnrollmentAction } from '../userEnrollment/newEnrollmentAction';
 import { StackActions } from '@react-navigation/native';
 import * as constants from '../../shared/constants';
 
 function Instruction({ navigation }) {
+
   const [showModal, setShowModal] = useState(false);
+  const isPortrait = useSelector((state) => state.isPortrait.isPortrait);
 
-  const setWidth = () => {
-    const dim = Dimensions.get('window');
-    console.log("width", dim.width);
-    return dim.width;
-  };
-
-  const [screenWidth, setScreenWidth] = useState(setWidth());
-
+  screenWidth = Dimensions.get('window').width;
   var imgHeight = screenWidth <= 600 ? (screenWidth - 24) * (640 / 1040) : 150;
   var flexDir = screenWidth <= 600 ? "column" : "row";
   var imgPad = screenWidth <= 600 ? 0 : 12;
@@ -51,14 +47,7 @@ function Instruction({ navigation }) {
     navigation.dispatch(StackActions.popToTop());
   };
 
-
   useEffect(() => {
-
-    const orientationCallback = () => {
-      setScreenWidth(setWidth());
-    };
-    Dimensions.addEventListener('change', orientationCallback);
-
     // Disables Android hardware back button
     BackHandler.addEventListener('hardwareBackPress', () => true);
     return () => {
@@ -84,7 +73,7 @@ function Instruction({ navigation }) {
         <Modal {...modalInfo}></Modal>
       ) : (
           <View style={styles.centerRow}>
-            <View style={styles.column1}>
+            <View>
 
               <View style={{ flexDirection: "row" }}>
                 <View style={{ flex: 8, flexDirection: "column" }}>
@@ -103,7 +92,7 @@ function Instruction({ navigation }) {
               </View>
 
               <View style={[styles.picturesRow, { flexDirection: flexDir }]}>
-                <View style={[styles.column1, styles.smallColumn, { paddingRight: imgPad }]}>
+                <View style={[styles.smallColumn, { paddingRight: imgPad }]}>
                   <View style={{ height: imgHeight }}>
                     <Image
                       style={styles.imgFormat}
@@ -117,7 +106,7 @@ function Instruction({ navigation }) {
                   </Subheading1>
                   </View>
                 </View>
-                <View style={[styles.column1, styles.smallColumn, { paddingRight: imgPad }]}>
+                <View style={[styles.smallColumn, { paddingRight: imgPad }]}>
                   <View style={{ height: imgHeight }}>
                     <Image
                       style={styles.imgFormat}
@@ -127,17 +116,17 @@ function Instruction({ navigation }) {
                   <View style={styles.textStyle}>
                     <Subheading1>
                       Look straight ahead and center your face in the frame
-                  </Subheading1>
+                    </Subheading1>
                   </View>
                 </View>
-                <View style={[styles.column1, styles.smallColumn]}>
+                <View style={styles.smallColumn}>
                   <View style={{ height: imgHeight }}>
                     <Image
                       style={styles.imgFormat}
                       source={require('../../assets/img_tip_onlyPerson.png')}
                     />
                   </View>
-                  <View style={[styles.textStyle, { height: 40 }]}>
+                  <View style={[styles.textStyle, { maxHeight: 70, minHeight: 40 }]}>
                     <Subheading1>
                       Make sure you’re the only person in view
                   </Subheading1>
@@ -188,9 +177,6 @@ const styles = StyleSheet.create({
     maxWidth: 840,
     paddingTop: 80,
   },
-  column1: {
-    flexDirection: 'column',
-  },
   imgFormat: {
     flex: 1,
     width: null,
@@ -211,6 +197,7 @@ const styles = StyleSheet.create({
   },
   buttonStyle: {
     marginTop: 20,
+    minWidth: 255,
   },
   greyText: {
     paddingVertical: 20,
@@ -218,7 +205,8 @@ const styles = StyleSheet.create({
   },
   textStyle: {
     paddingTop: 8,
-    height: 100
+    maxHeight: 150,
+    minHeight: 100,
   }
 });
 
