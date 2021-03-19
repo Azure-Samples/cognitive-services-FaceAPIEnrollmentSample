@@ -197,7 +197,7 @@ function Login({ route, navigation }) {
               <Headline style={styles.headlineMargin}>
                 Sign in to your Contoso corporate account
               </Headline>
-              <View style={{ maxWidth: 300 }}>
+              <View style={{ maxWidth: 350 }}>
                 <TextInput
                   style={
                     usernameFocused
@@ -265,7 +265,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'center',
     alignSelf: 'center',
-    paddingLeft: 60,
+    //paddingLeft: 60,
     maxWidth: 840,
     paddingTop: 80,
     backgroundColor: "white"

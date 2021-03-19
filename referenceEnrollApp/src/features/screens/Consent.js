@@ -89,7 +89,7 @@ function Consent({ navigation }) {
 
               {(screenWidth >= 640) ?
                 (<View style={styles.textBox}>
-                  <View style={{ flex: 0.5, justifyContent: "center", padding: 30 }}>
+                  <View style={{ flex: 0.5, justifyContent: "center" }}>
                     <Headline style={styles.textPadding}>
                       Enroll in touchless access today
                     </Headline>
