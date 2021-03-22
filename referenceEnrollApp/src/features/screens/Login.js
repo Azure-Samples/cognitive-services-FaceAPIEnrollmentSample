@@ -1,16 +1,22 @@
-import React, { useState, useEffect } from 'react';
+import React, {useState, useEffect} from 'react';
 
-import { View, StyleSheet, BackHandler, TextInput, Dimensions } from 'react-native';
-import { saveUserInfoAction } from '../userEnrollment/saveUserInfoAction';
-import { useDispatch, useSelector } from 'react-redux';
-import { Caption, Headline, fontStyles, Title1 } from '../../styles/fontStyles';
+import {
+  View,
+  StyleSheet,
+  BackHandler,
+  TextInput,
+  Dimensions,
+} from 'react-native';
+import {saveUserInfoAction} from '../userEnrollment/saveUserInfoAction';
+import {useDispatch, useSelector} from 'react-redux';
+import {Caption, Headline, fontStyles, Title1} from '../../styles/fontStyles';
 import CustomButton from '../../styles/CustomButton';
-import { HeaderBackButton } from '@react-navigation/stack';
+import {HeaderBackButton} from '@react-navigation/stack';
 import Modal from '../../styles/Modal';
-import { checkEnrollmentExistsAction } from '../userEnrollment/newEnrollmentAction';
-import { StackActions } from '@react-navigation/native';
+import {checkEnrollmentExistsAction} from '../userEnrollment/newEnrollmentAction';
+import {StackActions} from '@react-navigation/native';
 import * as constants from '../../shared/constants';
-import { getIsPortrait } from '../portrait/isPortrait';
+import {getIsPortrait} from '../portrait/isPortrait';
 
 /*
     IMPORTANT: 
@@ -23,8 +29,7 @@ import { getIsPortrait } from '../portrait/isPortrait';
     to a secured and encrypted database. The user's personId should be considered
     a secret.
 */
-function Login({ route, navigation }) {
-
+function Login({route, navigation}) {
   useEffect(() => {
     // Disables Android hardware back button
     BackHandler.addEventListener('hardwareBackPress', () => true);
@@ -191,71 +196,67 @@ function Login({ route, navigation }) {
 
   return (
     <View style={styles.container}>
-
       {modalProps ? (
         <Modal {...modalProps}></Modal>
       ) : (
-          <View style={[styles.centerRow, { paddingTop: paddingTop }]}>
-            <View style={styles.column1}>
-              <Caption>Step 1 of 3</Caption>
+        <View style={[styles.centerRow, {paddingTop: paddingTop}]}>
+          <View style={styles.column1}>
+            <Caption>Step 1 of 3</Caption>
 
-              <Headline style={styles.headlineMargin}>
-                Sign in to your Contoso corporate account
-              </Headline>
-              <View>
-                <TextInput
-                  style={
-                    usernameFocused
-                      ? { ...styles.textInputFocus, ...fontStyles.subheading1 }
-                      : { ...styles.textInputStyle, ...fontStyles.subheading1 }
-                  }
-                  onChangeText={(text) => setUsernameInput(text)}
-                  onFocus={() => {
-                    setUsernameFocused(true);
-                  }}
-                  onBlur={() => {
-                    setUsernameFocused(false);
-                  }}
-                  placeholder="Username"
-                />
-                <TextInput
-                  style={
-                    passwordFocused
-                      ? [styles.textInputFocus, fontStyles.subheading1]
-                      : [styles.textInputStyle, fontStyles.subheading1]
-                  }
-                  placeholder="Password"
-                  secureTextEntry={true}
-                  onFocus={() => {
-                    setPasswordFocused(true);
-                  }}
-                  onBlur={() => {
-                    setPasswordFocused(false);
-                  }}
-                />
-              </View>
-              <View style={styles.buttonStyle}>
-                <CustomButton
-                  title="Sign in"
-                  style={{ width: 100 }}
-                  onPress={signIn}
-                />
-              </View>
+            <Headline style={styles.headlineMargin}>
+              Sign in to your Contoso corporate account
+            </Headline>
+            <View>
+              <TextInput
+                style={
+                  usernameFocused
+                    ? {...styles.textInputFocus, ...fontStyles.subheading1}
+                    : {...styles.textInputStyle, ...fontStyles.subheading1}
+                }
+                onChangeText={(text) => setUsernameInput(text)}
+                onFocus={() => {
+                  setUsernameFocused(true);
+                }}
+                onBlur={() => {
+                  setUsernameFocused(false);
+                }}
+                placeholder="Username"
+              />
+              <TextInput
+                style={
+                  passwordFocused
+                    ? [styles.textInputFocus, fontStyles.subheading1]
+                    : [styles.textInputStyle, fontStyles.subheading1]
+                }
+                placeholder="Password"
+                secureTextEntry={true}
+                onFocus={() => {
+                  setPasswordFocused(true);
+                }}
+                onBlur={() => {
+                  setPasswordFocused(false);
+                }}
+              />
             </View>
-            { screenWidth >= 600 ? (<View style={styles.column1} />) : <View />}
+            <View style={styles.buttonStyle}>
+              <CustomButton
+                title="Sign in"
+                style={{width: 100}}
+                onPress={signIn}
+              />
+            </View>
           </View>
-        )
-      }
-      {
-        showLoading ? (
-          <View style={styles.splashScreen}>
-            <Title1 style={{ color: 'white' }}>Loading . . .</Title1>
-          </View>
-        ) : (
-            <View />
-          )
-      }
-    </View >
+          {screenWidth >= 600 ? <View style={styles.column1} /> : <View />}
+        </View>
+      )}
+      {showLoading ? (
+        <View style={styles.splashScreen}>
+          <Title1 style={{color: 'white'}}>Loading . . .</Title1>
+        </View>
+      ) : (
+        <View />
+      )}
+    </View>
   );
 }
 
@@ -273,7 +274,7 @@ const styles = StyleSheet.create({
     maxWidth: 840,
     paddingLeft: 16,
     paddingRight: 16,
-    backgroundColor: "white"
+    backgroundColor: 'white',
   },
   column1: {
     flex: 6,
