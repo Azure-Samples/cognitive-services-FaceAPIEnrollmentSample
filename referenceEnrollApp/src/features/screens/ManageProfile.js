@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, StyleSheet, BackHandler, ScrollView, Image } from 'react-native';
+import { View, StyleSheet, BackHandler, ScrollView, Image, Dimensions } from 'react-native';
 import { useDispatch } from 'react-redux';
 import {
   Headline,
@@ -16,9 +16,13 @@ import * as constants from '../../shared/constants';
 import Modal from '../../styles/Modal';
 import { newEnrollmentAction } from '../userEnrollment/newEnrollmentAction';
 import { StackActions } from '@react-navigation/native';
+import { getIsPortrait } from '../portrait/isPortrait';
 
 function ManageProfile({ navigation }) {
   const [modalProps, setModalProps] = useState(null);
+
+  getIsPortrait();
+  var screenWidth = Dimensions.get('window').width;
 
   React.useLayoutEffect(() => {
     // Back button goes to Welcome page
@@ -242,6 +246,7 @@ function ManageProfile({ navigation }) {
                 </View>
               </View>
             </View>
+            <View style={screenWidth >= 600 ? { flex: 5 } : {}}></View>
           </View>
         )}
     </ScrollView>
@@ -284,7 +289,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   column1: {
-    flex: 8,
+    flex: 7,
     flexDirection: 'column',
   },
   imgFormat: {

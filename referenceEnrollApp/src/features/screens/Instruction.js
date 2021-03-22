@@ -5,7 +5,6 @@ import { Caption, Headline, Subheading1 } from '../../styles/fontStyles';
 import CustomButton from '../../styles/CustomButton';
 import { HeaderBackButton } from '@react-navigation/stack';
 import Modal from '../../styles/Modal';
-import { useSelector } from 'react-redux';
 import { deleteEnrollmentAction } from '../userEnrollment/newEnrollmentAction';
 import { StackActions } from '@react-navigation/native';
 import * as constants from '../../shared/constants';
@@ -53,7 +52,6 @@ function Instruction({ navigation }) {
     BackHandler.addEventListener('hardwareBackPress', () => true);
     return () => {
       BackHandler.removeEventListener('hardwareBackPress', () => true);
-      Dimensions.removeEventListener('change', orientationCallback);
     }
   }, []);
 

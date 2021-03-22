@@ -184,7 +184,7 @@ function Receipt({ navigation }) {
           </View>
         </View>
 
-        <View style={screenWidth >= 600 ? { flex: 4 } : {}}></View>
+        <View style={screenWidth >= 600 ? { flex: 5 } : {}}></View>
       </View>
     </ScrollView>
   );

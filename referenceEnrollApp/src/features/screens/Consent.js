@@ -89,7 +89,7 @@ function Consent({ navigation }) {
                       Enroll in touchless access today
                     </Headline>
 
-                    <Subheading1 style={styles.greyText}>
+                    <Subheading1 style={[styles.greyText, { paddingRight: 20 }]}>
                       Touchless access uses face recognition to let you
                       conveniently unlock building doors using a <Subheading2>face template</Subheading2>.
                    </Subheading1>
