@@ -1,4 +1,4 @@
-import { combineReducers } from 'redux';
+import {combineReducers} from 'redux';
 
 import saveUserInfoReducer from '../features/userEnrollment/saveUserInfoReducer';
 import enrollFeedbackReducer from '../features/feedback/enrollFeedbackReducer';

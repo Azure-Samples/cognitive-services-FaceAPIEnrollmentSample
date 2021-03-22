@@ -1,13 +1,12 @@
-import React, { useState, useEffect } from 'react';
-import { View, StyleSheet, Dimensions } from 'react-native';
-import { Svg, Defs, Rect, Mask, Circle } from 'react-native-svg';
-import { AnimatedCircularProgress } from 'react-native-circular-progress';
+import React from 'react';
+import {View, StyleSheet, Dimensions} from 'react-native';
+import {Svg, Defs, Rect, Mask, Circle} from 'react-native-svg';
+import {AnimatedCircularProgress} from 'react-native-circular-progress';
 import EnrollFeedback from '../feedback/EnrollFeedback';
-import { CONFIG } from '../../env/env.json';
-import { getIsPortrait } from '../portrait/isPortrait';
+import {CONFIG} from '../../env/env.json';
+import {getIsPortrait} from '../portrait/isPortrait';
 
 function EnrollProgress(props) {
-
   var isPortrait = getIsPortrait();
 
   /*
@@ -54,7 +53,7 @@ function EnrollProgress(props) {
 
   return (
     <View>
-      <View style={{ position: 'absolute' }}>
+      <View style={{position: 'absolute'}}>
         <Svg height={height} width={width}>
           <Defs>
             <Mask id="mask" x="0" y="0" height="100%" width="100%">
@@ -72,19 +71,11 @@ function EnrollProgress(props) {
         </Svg>
       </View>
 
-      <View style={([styles.root], { top: y - radius - 50 })}>
-
-        <View
-          style={
-            isPortrait
-              ? [styles.feedback, {}]
-              : [styles.feedback, {}]
-          }>
+      <View style={([styles.root], {top: y - radius - 50})}>
+        <View style={styles.feedback}>
           <EnrollFeedback />
         </View>
-        <View style={{ left: x - radius }}>
-
-
+        <View style={{left: x - radius}}>
           <AnimatedCircularProgress
             size={radius * 2}
             duration={progressDuration}
@@ -96,8 +87,6 @@ function EnrollProgress(props) {
           />
         </View>
       </View>
-
-
     </View>
   );
 }

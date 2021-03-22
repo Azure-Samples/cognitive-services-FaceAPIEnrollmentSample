@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
-import { View, StyleSheet, BackHandler, ScrollView, Image, Dimensions } from 'react-native';
-import { useDispatch } from 'react-redux';
+import React, {useState, useEffect} from 'react';
+import {View, StyleSheet, BackHandler, ScrollView, Image} from 'react-native';
+import {useDispatch} from 'react-redux';
 import {
   Headline,
   Subheading1,
@@ -9,16 +9,15 @@ import {
   Body2,
 } from '../../styles/fontStyles';
 import CustomButton from '../../styles/CustomButton';
-import { deleteEnrollmentAction } from '../userEnrollment/newEnrollmentAction';
-import { HeaderBackButton } from '@react-navigation/stack';
+import {deleteEnrollmentAction} from '../userEnrollment/newEnrollmentAction';
+import {HeaderBackButton} from '@react-navigation/stack';
 import * as constants from '../../shared/constants';
 
 import Modal from '../../styles/Modal';
-import { newEnrollmentAction } from '../userEnrollment/newEnrollmentAction';
-import { StackActions } from '@react-navigation/native';
-import { getIsPortrait } from '../portrait/isPortrait';
+import {newEnrollmentAction} from '../userEnrollment/newEnrollmentAction';
+import {StackActions} from '@react-navigation/native';
 
-function ManageProfile({ navigation }) {
+function ManageProfile({navigation}) {
   const [modalProps, setModalProps] = useState(null);
 
   getIsPortrait();
@@ -143,112 +142,107 @@ function ManageProfile({ navigation }) {
       {modalProps ? (
         <Modal {...modalProps}></Modal>
       ) : (
-          <View style={styles.centerRow}>
-            <View style={styles.column1}>
-              <View style={{ marginBottom: 48 }}>
-                <View style={styles.headlineMargin}>
-                  <Headline>Manage your profile</Headline>
-                </View>
+        <View style={styles.centerRow}>
+          <View style={styles.column1}>
+            <View style={{marginBottom: 48}}>
+              <View style={styles.headlineMargin}>
+                <Headline>Manage your profile</Headline>
               </View>
+            </View>
 
-              <View style={styles.picturesRow}>
-                <View style={styles.column1}>
-                  <View
-                    style={styles.borderLine}>
-                    <Body2 style={styles.blueheading}>
-                      Summary of data being stored
+            <View style={styles.picturesRow}>
+              <View style={styles.column1}>
+                <View style={styles.borderLine}>
+                  <Body2 style={styles.blueheading}>
+                    Summary of data being stored
                   </Body2>
-                  </View>
-                  <View style={styles.borderLine}>
-                    <View
-                      style={styles.rowNoFlex}>
-                      <View
-                        style={[
-                          { flex: 8, justifyContent: 'center' },
-                        ]}>
-                        <View style={styles.headerStyle}>
-                          <Subheading2>Your face template</Subheading2>
-                        </View>
-
-                        <Body1 style={styles.greyText}>Used to unlock touchless access doors</Body1>
+                </View>
+                <View style={styles.borderLine}>
+                  <View style={styles.rowNoFlex}>
+                    <View style={[{flex: 8, justifyContent: 'center'}]}>
+                      <View style={styles.headerStyle}>
+                        <Subheading2>Your face template</Subheading2>
                       </View>
-                      <View style={{ flex: 4 }}>
-                        <Image
-                          style={styles.imgFormat}
-                          source={require('../../assets/img_faceTemp_s.png')}
+
+                      <Body1 style={styles.greyText}>
+                        Used to unlock touchless access doors
+                      </Body1>
+                    </View>
+                    <View style={{flex: 4}}>
+                      <Image
+                        style={styles.imgFormat}
+                        source={require('../../assets/img_faceTemp_s.png')}
+                      />
+                    </View>
+                  </View>
+                  <View style={styles.rowNoFlex}>
+                    <Image
+                      style={styles.iconFormat}
+                      source={require('../../assets/icon_key.png')}
+                    />
+                    <View style={styles.column1}>
+                      <View style={styles.headerStyle}>
+                        <Body2>Who has access</Body2>
+                      </View>
+                      <Body1 style={styles.greyText}>No one</Body1>
+                    </View>
+                  </View>
+                  <View style={styles.rowNoFlex}>
+                    <Image
+                      style={styles.iconFormat}
+                      source={require('../../assets/icon_timer.png')}
+                    />
+                    <View style={styles.column1}>
+                      <View style={styles.headerStyle}>
+                        <Body2>How long it’s stored</Body2>
+                      </View>
+                      <Body1 style={styles.greyText}>
+                        For the duration of your employment or until you delete
+                        your data
+                      </Body1>
+                    </View>
+                  </View>
+                </View>
+                <View>
+                  <View style={[styles.smallRow]}>
+                    <View style={[styles.column1, {minWidth: 300}]}>
+                      <View style={{paddingBottom: 24}}>
+                        <Body2 style={styles.blueheading}>Make Changes</Body2>
+                      </View>
+                      <Subheading1>
+                        Update your face template to improve recognition at the
+                        door.
+                      </Subheading1>
+                      <View style={styles.buttonContainer}>
+                        <CustomButton
+                          title="Update face template"
+                          whiteButton="true"
+                          style={styles.buttonStyle}
+                          onPress={reEnroll}
+                        />
+                      </View>
+                      <Subheading1>
+                        End your enrollment and delete your face template. You
+                        can still use your badge for entry.
+                      </Subheading1>
+                      <View style={styles.buttonContainer}>
+                        <CustomButton
+                          title="Delete profile"
+                          whiteButton="true"
+                          style={styles.buttonStyle}
+                          onPress={askForDelete}
                         />
                       </View>
                     </View>
-                    <View style={styles.rowNoFlex}>
-                      <Image
-                        style={styles.iconFormat}
-                        source={require('../../assets/icon_key.png')}
-                      />
-                      <View style={styles.column1}>
-                        <View style={styles.headerStyle} >
-                          <Body2 >Who has access</Body2>
-                        </View>
-                        <Body1 style={styles.greyText}>No one</Body1>
-                      </View>
-                    </View>
-                    <View style={styles.rowNoFlex}>
-                      <Image
-                        style={styles.iconFormat}
-                        source={require('../../assets/icon_timer.png')}
-                      />
-                      <View style={styles.column1}>
-                        <View style={styles.headerStyle} >
-                          <Body2>How long it’s stored</Body2>
-                        </View>
-                        <Body1 style={styles.greyText}>
-                          For the duration of your employment or until you delete
-                          your data
-                      </Body1>
-                      </View>
-                    </View>
-                  </View>
-                  <View>
-                    <View style={[styles.smallRow]}>
-                      <View style={[styles.column1, { minWidth: 300 }]}>
-                        <View style={{ paddingBottom: 24 }}>
-                          <Body2 style={styles.blueheading}>
-                            Make Changes
-                        </Body2>
-                        </View>
-                        <Subheading1>
-                          Update your face template to improve recognition at the
-                          door.
-                      </Subheading1>
-                        <View style={styles.buttonContainer}>
-                          <CustomButton
-                            title="Update face template"
-                            whiteButton="true"
-                            style={styles.buttonStyle}
-                            onPress={reEnroll}
-                          />
-                        </View>
-                        <Subheading1>
-                          End your enrollment and delete your face template. You
-                          can still use your badge for entry.
-                      </Subheading1>
-                        <View style={styles.buttonContainer}>
-                          <CustomButton
-                            title="Delete profile"
-                            whiteButton="true"
-                            style={styles.buttonStyle}
-                            onPress={askForDelete}
-                          />
-                        </View>
-                      </View>
-                      <View style={{ flex: 4, }}></View>
-                    </View>
+                    <View style={{flex: 4}}></View>
                   </View>
                 </View>
               </View>
             </View>
             <View style={screenWidth >= 600 ? { flex: 5 } : {}}></View>
           </View>
-        )}
+        </View>
+      )}
     </ScrollView>
   );
 }
@@ -309,10 +303,9 @@ const styles = StyleSheet.create({
     marginTop: 10,
     marginBottom: 10,
   },
-  buttonStyle: {
-  },
+  buttonStyle: {},
   greyText: {
-    color: "#6E6E6E",
+    color: '#6E6E6E',
   },
   headerStyle: {
     marginBottom: 4,

@@ -1,17 +1,15 @@
-import React, { useEffect, useState } from 'react';
-import { View, StyleSheet, Alert, Dimensions, Image } from 'react-native';
-import { Caption, Headline, Subheading1 } from '../../styles/fontStyles';
+import React, {useEffect, useState} from 'react';
+import {View, StyleSheet, Alert, Dimensions, Image} from 'react-native';
+import {Caption, Headline, Subheading1} from '../../styles/fontStyles';
 import CustomButton from '../../styles/CustomButton';
-import { CONFIG } from '../../env/env.json';
-import { useDispatch } from 'react-redux';
+import {CONFIG} from '../../env/env.json';
+import {useDispatch} from 'react-redux';
 import * as constants from '../../shared/constants';
-import { deletePersonGroup, validatePersonGroup } from '../../shared/helper';
+import {deletePersonGroup, validatePersonGroup} from '../../shared/helper';
 var RNFS = require('react-native-fs');
-import { getIsPortrait } from "../portrait/isPortrait";
+import {getIsPortrait} from '../portrait/isPortrait';
 
-
-function Welcome({ navigation }) {
-
+function Welcome({navigation}) {
   let dispatch = useDispatch();
   var isPortrait = getIsPortrait();
 
@@ -64,25 +62,25 @@ function Welcome({ navigation }) {
     let buttonOption =
       CONFIG.ENVIRONMENT == 'dev'
         ? [
-          {
-            text: 'Settings',
-            onPress: () => navigation.navigate('Settings'),
-          },
-        ]
-        : [
-          {
-            text: 'Try again',
-            onPress: async () => {
-              let validated = await validatePersonGroup(
-                CONFIG.PERSONGROUP_RGB,
-              );
-
-              if (validated == false) {
-                showAlert();
-              }
+            {
+              text: 'Settings',
+              onPress: () => navigation.navigate('Settings'),
             },
-          },
-        ];
+          ]
+        : [
+            {
+              text: 'Try again',
+              onPress: async () => {
+                let validated = await validatePersonGroup(
+                  CONFIG.PERSONGROUP_RGB,
+                );
+
+                if (validated == false) {
+                  showAlert();
+                }
+              },
+            },
+          ];
     Alert.alert(
       'A problem occurred',
       'Cannot connect to service',
@@ -99,7 +97,6 @@ function Welcome({ navigation }) {
         showAlert();
       }
     });
-
   }, []);
 
   // This is for testing purposes
@@ -150,7 +147,7 @@ function Welcome({ navigation }) {
         {isPortrait ? <View style={styles.backgroundBottomRow} /> : <View />}
 
         <View style={isPortrait ? styles.boxContainerP : styles.boxContainerL}>
-          <View style={{ flex: responsiveStyles.leftBoxFlex }} />
+          <View style={{flex: responsiveStyles.leftBoxFlex}} />
           <View
             style={[
               styles.whiteBox,
@@ -177,22 +174,22 @@ function Welcome({ navigation }) {
                 justifyContent: responsiveStyles.buttonContext,
               }}>
               <View
-                style={[styles.buttons, { flex: responsiveStyles.buttonFlex }]}>
+                style={[styles.buttons, {flex: responsiveStyles.buttonFlex}]}>
                 <CustomButton
                   title="Get started"
                   onPress={() => {
-                    dispatch({ type: 'USER_LOGOUT' });
+                    dispatch({type: 'USER_LOGOUT'});
                     navigation.navigate(constants.SCREENS.consent);
                   }}
                 />
               </View>
               <View
-                style={[styles.buttons, { flex: responsiveStyles.buttonFlex }]}>
+                style={[styles.buttons, {flex: responsiveStyles.buttonFlex}]}>
                 <CustomButton
                   whiteButton="true"
                   title="Manage profile"
                   onPress={() => {
-                    dispatch({ type: 'USER_LOGOUT' });
+                    dispatch({type: 'USER_LOGOUT'});
                     navigation.navigate(constants.SCREENS.login, {
                       nextScreen: constants.SCREENS.manage,
                     });
@@ -201,7 +198,7 @@ function Welcome({ navigation }) {
               </View>
 
               <View
-                style={[styles.buttons, { flex: responsiveStyles.buttonFlex }]}>
+                style={[styles.buttons, {flex: responsiveStyles.buttonFlex}]}>
                 {/* This is for testing purposes */}
 
                 {/* <CustomButton
@@ -212,7 +209,7 @@ function Welcome({ navigation }) {
               </View>
             </View>
 
-            <View style={{ flex: 1, justifyContent: 'flex-end' }}>
+            <View style={{flex: 1, justifyContent: 'flex-end'}}>
               <Caption style={styles.greyText}>
                 Details at contoso.com/touchless-access{'\n'}
                 Contoso Privacy Statement {'\n'}
@@ -224,7 +221,7 @@ function Welcome({ navigation }) {
             </View>
           </View>
 
-          <View style={{ flex: responsiveStyles.rightBoxFlex }} />
+          <View style={{flex: responsiveStyles.rightBoxFlex}} />
         </View>
       </View>
     </View>

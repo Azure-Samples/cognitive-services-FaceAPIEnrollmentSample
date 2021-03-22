@@ -1,8 +1,7 @@
-import { FEEDBACK } from '../filtering/filterFeedback';
+import {FEEDBACK} from '../filtering/filterFeedback';
 
 let initialState = {
-  //message: 'The camera is having a hard time seeing your face in this light. If you can, adjust the lighting and try again.',
-  message: 'ni'
+  message: '',
 };
 
 const enrollFeedbackReducer = (state = initialState, action) => {

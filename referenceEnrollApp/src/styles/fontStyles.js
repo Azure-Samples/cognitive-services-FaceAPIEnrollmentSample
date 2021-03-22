@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, Text, Platform } from 'react-native';
+import {StyleSheet, Text, Platform} from 'react-native';
 
 let useAndroidFont = Platform.OS == 'android';
 console.log('android', useAndroidFont);
@@ -19,7 +19,12 @@ function Caption(props) {
 function Body1(props) {
   return (
     <Caption>
-      <Text style={[fontStyles.body1, props.style, useAndroidFont ? androidStyle.font : '']}>
+      <Text
+        style={[
+          fontStyles.body1,
+          props.style,
+          useAndroidFont ? androidStyle.font : '',
+        ]}>
         {props.children}
       </Text>
     </Caption>
