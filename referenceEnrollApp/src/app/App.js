@@ -50,11 +50,7 @@ const App = () => {
             name={constants.SCREENS.manage}
             component={ManageProfile}
           />
-          <Stack.Screen
-            options={{headerShown: true}}
-            name={constants.SCREENS.consent}
-            component={Consent}
-          />
+          <Stack.Screen name={constants.SCREENS.consent} component={Consent} />
           <Stack.Screen name={constants.SCREENS.login} component={Login} />
           <Stack.Screen
             name={constants.SCREENS.instruction}

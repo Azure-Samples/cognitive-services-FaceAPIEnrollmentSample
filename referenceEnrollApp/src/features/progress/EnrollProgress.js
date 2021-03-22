@@ -72,8 +72,7 @@ function EnrollProgress(props) {
       </View>
 
       <View style={([styles.root], {top: y - radius - 50})}>
-        <View
-          style={isPortrait ? [styles.feedback, {}] : [styles.feedback, {}]}>
+        <View style={styles.feedback}>
           <EnrollFeedback />
         </View>
         <View style={{left: x - radius}}>
