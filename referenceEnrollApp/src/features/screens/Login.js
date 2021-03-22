@@ -38,9 +38,11 @@ function Login({ route, navigation }) {
   const [modalProps, setModalProps] = useState(null);
   const [showLoading, setShowLoading] = useState(false);
 
+  // Causes rerender when orientation changes
   getIsPortrait();
   var screenWidth = Dimensions.get('window').width;
-  var paddingLeft = screenWidth > 600 ? 60 : 16;
+  var screenHeight = Dimensions.get('window').height;
+  var paddingTop = screenHeight < 400 ? 30 : 80;
 
   React.useLayoutEffect(() => {
     // Back button goes to Welcome page
@@ -193,14 +195,14 @@ function Login({ route, navigation }) {
       {modalProps ? (
         <Modal {...modalProps}></Modal>
       ) : (
-          <View style={[styles.centerRow, { paddingLeft: paddingLeft }]}>
+          <View style={[styles.centerRow, { paddingTop: paddingTop }]}>
             <View style={styles.column1}>
               <Caption>Step 1 of 3</Caption>
 
               <Headline style={styles.headlineMargin}>
                 Sign in to your Contoso corporate account
               </Headline>
-              <View style={{ maxWidth: 350 }}>
+              <View>
                 <TextInput
                   style={
                     usernameFocused
@@ -240,7 +242,7 @@ function Login({ route, navigation }) {
                 />
               </View>
             </View>
-            { screenWidth > 600 ? (<View style={styles.column1} />) : <View />}
+            { screenWidth >= 600 ? (<View style={styles.column1} />) : <View />}
           </View>
         )
       }
@@ -264,12 +266,13 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
   },
   centerRow: {
-    flex: 12,
+    flex: 1,
     flexDirection: 'row',
     justifyContent: 'center',
     alignSelf: 'center',
     maxWidth: 840,
-    paddingTop: 80,
+    paddingLeft: 16,
+    paddingRight: 16,
     backgroundColor: "white"
   },
   column1: {

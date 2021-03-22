@@ -9,12 +9,13 @@ import { useSelector } from 'react-redux';
 import { deleteEnrollmentAction } from '../userEnrollment/newEnrollmentAction';
 import { StackActions } from '@react-navigation/native';
 import * as constants from '../../shared/constants';
+import { getIsPortrait } from '../portrait/isPortrait';
 
 function Instruction({ navigation }) {
 
   const [showModal, setShowModal] = useState(false);
-  const isPortrait = useSelector((state) => state.isPortrait.isPortrait);
 
+  getIsPortrait();
   screenWidth = Dimensions.get('window').width;
   var imgHeight = screenWidth <= 600 ? (screenWidth - 24) * (640 / 1040) : 150;
   var flexDir = screenWidth <= 600 ? "column" : "row";

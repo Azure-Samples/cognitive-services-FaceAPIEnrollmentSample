@@ -23,6 +23,7 @@ import { getIsPortrait } from "../portrait/isPortrait";
 function Consent({ navigation }) {
 
   const [showModal, setShowModal] = useState(false);
+
   // needed for rerendering screenWidth
   getIsPortrait();
   const screenWidth = Dimensions.get('window').width;
@@ -81,7 +82,7 @@ function Consent({ navigation }) {
                 />
               </View>
 
-              {(screenWidth >= 640) ?
+              {(screenWidth >= 600) ?
                 (<View style={styles.textBox}>
                   <View style={{ flex: 0.5, justifyContent: "center" }}>
                     <Headline style={styles.textPadding}>
@@ -100,7 +101,7 @@ function Consent({ navigation }) {
 
             <View style={styles.bottomSection}>
 
-              {(screenWidth < 640) ?
+              {(screenWidth < 600) ?
                 (<View style={styles.headingPadding}>
 
                   <Headline style={styles.textPadding}>
@@ -117,7 +118,7 @@ function Consent({ navigation }) {
               <View style={styles.row1}>
                 <View
                   style={
-                    screenWidth >= 640
+                    screenWidth >= 600
                       ? [styles.centerMain, { flex: 1.5 }]
                       : styles.centerMain
                   }>
@@ -127,7 +128,7 @@ function Consent({ navigation }) {
                     distinctive features of your face.
                   </Subheading1>
 
-                  {screenWidth < 640 ?
+                  {screenWidth < 600 ?
                     (<View style={[styles.column1, { minHeight: 150 }]}>
                       <Image
                         style={styles.imageFormat2}
@@ -168,7 +169,7 @@ function Consent({ navigation }) {
                   </Subheading1>
                 </View>
 
-                {screenWidth >= 640 ?
+                {screenWidth >= 600 ?
                   (<View style={[styles.column1]}>
                     <Image
                       style={styles.imageFormat2}
@@ -268,13 +269,13 @@ function Consent({ navigation }) {
                     can continue to scan your badge for entry.
                 </Subheading1>
                 </View>
-                <View style={screenWidth >= 640 ? styles.column1 : ''} />
+                <View style={screenWidth >= 600 ? styles.column1 : ''} />
               </View>
 
-              <View style={screenWidth >= 640 ? styles.row1 : styles.column1} >
+              <View style={screenWidth >= 600 ? styles.row1 : styles.column1} >
                 <CustomButton
                   title="Yes, create my face template"
-                  style={screenWidth >= 640 ? styles.buttonMarginL : styles.buttonMarginS}
+                  style={screenWidth >= 600 ? styles.buttonMarginL : styles.buttonMarginS}
                   onPress={() => {
                     navigation.navigate(constants.SCREENS.login, {
                       nextScreen: constants.SCREENS.instruction,
@@ -283,7 +284,7 @@ function Consent({ navigation }) {
                 />
                 <CustomButton
                   title="No, don’t create my face template"
-                  style={screenWidth >= 640 ? styles.buttonMarginL : styles.buttonMarginS}
+                  style={screenWidth >= 600 ? styles.buttonMarginL : styles.buttonMarginS}
                   onPress={showDeclineModal}
                 />
               </View>

@@ -4,25 +4,11 @@ import { Svg, Defs, Rect, Mask, Circle } from 'react-native-svg';
 import { AnimatedCircularProgress } from 'react-native-circular-progress';
 import EnrollFeedback from '../feedback/EnrollFeedback';
 import { CONFIG } from '../../env/env.json';
+import { getIsPortrait } from '../portrait/isPortrait';
 
 function EnrollProgress(props) {
-  const checkIsPortrait = () => {
-    const dim = Dimensions.get('window');
-    return dim.height >= dim.width;
-  };
 
-  const [isPortrait, setIsPortrait] = useState(checkIsPortrait());
-
-  useEffect(() => {
-    const orientationCallback = () => {
-      setIsPortrait(checkIsPortrait());
-    };
-    Dimensions.addEventListener('change', orientationCallback);
-
-    return () => {
-      Dimensions.removeEventListener('change', orientationCallback);
-    };
-  }, []);
+  var isPortrait = getIsPortrait();
 
   /*
     Get window dimensions to determine 
@@ -86,41 +72,46 @@ function EnrollProgress(props) {
         </Svg>
       </View>
 
-      <View style={([styles.root], { top: y - radius - 2, left: x - radius })}>
-        <AnimatedCircularProgress
-          size={radius * 2}
-          duration={progressDuration}
-          width={10}
-          fill={rgbProgress}
-          rotation={0}
-          tintColor="#92C353"
-          backgroundColor="white"
-        />
+      <View style={([styles.root], { top: y - radius - 50 })}>
+
+        <View
+          style={
+            isPortrait
+              ? [styles.feedback, {}]
+              : [styles.feedback, {}]
+          }>
+          <EnrollFeedback />
+        </View>
+        <View style={{ left: x - radius }}>
+
+
+          <AnimatedCircularProgress
+            size={radius * 2}
+            duration={progressDuration}
+            width={10}
+            fill={rgbProgress}
+            rotation={0}
+            tintColor="#92C353"
+            backgroundColor="white"
+          />
+        </View>
       </View>
 
-      <View
-        style={
-          isPortrait
-            ? [styles.feedback, { top: 100 }]
-            : [styles.feedback, { top: 5 }]
-        }>
-        <EnrollFeedback />
-      </View>
+
     </View>
   );
 }
 
 const styles = StyleSheet.create({
   root: {
-    flex: 1,
-    flexDirection: 'row',
-    position: 'absolute',
+    flexDirection: 'column',
   },
   feedback: {
-    flex: 1,
-    position: 'absolute',
     flexDirection: 'column',
     alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 10,
+    height: 100,
     right: 0,
     left: 0,
   },

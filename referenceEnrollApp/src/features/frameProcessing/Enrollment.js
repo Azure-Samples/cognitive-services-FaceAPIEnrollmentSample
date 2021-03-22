@@ -1,19 +1,19 @@
-import React, {useEffect, useState, useRef} from 'react';
-import {useDispatch} from 'react-redux';
+import React, { useEffect, useState, useRef } from 'react';
+import { useDispatch } from 'react-redux';
 import {
   verifyFaceAction,
   processFaceAction,
   trainAction,
   getFilteredFaceAction,
 } from './processFrameAction';
-import {View, StyleSheet} from 'react-native';
+import { View, StyleSheet } from 'react-native';
 import EnrollProgress from '../progress/EnrollProgress';
-import {CONFIG} from '../../env/env.json';
-import {CancellationToken, sleep} from '../../shared/helper';
+import { CONFIG } from '../../env/env.json';
+import { CancellationToken, sleep } from '../../shared/helper';
 import CustomButton from '../../styles/CustomButton';
-import {ENROLL_RESULT} from '../../shared/constants';
-import {deleteEnrollmentAction} from '../userEnrollment/newEnrollmentAction';
-import {mutex} from '../../shared/constants';
+import { ENROLL_RESULT } from '../../shared/constants';
+import { deleteEnrollmentAction } from '../userEnrollment/newEnrollmentAction';
+import { mutex } from '../../shared/constants';
 
 function Enrollment(props) {
   // State

@@ -13,13 +13,13 @@ import { getIsPortrait } from "../portrait/isPortrait";
 function Welcome({ navigation }) {
 
   let dispatch = useDispatch();
-  const isPortrait = getIsPortrait();
+  var isPortrait = getIsPortrait();
 
   const setStyles = () => {
     let style;
     const dim = Dimensions.get('window');
 
-    if (dim.width <= 600) {
+    if (dim.width < 600) {
       style = {
         whiteBoxHeight: '60%',
         imgContainerHeight: dim.height / 2,
@@ -29,9 +29,8 @@ function Welcome({ navigation }) {
         buttonDirection: 'column',
         buttonContext: 'center',
         buttonFlex: 0,
-        num: 1,
       };
-    } else if (dim.width > 600 && dim.width < 840 && isPortrait) {
+    } else if (dim.width >= 600 && dim.width < 840 && isPortrait) {
       style = {
         whiteBoxHeight: '30%',
         imgContainerHeight: dim.height,
@@ -41,7 +40,6 @@ function Welcome({ navigation }) {
         buttonDirection: 'row',
         buttonContext: 'flex-start',
         buttonFlex: 1,
-        num: 2,
       };
     } else {
       style = {
@@ -53,7 +51,6 @@ function Welcome({ navigation }) {
         buttonDirection: 'column',
         buttonContext: 'center',
         buttonFlex: 0,
-        num: 3,
       };
     }
 
@@ -103,9 +100,6 @@ function Welcome({ navigation }) {
       }
     });
 
-    return () => {
-      Dimensions.removeEventListener('change', orientationCallback);
-    };
   }, []);
 
   // This is for testing purposes
@@ -133,7 +127,7 @@ function Welcome({ navigation }) {
       console.log('Delete result:', res);
     });
   };
-  console.log(responsiveStyles.num);
+
   return (
     <View style={styles.container}>
       <View style={styles.backgroundColumn}>
@@ -287,12 +281,12 @@ var styles = StyleSheet.create({
   buttons: {
     flex: 0,
     paddingRight: 20,
-    marginBottom: 20,
+    marginBottom: 15,
   },
   infoView: {
     flex: 2,
     justifyContent: 'center',
-    marginBottom: 24,
+    marginBottom: 14,
   },
   textPadding: {
     justifyContent: 'flex-end',
