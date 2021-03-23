@@ -58,7 +58,6 @@ function Instruction({navigation}) {
     BackHandler.addEventListener('hardwareBackPress', () => true);
     return () => {
       BackHandler.removeEventListener('hardwareBackPress', () => true);
-      Dimensions.removeEventListener('change', orientationCallback);
     };
   }, []);
 

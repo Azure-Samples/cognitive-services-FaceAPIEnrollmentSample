@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import {View, StyleSheet, BackHandler, ScrollView, Image} from 'react-native';
+import {View, StyleSheet, BackHandler, ScrollView, Dimensions, Image} from 'react-native';
 import {useDispatch} from 'react-redux';
 import {
   Headline,
@@ -16,6 +16,7 @@ import * as constants from '../../shared/constants';
 import Modal from '../../styles/Modal';
 import {newEnrollmentAction} from '../userEnrollment/newEnrollmentAction';
 import {StackActions} from '@react-navigation/native';
+import {getIsPortrait} from '../portrait/isPortrait';
 
 function ManageProfile({navigation}) {
   const [modalProps, setModalProps] = useState(null);
