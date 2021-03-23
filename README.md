@@ -30,9 +30,10 @@ The sample enrollment app is written using JavaScript and the React Native frame
   * You'll need the key and endpoint from the resource you created to connect your application to Face API.  
   * For local development and testing only, the API key and endpoint are environment variables. For final deployment, store the API key in a secure location and never in the code or environment variables.
 
-> [!IMPORTANT]
-> These subscription keys are used to access your Cognitive Service API. Do not share your keys. Store them securely, for example, using Azure Key Vault. We also recommend regenerating these keys regularly. Only one key is necessary to make an API call. When regenerating the first key, you can use the second key for continued access to the service.
-
+### Important Security Considerations
+* For local development and initial limited testing, it is acceptable (although not best practice) to use environment variables to hold the API key and endpoint. For pilot and final deployments, the API key should be stored securely - which likely involves using an intermediate service to validate a user token generated during login. 
+* Never store the API key or endpoint in code or commit them to a version control system (e.g. Git). If that happens by mistake, you should immediately generate a new API key/endpoint and revoke the previous ones.
+* As a best practice, consider having separate API keys for development and production.
 
 <details>
 <summary>Android Quickstart</summary>
