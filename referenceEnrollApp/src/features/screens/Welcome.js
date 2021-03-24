@@ -7,11 +7,11 @@ import {useDispatch} from 'react-redux';
 import * as constants from '../../shared/constants';
 import {deletePersonGroup, validatePersonGroup} from '../../shared/helper';
 var RNFS = require('react-native-fs');
-import {getIsPortrait} from '../portrait/isPortrait';
+import useIsPortrait from '../portrait/isPortrait';
 
 function Welcome({navigation}) {
   let dispatch = useDispatch();
-  var isPortrait = getIsPortrait();
+  var isPortrait = useIsPortrait();
 
   const setStyles = () => {
     let style;

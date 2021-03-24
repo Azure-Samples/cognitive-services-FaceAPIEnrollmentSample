@@ -16,12 +16,12 @@ import * as constants from '../../shared/constants';
 import Modal from '../../styles/Modal';
 import {newEnrollmentAction} from '../userEnrollment/newEnrollmentAction';
 import {StackActions} from '@react-navigation/native';
-import {getIsPortrait} from '../portrait/isPortrait';
+import useIsPortrait from '../portrait/isPortrait';
 
 function ManageProfile({navigation}) {
   const [modalProps, setModalProps] = useState(null);
 
-  getIsPortrait();
+  useIsPortrait();
   var screenWidth = Dimensions.get('window').width;
 
   React.useLayoutEffect(() => {

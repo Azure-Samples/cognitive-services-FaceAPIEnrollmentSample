@@ -16,7 +16,7 @@ import Modal from '../../styles/Modal';
 import {checkEnrollmentExistsAction} from '../userEnrollment/newEnrollmentAction';
 import {StackActions} from '@react-navigation/native';
 import * as constants from '../../shared/constants';
-import {getIsPortrait} from '../portrait/isPortrait';
+import useIsPortrait from '../portrait/isPortrait';
 
 /*
     IMPORTANT: 
@@ -44,7 +44,7 @@ function Login({route, navigation}) {
   const [showLoading, setShowLoading] = useState(false);
 
   // Causes rerender when orientation changes
-  getIsPortrait();
+  useIsPortrait();
   var screenWidth = Dimensions.get('window').width;
   var screenHeight = Dimensions.get('window').height;
   var paddingTop = screenHeight < 400 ? 30 : 80;

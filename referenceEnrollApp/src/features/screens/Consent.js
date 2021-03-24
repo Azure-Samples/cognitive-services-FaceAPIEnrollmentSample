@@ -18,13 +18,13 @@ import Modal from '../../styles/Modal';
 import {HeaderBackButton} from '@react-navigation/stack';
 import {StackActions} from '@react-navigation/native';
 import * as constants from '../../shared/constants';
-import {getIsPortrait} from '../portrait/isPortrait';
+import useIsPortrait from '../portrait/isPortrait';
 
 function Consent({navigation}) {
   const [showModal, setShowModal] = useState(false);
 
   // needed for rerendering screenWidth
-  getIsPortrait();
+  useIsPortrait();
   const screenWidth = Dimensions.get('window').width;
 
   const showDeclineModal = () => {

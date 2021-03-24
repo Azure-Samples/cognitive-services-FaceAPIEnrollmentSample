@@ -19,10 +19,10 @@ import {
 import CustomButton from '../../styles/CustomButton';
 import {StackActions} from '@react-navigation/native';
 import {HeaderBackButton} from '@react-navigation/stack';
-import {getIsPortrait} from '../portrait/isPortrait';
+import useIsPortrait from '../portrait/isPortrait';
 
 function Receipt({navigation}) {
-  getIsPortrait();
+  useIsPortrait();
   var screenWidth = Dimensions.get('window').width;
 
   React.useLayoutEffect(() => {

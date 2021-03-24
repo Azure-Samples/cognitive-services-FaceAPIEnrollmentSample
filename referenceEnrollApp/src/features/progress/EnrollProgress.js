@@ -4,10 +4,10 @@ import {Svg, Defs, Rect, Mask, Circle} from 'react-native-svg';
 import {AnimatedCircularProgress} from 'react-native-circular-progress';
 import EnrollFeedback from '../feedback/EnrollFeedback';
 import {CONFIG} from '../../env/env.json';
-import {getIsPortrait} from '../portrait/isPortrait';
+import useIsPortrait from '../portrait/isPortrait';
 
 function EnrollProgress(props) {
-  var isPortrait = getIsPortrait();
+  var isPortrait = useIsPortrait();
 
   /*
     Get window dimensions to determine 
@@ -58,7 +58,7 @@ function EnrollProgress(props) {
           <Defs>
             <Mask id="mask" x="0" y="0" height="100%" width="100%">
               <Rect height="100%" width="100%" fill="#fff" />
-              <Circle r={radius} cx={x} cy={y} fill="black" />
+              <Circle r={radius} cx={x} cy={y + 60} fill="black" />
             </Mask>
           </Defs>
           <Rect
