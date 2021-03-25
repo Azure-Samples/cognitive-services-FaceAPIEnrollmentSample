@@ -1,8 +1,9 @@
 import React from 'react';
 
-import {View, StyleSheet} from 'react-native';
+import { View, StyleSheet } from 'react-native';
+import { ScrollView } from 'react-native-gesture-handler';
 import CustomButton from './CustomButton';
-import {Subheading1, Title1} from './fontStyles';
+import { Subheading1, Title1 } from './fontStyles';
 
 export default function Modal(props) {
   return (
@@ -19,8 +20,8 @@ export default function Modal(props) {
               style={styles.buttonStyle}
             />
           ) : (
-            <View />
-          )}
+              <View />
+            )}
 
           {props.buttonRight ? (
             <CustomButton
@@ -30,8 +31,8 @@ export default function Modal(props) {
               style={styles.buttonStyle}
             />
           ) : (
-            <View />
-          )}
+              <View />
+            )}
         </View>
       </View>
     </View>
@@ -49,24 +50,24 @@ const styles = StyleSheet.create({
     backgroundColor: 'grey',
     justifyContent: 'center',
     alignItems: 'center',
-    paddingHorizontal: 10,
+    paddingHorizontal: 16,
   },
   modalText: {
-    maxWidth: 350,
+    maxWidth: 400,
   },
   modal: {
     backgroundColor: '#FFFFFF',
     paddingTop: 20,
     paddingHorizontal: 10,
     borderRadius: 4,
-    padding: 5,
   },
   buttons: {
     flexDirection: 'row',
     justifyContent: 'flex-end',
+    marginTop: 10,
   },
   buttonStyle: {
-    margin: 5,
+    margin: 0,
     borderWidth: 0,
   },
   blueText: {

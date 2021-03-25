@@ -112,7 +112,7 @@ describe('Login screen', () => {
     );
 
     await act(async () => {
-      fireEvent.press(getByText('Sign In'));
+      fireEvent.press(getByText('Sign in'));
     });
 
     let modal = getByText('Sign-in failed');

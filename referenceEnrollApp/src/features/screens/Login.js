@@ -1,8 +1,14 @@
 import React, {useState, useEffect} from 'react';
 
-import {View, StyleSheet, BackHandler, TextInput} from 'react-native';
+import {
+  View,
+  StyleSheet,
+  BackHandler,
+  TextInput,
+  Dimensions,
+} from 'react-native';
 import {saveUserInfoAction} from '../userEnrollment/saveUserInfoAction';
-import {useDispatch} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import {Caption, Headline, fontStyles, Title1} from '../../styles/fontStyles';
 import CustomButton from '../../styles/CustomButton';
 import {HeaderBackButton} from '@react-navigation/stack';
@@ -10,6 +16,7 @@ import Modal from '../../styles/Modal';
 import {checkEnrollmentExistsAction} from '../userEnrollment/newEnrollmentAction';
 import {StackActions} from '@react-navigation/native';
 import * as constants from '../../shared/constants';
+import useIsPortrait from '../portrait/isPortrait';
 
 /*
     IMPORTANT: 
@@ -35,6 +42,12 @@ function Login({route, navigation}) {
   const [usernameInput, setUsernameInput] = useState('');
   const [modalProps, setModalProps] = useState(null);
   const [showLoading, setShowLoading] = useState(false);
+
+  // Causes rerender when orientation changes
+  useIsPortrait();
+  var screenWidth = Dimensions.get('window').width;
+  var screenHeight = Dimensions.get('window').height;
+  var paddingTop = screenHeight < 400 ? 30 : 80;
 
   React.useLayoutEffect(() => {
     // Back button goes to Welcome page
@@ -183,57 +196,57 @@ function Login({route, navigation}) {
 
   return (
     <View style={styles.container}>
-      <View style={styles.smallRow} />
-
       {modalProps ? (
         <Modal {...modalProps}></Modal>
       ) : (
-        <View style={styles.centerRow}>
-          <View style={[styles.column1, {flex: 3, maxWidth: 300}]}>
+        <View style={[styles.centerRow, {paddingTop: paddingTop}]}>
+          <View style={styles.column1}>
             <Caption>Step 1 of 3</Caption>
 
             <Headline style={styles.headlineMargin}>
               Sign in to your Contoso corporate account
             </Headline>
-            <TextInput
-              style={
-                usernameFocused
-                  ? {...styles.textInputFocus, ...fontStyles.subheading1}
-                  : {...styles.textInputStyle, ...fontStyles.subheading1}
-              }
-              onChangeText={(text) => setUsernameInput(text)}
-              onFocus={() => {
-                setUsernameFocused(true);
-              }}
-              onBlur={() => {
-                setUsernameFocused(false);
-              }}
-              placeholder="Username"
-            />
-            <TextInput
-              style={
-                passwordFocused
-                  ? {...styles.textInputFocus, ...fontStyles.subheading1}
-                  : {...styles.textInputStyle, ...fontStyles.subheading1}
-              }
-              placeholder="Password"
-              secureTextEntry={true}
-              onFocus={() => {
-                setPasswordFocused(true);
-              }}
-              onBlur={() => {
-                setPasswordFocused(false);
-              }}
-            />
+            <View>
+              <TextInput
+                style={
+                  usernameFocused
+                    ? {...styles.textInputFocus, ...fontStyles.subheading1}
+                    : {...styles.textInputStyle, ...fontStyles.subheading1}
+                }
+                onChangeText={(text) => setUsernameInput(text)}
+                onFocus={() => {
+                  setUsernameFocused(true);
+                }}
+                onBlur={() => {
+                  setUsernameFocused(false);
+                }}
+                placeholder="Username"
+              />
+              <TextInput
+                style={
+                  passwordFocused
+                    ? [styles.textInputFocus, fontStyles.subheading1]
+                    : [styles.textInputStyle, fontStyles.subheading1]
+                }
+                placeholder="Password"
+                secureTextEntry={true}
+                onFocus={() => {
+                  setPasswordFocused(true);
+                }}
+                onBlur={() => {
+                  setPasswordFocused(false);
+                }}
+              />
+            </View>
             <View style={styles.buttonStyle}>
               <CustomButton
-                title="Sign In"
+                title="Sign in"
                 style={{width: 100}}
                 onPress={signIn}
               />
             </View>
           </View>
-          <View style={styles.column1} />
+          {screenWidth >= 600 ? <View style={styles.column1} /> : <View />}
         </View>
       )}
       {showLoading ? (
@@ -250,22 +263,21 @@ function Login({route, navigation}) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#E5E5E5',
+    backgroundColor: 'white',
     flexDirection: 'column',
   },
   centerRow: {
-    flex: 12,
+    flex: 1,
     flexDirection: 'row',
     justifyContent: 'center',
     alignSelf: 'center',
-    paddingLeft: 60,
     maxWidth: 840,
-  },
-  smallRow: {
-    flex: 1,
+    paddingLeft: 16,
+    paddingRight: 16,
+    backgroundColor: 'white',
   },
   column1: {
-    flex: 1,
+    flex: 6,
     flexDirection: 'column',
   },
   textInputStyle: {
@@ -283,7 +295,7 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   buttonStyle: {
-    marginTop: 100,
+    marginTop: 32,
     alignItems: 'flex-start',
   },
   splashScreen: {

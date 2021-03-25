@@ -7,20 +7,17 @@ import {useDispatch} from 'react-redux';
 import * as constants from '../../shared/constants';
 import {deletePersonGroup, validatePersonGroup} from '../../shared/helper';
 var RNFS = require('react-native-fs');
+import useIsPortrait from '../portrait/isPortrait';
 
 function Welcome({navigation}) {
   let dispatch = useDispatch();
-
-  const checkIsPortrait = () => {
-    const dim = Dimensions.get('window');
-    return dim.height >= dim.width;
-  };
+  var isPortrait = useIsPortrait();
 
   const setStyles = () => {
     let style;
-
     const dim = Dimensions.get('window');
-    if (dim.width <= 600) {
+
+    if (dim.width < 600) {
       style = {
         whiteBoxHeight: '60%',
         imgContainerHeight: dim.height / 2,
@@ -31,7 +28,7 @@ function Welcome({navigation}) {
         buttonContext: 'center',
         buttonFlex: 0,
       };
-    } else if (dim.width > 600 && dim.width < 840 && isPortrait) {
+    } else if (dim.width >= 600 && dim.width < 840 && isPortrait) {
       style = {
         whiteBoxHeight: '30%',
         imgContainerHeight: dim.height,
@@ -58,8 +55,7 @@ function Welcome({navigation}) {
     return style;
   };
 
-  const [isPortrait, setIsPortrait] = useState(checkIsPortrait());
-  const [responsiveStyles, setResponsiveStyles] = useState(setStyles());
+  var responsiveStyles = setStyles();
 
   const showAlert = () => {
     // For development and testing environment, expose settings page
@@ -96,21 +92,11 @@ function Welcome({navigation}) {
   };
 
   useEffect(() => {
-    const orientationCallback = () => {
-      setIsPortrait(checkIsPortrait());
-      setResponsiveStyles(setStyles());
-    };
-    Dimensions.addEventListener('change', orientationCallback);
-
     validatePersonGroup(CONFIG.PERSONGROUP_RGB).then((personGroupValidated) => {
       if (personGroupValidated == false) {
         showAlert();
       }
     });
-
-    return () => {
-      Dimensions.removeEventListener('change', orientationCallback);
-    };
   }, []);
 
   // This is for testing purposes
@@ -292,12 +278,12 @@ var styles = StyleSheet.create({
   buttons: {
     flex: 0,
     paddingRight: 20,
-    marginBottom: 20,
+    marginBottom: 15,
   },
   infoView: {
     flex: 2,
     justifyContent: 'center',
-    marginBottom: 24,
+    marginBottom: 14,
   },
   textPadding: {
     justifyContent: 'flex-end',

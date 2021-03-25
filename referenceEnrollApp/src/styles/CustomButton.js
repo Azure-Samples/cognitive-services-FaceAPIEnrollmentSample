@@ -1,7 +1,7 @@
 import React from 'react';
 
-import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
-import {Subheading2} from './fontStyles';
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { Subheading2 } from './fontStyles';
 
 export default function CustomButton(props) {
   return (
@@ -30,8 +30,8 @@ export default function CustomButton(props) {
 const styles = StyleSheet.create({
   defaultButton: {
     backgroundColor: '#0078D4',
-    paddingVertical: 15,
-    paddingHorizontal: 15,
+    paddingVertical: 12,
+    paddingHorizontal: 12,
     borderRadius: 4,
     alignItems: 'center',
   },
@@ -39,8 +39,8 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFFFFF',
     borderColor: '#0078D4',
     borderWidth: 1,
-    paddingVertical: 15,
-    paddingHorizontal: 15,
+    paddingVertical: 12,
+    paddingHorizontal: 12,
     borderRadius: 4,
     alignItems: 'center',
   },

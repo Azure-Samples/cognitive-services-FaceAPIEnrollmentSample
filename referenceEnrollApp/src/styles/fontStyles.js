@@ -16,11 +16,16 @@ function Caption(props) {
   );
 }
 
-function Body1({children}) {
+function Body1(props) {
   return (
     <Caption>
-      <Text style={[fontStyles.body1, useAndroidFont ? androidStyle.font : '']}>
-        {children}
+      <Text
+        style={[
+          fontStyles.body1,
+          props.style,
+          useAndroidFont ? androidStyle.font : '',
+        ]}>
+        {props.children}
       </Text>
     </Caption>
   );
@@ -119,7 +124,7 @@ const fontStyles = StyleSheet.create({
   },
 
   subheading2: {
-    fontWeight: 'bold',
+    fontWeight: '500',
   },
   title1: {
     fontSize: 20,

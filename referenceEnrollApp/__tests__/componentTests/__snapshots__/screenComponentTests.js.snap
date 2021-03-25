@@ -110,7 +110,7 @@ exports[`Welcome screen renders correctly 1`] = `
             Object {
               "flex": 2,
               "justifyContent": "center",
-              "marginBottom": 24,
+              "marginBottom": 14,
             }
           }
         >
@@ -174,7 +174,7 @@ exports[`Welcome screen renders correctly 1`] = `
               Array [
                 Object {
                   "flex": 0,
-                  "marginBottom": 20,
+                  "marginBottom": 15,
                   "paddingRight": 20,
                 },
                 Object {
@@ -206,8 +206,8 @@ exports[`Welcome screen renders correctly 1`] = `
                       "alignItems": "center",
                       "backgroundColor": "#0078D4",
                       "borderRadius": 4,
-                      "paddingHorizontal": 15,
-                      "paddingVertical": 15,
+                      "paddingHorizontal": 12,
+                      "paddingVertical": 12,
                     },
                     undefined,
                   ]
@@ -232,7 +232,7 @@ exports[`Welcome screen renders correctly 1`] = `
                     style={
                       Array [
                         Object {
-                          "fontWeight": "bold",
+                          "fontWeight": "500",
                         },
                         undefined,
                         "",
@@ -261,7 +261,7 @@ exports[`Welcome screen renders correctly 1`] = `
               Array [
                 Object {
                   "flex": 0,
-                  "marginBottom": 20,
+                  "marginBottom": 15,
                   "paddingRight": 20,
                 },
                 Object {
@@ -295,8 +295,8 @@ exports[`Welcome screen renders correctly 1`] = `
                       "borderColor": "#0078D4",
                       "borderRadius": 4,
                       "borderWidth": 1,
-                      "paddingHorizontal": 15,
-                      "paddingVertical": 15,
+                      "paddingHorizontal": 12,
+                      "paddingVertical": 12,
                     },
                     undefined,
                   ]
@@ -321,7 +321,7 @@ exports[`Welcome screen renders correctly 1`] = `
                     style={
                       Array [
                         Object {
-                          "fontWeight": "bold",
+                          "fontWeight": "500",
                         },
                         undefined,
                         "",
@@ -350,7 +350,7 @@ exports[`Welcome screen renders correctly 1`] = `
               Array [
                 Object {
                   "flex": 0,
-                  "marginBottom": 20,
+                  "marginBottom": 15,
                   "paddingRight": 20,
                 },
                 Object {

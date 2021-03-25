@@ -1,6 +1,13 @@
-import React, {useState, useEffect} from 'react';
+import React, {useEffect} from 'react';
 
-import {View, StyleSheet, BackHandler, ScrollView, Image} from 'react-native';
+import {
+  View,
+  StyleSheet,
+  BackHandler,
+  ScrollView,
+  Image,
+  Dimensions,
+} from 'react-native';
 import {
   Caption,
   Headline,
@@ -12,8 +19,12 @@ import {
 import CustomButton from '../../styles/CustomButton';
 import {StackActions} from '@react-navigation/native';
 import {HeaderBackButton} from '@react-navigation/stack';
+import useIsPortrait from '../portrait/isPortrait';
 
 function Receipt({navigation}) {
+  useIsPortrait();
+  var screenWidth = Dimensions.get('window').width;
+
   React.useLayoutEffect(() => {
     // Back button goes to Welcome page
     navigation.setOptions({
@@ -39,7 +50,6 @@ function Receipt({navigation}) {
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
-      <View style={styles.smallRow} />
       <View style={styles.centerRow}>
         <View style={styles.column1}>
           <View style={{marginBottom: 30}}>
@@ -57,18 +67,14 @@ function Receipt({navigation}) {
             </Subheading1>
           </View>
 
-          <View style={styles.picturesRow}>
+          <View>
             <View style={styles.column1}>
-              <View
-                style={{
-                  borderBottomWidth: 1,
-                  paddingBottom: 20,
-                  marginBottom: 10,
-                }}>
+              <View>
                 <Body2 style={styles.blueheading}>
                   Summary of data being stored
                 </Body2>
               </View>
+              <View style={styles.borderLine}></View>
               <View style={styles.borderLine}>
                 <View style={[styles.rowNoFlex, {height: 100}]}>
                   <View style={[{flex: 1}]}>
@@ -170,11 +176,9 @@ function Receipt({navigation}) {
 
           <View
             style={{
-              flex: 1,
               marginTop: 25,
               marginBottom: 30,
               flexDirection: 'column',
-              alignItems: 'center',
             }}>
             <CustomButton
               title="Back to home"
@@ -185,6 +189,8 @@ function Receipt({navigation}) {
             />
           </View>
         </View>
+
+        <View style={screenWidth >= 600 ? { flex: 5 } : {}}></View>
       </View>
     </ScrollView>
   );
@@ -200,8 +206,9 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'row',
     alignSelf: 'center',
-    paddingLeft: 40,
-    paddingRight: 40,
+    marginTop: 80,
+    paddingLeft: 16,
+    paddingRight: 16,
     maxWidth: 840,
   },
   borderLine: {
@@ -226,9 +233,8 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   column1: {
-    flex: 0,
+    flex: 7,
     flexDirection: 'column',
-    paddingRight: 30,
   },
   imgFormat: {
     flex: 1,
@@ -236,10 +242,6 @@ const styles = StyleSheet.create({
     height: null,
     borderRadius: 4,
     resizeMode: 'contain',
-  },
-  picturesRow: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
   },
   shadeBox: {
     backgroundColor: '#F8F8F8',
@@ -256,7 +258,7 @@ const styles = StyleSheet.create({
   },
   buttonStyle: {
     marginTop: 20,
-    minWidth: 200,
+    width: 140,
   },
   blueheading: {
     color: '#0078D4',
