@@ -1,22 +1,37 @@
 import * as constants from '../../shared/constants';
 import {CONFIG} from '../../env/env.json';
-import * as RNFS from 'react-native-fs';
+import {Platform} from 'react-native';
+var RNFS;
+if (Platform.OS != 'windows') {
+  RNFS = require('react-native-fs');
+}
 
 export const saveUserInfoAction = (username) => {
   return async (dispatch, getState) => {
     let infoSaved = true;
     let personId;
 
-    let path = RNFS.DocumentDirectoryPath + '/enrollment/' + username + '.txt';
-    console.log('path', path);
-    let fileExists = await RNFS.exists(path);
-    if (fileExists) {
-      console.log('exists');
-      let mapping = await RNFS.readFile(path, 'utf8');
-      console.log('mapping', mapping);
+    let path;
 
-      if (mapping && mapping != '') {
-        personId = mapping.split(',')[1];
+    if (Platform.OS == 'windows') {
+      console.log('hereeee');
+      var mapping = constants.EnrollDict.username;
+      console.log(mapping);
+      if (mapping) {
+        personId = constants.EnrollDict.username[CONFIG.PERSONGROUP_RGB];
+      }
+    } else {
+      path = RNFS.DocumentDirectoryPath + '/enrollment/' + username + '.txt';
+      console.log('path', path);
+      let fileExists = await RNFS.exists(path);
+      if (fileExists) {
+        console.log('exists');
+        let mapping = await RNFS.readFile(path, 'utf8');
+        console.log('mapping', mapping);
+
+        if (mapping && mapping != '') {
+          personId = mapping.split(',')[1];
+        }
       }
     }
 
@@ -43,13 +58,18 @@ export const saveUserInfoAction = (username) => {
 
         let mappingdata = CONFIG.PERSONGROUP_RGB + ',' + personId;
 
-        try {
-          await RNFS.writeFile(path, mappingdata, 'utf8');
-          console.log('FILE WRITTEN');
-          infoSaved = true;
-        } catch (error) {
-          console.log('Error writing file', error.message);
-          infoSaved = false;
+        if (Platform.OS == 'windows') {
+          constants.EnrollDict.username = username;
+          constants.EnrollDict.username[CONFIG.PERSONGROUP_RGB] = personId;
+        } else {
+          try {
+            await RNFS.writeFile(path, mappingdata, 'utf8');
+            console.log('FILE WRITTEN');
+            infoSaved = true;
+          } catch (error) {
+            console.log('Error writing file', error.message);
+            infoSaved = false;
+          }
         }
       } else {
         console.log('Create person failure: ', response);
@@ -62,7 +82,7 @@ export const saveUserInfoAction = (username) => {
       personIdRgb: !personId ? '' : personId,
       personidIr: '',
     };
-
+    console.log(constants.EnrollDict);
     dispatch(setUserInfo(userInfo));
     return infoSaved;
   };

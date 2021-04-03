@@ -1,7 +1,7 @@
 import React from 'react';
 import {View, StyleSheet, Dimensions} from 'react-native';
-import {Svg, Defs, Rect, Mask, Circle} from 'react-native-svg';
-import {AnimatedCircularProgress} from 'react-native-circular-progress';
+// import {Svg, Defs, Rect, Mask, Circle} from 'react-native-svg';
+// import {AnimatedCircularProgress} from 'react-native-circular-progress';
 import EnrollFeedback from '../feedback/EnrollFeedback';
 import {CONFIG} from '../../env/env.json';
 import useIsPortrait from '../portrait/isPortrait';
@@ -53,7 +53,7 @@ function EnrollProgress(props) {
 
   return (
     <View>
-      <View style={{position: 'absolute'}}>
+      {/* <View style={{position: 'absolute'}}>
         <Svg height={height} width={width}>
           <Defs>
             <Mask id="mask" x="0" y="0" height="100%" width="100%">
@@ -69,14 +69,14 @@ function EnrollProgress(props) {
             fill-opacity="0"
           />
         </Svg>
-      </View>
+      </View> */}
 
       <View style={([styles.root], {top: y - radius - 50})}>
         <View style={styles.feedback}>
           <EnrollFeedback />
         </View>
         <View style={{left: x - radius}}>
-          <AnimatedCircularProgress
+          {/* <AnimatedCircularProgress
             size={radius * 2}
             duration={progressDuration}
             width={10}
@@ -84,7 +84,7 @@ function EnrollProgress(props) {
             rotation={0}
             tintColor="#92C353"
             backgroundColor="white"
-          />
+          /> */}
         </View>
       </View>
     </View>

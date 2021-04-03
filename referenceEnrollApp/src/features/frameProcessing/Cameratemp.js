@@ -1,9 +1,11 @@
 import React, {useEffect} from 'react';
-import {View, StyleSheet} from 'react-native';
+import {View, StyleSheet, NativeModules} from 'react-native';
 
 // Camera component for Windows
 export default function Camera(props) {
   useEffect(() => {}, []);
+
+  console.log(NativeModules.fancymath.Pi);
 
   return (
     <View style={styles.root}>

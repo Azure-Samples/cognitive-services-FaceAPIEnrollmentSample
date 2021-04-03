@@ -14,7 +14,7 @@ namespace referenceEnrollApp
             InstanceSettings.UseWebDebugger = false;
             InstanceSettings.UseFastRefresh = false;
 #else
-            JavaScriptMainModuleName = "index";
+            JavaScriptMainModuleName = "index.native";
             InstanceSettings.UseWebDebugger = true;
             InstanceSettings.UseFastRefresh = true;
 #endif

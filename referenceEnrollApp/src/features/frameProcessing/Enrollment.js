@@ -19,7 +19,7 @@ function Enrollment(props) {
   // State
   const [enrollStarted, setEnrollStarted] = useState(false);
   const [rgbProgress, setRgbProgress] = useState(0);
-  const [cancelToken, setCancelToken] = useState(null);
+  const [cancelToken, setCancelToken] = useState(new CancellationToken());
 
   const progressRef = useRef(rgbProgress);
 

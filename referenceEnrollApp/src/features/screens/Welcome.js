@@ -1,17 +1,29 @@
 import React, {useEffect, useState} from 'react';
-import {View, StyleSheet, Alert, Dimensions, Image} from 'react-native';
+import {
+  View,
+  StyleSheet,
+  Alert,
+  Dimensions,
+  Image,
+  NativeModules,
+  requireNativeComponent,
+} from 'react-native';
 import {Caption, Headline, Subheading1} from '../../styles/fontStyles';
 import CustomButton from '../../styles/CustomButton';
 import {CONFIG} from '../../env/env.json';
 import {useDispatch} from 'react-redux';
 import * as constants from '../../shared/constants';
 import {deletePersonGroup, validatePersonGroup} from '../../shared/helper';
-var RNFS = require('react-native-fs');
+//var RNFS = require('react-native-fs');
 import useIsPortrait from '../portrait/isPortrait';
+
+let Cam = requireNativeComponent('WindowsCameraView');
 
 function Welcome({navigation}) {
   let dispatch = useDispatch();
   var isPortrait = useIsPortrait();
+
+  console.log(NativeModules.fancymath.Pi);
 
   const setStyles = () => {
     let style;
@@ -100,30 +112,30 @@ function Welcome({navigation}) {
   }, []);
 
   // This is for testing purposes
-  const clearAllData = () => {
-    RNFS.readDir(RNFS.DocumentDirectoryPath + '/enrollment/')
-      .then((result) => {
-        console.log('files', result);
+  // const clearAllData = () => {
+  //   RNFS.readDir(RNFS.DocumentDirectoryPath + '/enrollment/')
+  //     .then((result) => {
+  //       console.log('files', result);
 
-        // stat the first file
-        return result;
-      })
-      .then((result) => {
-        for (let item of result) {
-          if (item.isFile()) {
-            console.log('deleting', item.path);
-            RNFS.unlink(item.path);
-          }
-        }
-      })
-      .catch((err) => {
-        console.log(err.message, err.code);
-      });
+  //       // stat the first file
+  //       return result;
+  //     })
+  //     .then((result) => {
+  //       for (let item of result) {
+  //         if (item.isFile()) {
+  //           console.log('deleting', item.path);
+  //           RNFS.unlink(item.path);
+  //         }
+  //       }
+  //     })
+  //     .catch((err) => {
+  //       console.log(err.message, err.code);
+  //     });
 
-    deletePersonGroup(CONFIG.PERSONGROUP_RGB).then((res) => {
-      console.log('Delete result:', res);
-    });
-  };
+  //   deletePersonGroup(CONFIG.PERSONGROUP_RGB).then((res) => {
+  //     console.log('Delete result:', res);
+  //   });
+  // };
 
   return (
     <View style={styles.container}>
@@ -148,6 +160,9 @@ function Welcome({navigation}) {
 
         <View style={isPortrait ? styles.boxContainerP : styles.boxContainerL}>
           <View style={{flex: responsiveStyles.leftBoxFlex}} />
+          <View style={{height: 200, width: 200}}>
+            <Cam type="1" size="1" style={{height: 100, width: 100}}></Cam>
+          </View>
           <View
             style={[
               styles.whiteBox,

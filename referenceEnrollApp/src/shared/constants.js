@@ -78,3 +78,5 @@ export var FACEAPI_ENDPOINT = process.env.FACEAPI_ENDPOINT;
 export var FACEAPI_KEY = process.env.FACEAPI_KEY;
 
 export const mutex = new Mutex();
+
+export var EnrollDict = {};

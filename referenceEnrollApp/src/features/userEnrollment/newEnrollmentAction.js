@@ -1,7 +1,12 @@
 import * as constants from '../../shared/constants';
 import {CONFIG} from '../../env/env.json';
-var RNFS = require('react-native-fs');
+var RNFS;
+if (Platform.OS != 'windows') {
+  RNFS = require('react-native-fs');
+}
+
 import {setUserInfo} from './saveUserInfoAction';
+import {Platform} from 'react-native';
 
 export const checkEnrollmentExistsAction = (username) => {
   return async (dispatch) => {
@@ -9,29 +14,38 @@ export const checkEnrollmentExistsAction = (username) => {
         This app writes to the enrollment directory path for demonstration only.
         Store existing enrollment information in a secured database. 
     */
-    let path = RNFS.DocumentDirectoryPath + '/enrollment/' + username + '.txt';
-    let fileExists = await RNFS.exists(path);
-    if (fileExists) {
-      let mapping = await RNFS.readFile(path, 'utf8');
-      if (mapping && mapping != '') {
-        let personGroup = mapping.split(',')[0];
-        let personId = mapping.split(',')[1];
 
-        if (
-          personGroup == CONFIG.PERSONGROUP_RGB &&
-          personId &&
-          personId != ''
-        ) {
-          let userInfo = {
-            username: username,
-            personIdRgb: personId,
-            personidIr: '',
-          };
+    let personGroup = '';
+    let personId = '';
 
-          dispatch(setUserInfo(userInfo));
-          return true;
+    if (Platform.OS == 'windows') {
+      var mapping = constants.EnrollDict.username;
+      if (mapping) {
+        personId = constants.EnrollDict.username[CONFIG.PERSONGROUP_RGB];
+        personGroup = CONFIG.PERSONGROUP_RGB;
+      }
+    } else {
+      let path =
+        RNFS.DocumentDirectoryPath + '/enrollment/' + username + '.txt';
+      let fileExists = await RNFS.exists(path);
+      if (fileExists) {
+        let mapping = await RNFS.readFile(path, 'utf8');
+        if (mapping && mapping != '') {
+          personGroup = mapping.split(',')[0];
+          personId = mapping.split(',')[1];
         }
       }
+    }
+
+    if (personGroup == CONFIG.PERSONGROUP_RGB && personId && personId != '') {
+      let userInfo = {
+        username: username,
+        personIdRgb: personId,
+        personidIr: '',
+      };
+
+      dispatch(setUserInfo(userInfo));
+      return true;
     }
 
     return false;
@@ -101,7 +115,6 @@ export const deleteEnrollmentAction = () => {
     }
 
     let username = getState().userInfo.username;
-    let path = RNFS.DocumentDirectoryPath + '/enrollment/' + username + '.txt';
 
     // Delete person
     let deletePersonEndpoint =
@@ -123,13 +136,19 @@ export const deleteEnrollmentAction = () => {
 
       // only delete file if this was new enrollment
       if (personId != newPersonId) {
-        RNFS.unlink(path)
-          .then(() => {
-            console.log('FILE DELETED');
-          })
-          .catch((err) => {
-            console.log(err.message);
-          });
+        if (Platform.OS == 'windows') {
+          constants.EnrollDict.username[PERSONGROUP_RGB] = undefined;
+        } else {
+          let path =
+            RNFS.DocumentDirectoryPath + '/enrollment/' + username + '.txt';
+          RNFS.unlink(path)
+            .then(() => {
+              console.log('FILE DELETED');
+            })
+            .catch((err) => {
+              console.log(err.message);
+            });
+        }
       }
 
       return true;
@@ -169,7 +188,6 @@ export const deleteOldEnrollmentAction = () => {
     }
 
     let username = getState().userInfo.username;
-    let path = RNFS.DocumentDirectoryPath + '/enrollment/' + username + '.txt';
 
     // Delete person
     let deletePersonEndpoint =
@@ -190,24 +208,31 @@ export const deleteOldEnrollmentAction = () => {
 
     if (response.status == '200') {
       // delete file
-      RNFS.unlink(path)
-        .then(() => {
-          console.log('FILE DELETED');
-        })
-        .catch((err) => {
-          console.log(err.message);
-        });
+      if (Platform.OS == 'windows') {
+        constants.EnrollDict.username[PERSONGROUP_RGB] = personIdNew;
+      } else {
+        let path =
+          RNFS.DocumentDirectoryPath + '/enrollment/' + username + '.txt';
 
-      let mappingData = CONFIG.PERSONGROUP_RGB + ',' + personIdNew;
-      console.log('new mapping ', mappingData);
+        RNFS.unlink(path)
+          .then(() => {
+            console.log('FILE DELETED');
+          })
+          .catch((err) => {
+            console.log(err.message);
+          });
 
-      RNFS.writeFile(path, mappingData, 'utf8')
-        .then((success) => {
-          console.log('FILE WRITTEN');
-        })
-        .catch((err) => {
-          console.log(err.message);
-        });
+        let mappingData = CONFIG.PERSONGROUP_RGB + ',' + personIdNew;
+        console.log('new mapping ', mappingData);
+
+        RNFS.writeFile(path, mappingData, 'utf8')
+          .then((success) => {
+            console.log('FILE WRITTEN');
+          })
+          .catch((err) => {
+            console.log(err.message);
+          });
+      }
 
       return true;
     }
