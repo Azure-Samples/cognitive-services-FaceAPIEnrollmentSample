@@ -1,0 +1,39 @@
+﻿<!--
+
+Copyright (c) Microsoft Corporation. All rights reserved.
+
+This code is licensed under the MIT License (MIT).
+THIS CODE IS PROVIDED *AS IS* WITHOUT WARRANTY OF
+ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING ANY
+IMPLIED WARRANTIES OF FITNESS FOR A PARTICULAR
+PURPOSE, MERCHANTABILITY, OR NON-INFRINGEMENT.
+
+-->
+<Page
+    x:Class="ExampleMediaCaptureUWP.MainPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:ExampleMediaCaptureUWP"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:compatibility="using:Microsoft.UI.Xaml.Controls"
+    mc:Ignorable="d"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+    <compatibility:NavigationView x:Name="NavigationView"
+                                  IsSettingsVisible="False"
+                                  PaneDisplayMode="Top"
+                                  Loaded="NavigationView_Loaded"
+                                  ItemInvoked="NavigationView_ItemInvoked">
+        <compatibility:NavigationView.MenuItems>
+            <compatibility:NavigationViewItem Content="Home"
+                                              Tag="Home"/>
+            <compatibility:NavigationViewItem Content="Data Collect"
+                                              Tag="DataCollect"/>
+            <compatibility:NavigationViewItem Content="Frame Rate"
+                                              Tag="AccessControl"/>
+        </compatibility:NavigationView.MenuItems>
+        <Frame x:Name="NavigationViewFrame"></Frame>
+    </compatibility:NavigationView>
+
+
+</Page>
