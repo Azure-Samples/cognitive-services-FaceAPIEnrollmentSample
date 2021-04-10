@@ -1,5 +1,6 @@
 import UserAgent from 'react-native-user-agent';
 import {CONFIG} from '../env/env.json';
+import {requireNativeComponent} from 'react-native';
 
 import createQualityFilter from '../features/filtering/filters';
 import {Mutex} from 'async-mutex';
@@ -80,3 +81,5 @@ export var FACEAPI_KEY = process.env.FACEAPI_KEY;
 export const mutex = new Mutex();
 
 export var EnrollDict = {};
+
+export var Cam = requireNativeComponent('WindowsCameraView');

@@ -165,14 +165,17 @@ function Enrollment(props) {
     */
 
     setEnrollStarted(true);
-
-    let t1 = performance.now();
-    runEnrollment().then((enrollmentResult) => {
-      props.onCompleted(enrollmentResult);
-      let t2 = performance.now();
-
-      console.log('Total enrollment time:', t2 - t1);
+    props.takePicture().then((pic) => {
+      console.log('TOOK PIC: ', pic);
     });
+
+    // let t1 = performance.now();
+    // runEnrollment().then((enrollmentResult) => {
+    //   props.onCompleted(enrollmentResult);
+    //   let t2 = performance.now();
+
+    //   console.log('Total enrollment time:', t2 - t1);
+    // });
   }
 
   function cancelEnrollment() {

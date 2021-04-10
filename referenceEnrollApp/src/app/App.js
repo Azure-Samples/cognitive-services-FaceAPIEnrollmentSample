@@ -22,6 +22,8 @@ import * as constants from '../shared/constants';
 const Stack = createStackNavigator();
 const store = configureStore();
 
+
+
 const App = () => {
   console.log(Platform.OS == 'windows');
   /*

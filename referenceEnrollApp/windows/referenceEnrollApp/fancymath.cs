@@ -16,7 +16,11 @@ namespace referenceEnrollApp
         public double Add(double a, double b)
         {
             double result = a + b;
+            AddEvent(result);
             return result;
         }
+
+        [ReactEvent]
+        public Action<double> AddEvent { get; set; }
     }
 }

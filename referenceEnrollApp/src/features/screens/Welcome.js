@@ -7,6 +7,7 @@ import {
   Image,
   NativeModules,
   requireNativeComponent,
+  NativeEventEmitter,
 } from 'react-native';
 import {Caption, Headline, Subheading1} from '../../styles/fontStyles';
 import CustomButton from '../../styles/CustomButton';
@@ -16,14 +17,14 @@ import * as constants from '../../shared/constants';
 import {deletePersonGroup, validatePersonGroup} from '../../shared/helper';
 //var RNFS = require('react-native-fs');
 import useIsPortrait from '../portrait/isPortrait';
-
-let Cam = requireNativeComponent('WindowsCameraView');
+//import {Cam} from '../../shared/constants';
 
 function Welcome({navigation}) {
   let dispatch = useDispatch();
   var isPortrait = useIsPortrait();
 
-  console.log(NativeModules.fancymath.Pi);
+  console.log(NativeModules.fancymath);
+  console.log(NativeModules.WindowsCameraViewManager);
 
   const setStyles = () => {
     let style;
@@ -108,6 +109,8 @@ function Welcome({navigation}) {
       if (personGroupValidated == false) {
         showAlert();
       }
+
+      console.log('added listener');
     });
   }, []);
 
@@ -160,9 +163,6 @@ function Welcome({navigation}) {
 
         <View style={isPortrait ? styles.boxContainerP : styles.boxContainerL}>
           <View style={{flex: responsiveStyles.leftBoxFlex}} />
-          <View style={{height: 200, width: 200}}>
-            <Cam type="1" size="1" style={{height: 100, width: 100}}></Cam>
-          </View>
           <View
             style={[
               styles.whiteBox,
