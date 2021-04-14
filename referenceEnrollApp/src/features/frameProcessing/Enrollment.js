@@ -60,6 +60,7 @@ function Enrollment(props) {
 
   // Runs entire enrollment flow
   const runEnrollment = async () => {
+    console.log('ENROLLMENT BEGINS');
     const timeoutInMs = CONFIG.ENROLL_SETTINGS.TIMEOUT_SECONDS * 1000;
 
     let timer = setTimeout(() => {
@@ -112,17 +113,24 @@ function Enrollment(props) {
     };
 
     // Begin enrollment
+
+    var i = 0;
     while (
       !enrollmentSucceeded &&
-      cancelToken.isCancellationRequested == false
+      cancelToken.isCancellationRequested == false &&
+      i < 3
     ) {
       let frame = await props.takePicture();
+      console.log('ENROLLING frame', frame);
       if (frame) {
         // Prevent too many process requests
         if (completedTaskCount > tasks.length - 5) {
           tasks.push(processFrame(frame));
         }
+      } else {
+        console.log('issue');
       }
+      i++;
     }
 
     console.log('Clearing timeout');
@@ -165,17 +173,17 @@ function Enrollment(props) {
     */
 
     setEnrollStarted(true);
-    props.takePicture().then((pic) => {
-      console.log('TOOK PIC: ', pic);
-    });
-
-    // let t1 = performance.now();
-    // runEnrollment().then((enrollmentResult) => {
-    //   props.onCompleted(enrollmentResult);
-    //   let t2 = performance.now();
-
-    //   console.log('Total enrollment time:', t2 - t1);
+    // props.takePicture().then((pic) => {
+    //   console.log('TOOK PIC: ', pic);
     // });
+
+    let t1 = performance.now();
+    runEnrollment().then((enrollmentResult) => {
+      props.onCompleted(enrollmentResult);
+      let t2 = performance.now();
+
+      console.log('Total enrollment time:', t2 - t1);
+    });
   }
 
   function cancelEnrollment() {

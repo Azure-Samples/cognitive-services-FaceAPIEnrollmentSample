@@ -16,7 +16,7 @@ namespace referenceEnrollApp
         public double Add(double a, double b)
         {
             double result = a + b;
-            AddEvent(result);
+           // AddEvent(result);
             return result;
         }
 

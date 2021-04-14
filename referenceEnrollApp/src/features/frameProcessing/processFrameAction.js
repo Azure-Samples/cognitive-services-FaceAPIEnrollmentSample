@@ -14,7 +14,6 @@ export const getFilteredFaceAction = (frameData) => {
       let passedFilters = dispatch(filterFaceAction(face));
       return passedFilters ? face : {};
     }
-
     return {};
   };
 };
@@ -59,7 +58,9 @@ export const detectFaceAction = (frameData) => {
         return faceToEnroll;
       }
     } else {
-      console.log('Detect failure: ', response);
+      let result = await response.text();
+      let detectResult = JSON.parse(result);
+      console.log('Detect failure: ', detectResult);
       // return empty face object
       return {};
     }

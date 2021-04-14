@@ -7,8 +7,8 @@ import {Cam} from '../../shared/constants';
 // Camera component for Android
 export default function Camera(props) {
   const [startEnroll, setStartEnroll] = useState(false);
+  const [frame, setFrame] = useState(0);
   //let cameraRef = React.useRef(null);
-  var rgb = 0;
 
   console.log(NativeModules.WindowsCameraViewManager);
 
@@ -26,15 +26,20 @@ export default function Camera(props) {
     if (startEnroll == false) {
       setStartEnroll(true);
     }
-    console.log('fire ', data.nativeEvent);
-    if (data.nativeEvent == 'Color') {
-      console.log('setting to 5');
-      rgb = 5;
-    }
+    setFrame(data.nativeEvent);
+    console.log('fire');
   }
 
   async function takeBase64Picture() {
-    return rgb;
+    // console.log('called');
+    // NativeModules.fancymath.add(2, 2, function (ans) {
+    //   console.log('ans', ans);
+    // });
+    // NativeModules.WindowsCameraViewManager.takepic(function (pic) {
+    //   console.log('pic', pic);
+    // });
+    console.log('taking pic');
+    return frame;
   }
 
   return (

@@ -16,6 +16,9 @@ using Windows.ApplicationModel.Appointments.DataProvider;
 using Examples.Media.Capture.Frames;
 using Windows.UI.Core;
 using Microsoft.ReactNative;
+using Windows.Storage.Streams;
+using Windows.Graphics.Imaging;
+using System.Runtime.InteropServices.WindowsRuntime;
 
 namespace referenceEnrollApp
 {
@@ -71,29 +74,25 @@ namespace referenceEnrollApp
         public void frameArriveUIEvent()
         {
             var k = props.Get(prop);
-            ///FrameArrivedEvent?.Invoke(wcs.CaptureElement, k.ToString());
-        }
-
-        [ReactMethod]
-        public string takePicture()
-        {
-            var k = props.Get(prop);
-            return k.ToString();
+            FrameArrivedEvent?.Invoke(wcs.CaptureElement, k.ToString());
         }
 
         public void FrameReader_FrameArrived(ExampleMediaFrameReader sender, ExampleMediaFrameArrivedEventArgs args)
         {
             try
             {
-
                 using (var mediaFrameReference = sender.TryAcquireLatestFrameBySourceKind(args.SourceKind))
                 {
                     if (dispatcher.HasThreadAccess == false)
                     {
                         if (mediaFrameReference != null)
                         {
-                            props.Set(prop, mediaFrameReference?.SourceKind);
-                            dispatcher.Post(callback);
+                            if(mediaFrameReference.SourceKind == MediaFrameSourceKind.Color)
+                            {
+                                var base64 = ConvertToBase64(mediaFrameReference).GetAwaiter().GetResult();
+                                props.Set(prop, base64);
+                                dispatcher.Post(callback);
+                            }
                         }
                     }
                 }
@@ -102,6 +101,44 @@ namespace referenceEnrollApp
             finally
             {
             }
+        }
+
+        private async Task<string> ConvertToBase64(MediaFrameReference mediaFrameReference)
+        {
+            var bitmap = mediaFrameReference.VideoMediaFrame.SoftwareBitmap;
+            byte[] array = null;
+            string base64 = "";
+
+            using (var ms = new InMemoryRandomAccessStream())
+            {
+                SoftwareBitmap compatibleBitmap = null;
+                Action cleanupAction = () => { };
+                if (bitmap.BitmapPixelFormat != BitmapPixelFormat.Bgra8 ||
+                    bitmap.BitmapAlphaMode != BitmapAlphaMode.Ignore)
+                {
+                    compatibleBitmap = SoftwareBitmap.Convert(bitmap, BitmapPixelFormat.Bgra8, BitmapAlphaMode.Ignore);
+                    cleanupAction = () => compatibleBitmap.Dispose();
+                }
+                else
+                {
+                    compatibleBitmap = bitmap;
+                }
+
+                BitmapEncoder encoder = await BitmapEncoder.CreateAsync(BitmapEncoder.PngEncoderId, ms);
+                encoder.SetSoftwareBitmap(compatibleBitmap);
+
+                try
+                {
+                    await encoder.FlushAsync();
+                }
+                catch (Exception ex) { }
+
+                array = new byte[ms.Size];
+                await ms.ReadAsync(array.AsBuffer(), (uint)ms.Size, InputStreamOptions.None);
+                base64 = Convert.ToBase64String(array);
+            }
+
+            return base64;
         }
 
         public class nameProperty : IReactPropertyName
