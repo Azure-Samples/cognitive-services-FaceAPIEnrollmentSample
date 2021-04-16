@@ -137,7 +137,7 @@ export const deleteEnrollmentAction = () => {
       // only delete file if this was new enrollment
       if (personId != newPersonId) {
         if (Platform.OS == 'windows') {
-          constants.EnrollDict.username[PERSONGROUP_RGB] = undefined;
+          constants.EnrollDict.username[CONFIG.PERSONGROUP_RGB] = undefined;
         } else {
           let path =
             RNFS.DocumentDirectoryPath + '/enrollment/' + username + '.txt';
@@ -209,7 +209,7 @@ export const deleteOldEnrollmentAction = () => {
     if (response.status == '200') {
       // delete file
       if (Platform.OS == 'windows') {
-        constants.EnrollDict.username[PERSONGROUP_RGB] = personIdNew;
+        constants.EnrollDict.username[CONFIG.PERSONGROUP_RGB] = personIdNew;
       } else {
         let path =
           RNFS.DocumentDirectoryPath + '/enrollment/' + username + '.txt';

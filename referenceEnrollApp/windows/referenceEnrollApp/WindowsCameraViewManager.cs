@@ -35,9 +35,9 @@ namespace referenceEnrollApp
 
         private IReactPropertyBag props;
 
-        private namespaceProperty nsp;
+        //private namespaceProperty nsp;
 
-        private nameProperty prop;
+        //private nameProperty prop;
 
         public override string Name
         {
@@ -55,8 +55,8 @@ namespace referenceEnrollApp
             callback = new ReactDispatcherCallback(frameArriveUIEvent);
             props = ReactPropertyBagHelper.CreatePropertyBag();
 
-            nsp = new namespaceProperty("WindowsCameraViewManager");
-            prop = new nameProperty("FraveArrive", nsp);
+            //nsp = new namespaceProperty("WindowsCameraViewManager");
+            //prop = new nameProperty("FraveArrive", nsp);
 
             wcs = new WindowsCameraSource(view, FrameReader_FrameArrived);
             return view;
@@ -73,7 +73,8 @@ namespace referenceEnrollApp
 
         public void frameArriveUIEvent()
         {
-            var k = props.Get(prop);
+            var k = props.Get(propertyName);
+            //props.Set(propertyName, null);
             FrameArrivedEvent?.Invoke(wcs.CaptureElement, k.ToString());
         }
 
@@ -89,8 +90,8 @@ namespace referenceEnrollApp
                         {
                             if(mediaFrameReference.SourceKind == MediaFrameSourceKind.Color)
                             {
-                                var base64 = ConvertToBase64(mediaFrameReference).GetAwaiter().GetResult();
-                                props.Set(prop, base64);
+                               var base64 = ConvertToBase64(mediaFrameReference).GetAwaiter().GetResult();
+                                props.Set(propertyName, base64);
                                 dispatcher.Post(callback);
                             }
                         }
@@ -112,19 +113,21 @@ namespace referenceEnrollApp
             using (var ms = new InMemoryRandomAccessStream())
             {
                 SoftwareBitmap compatibleBitmap = null;
-                Action cleanupAction = () => { };
                 if (bitmap.BitmapPixelFormat != BitmapPixelFormat.Bgra8 ||
                     bitmap.BitmapAlphaMode != BitmapAlphaMode.Ignore)
                 {
                     compatibleBitmap = SoftwareBitmap.Convert(bitmap, BitmapPixelFormat.Bgra8, BitmapAlphaMode.Ignore);
-                    cleanupAction = () => compatibleBitmap.Dispose();
                 }
                 else
                 {
                     compatibleBitmap = bitmap;
                 }
+                var encodingOptions = new BitmapPropertySet();
+                encodingOptions.Add("ImageQuality", new BitmapTypedValue(
+                        1.0, // Maximum quality
+                        Windows.Foundation.PropertyType.Single));
 
-                BitmapEncoder encoder = await BitmapEncoder.CreateAsync(BitmapEncoder.PngEncoderId, ms);
+                BitmapEncoder encoder = await BitmapEncoder.CreateAsync(BitmapEncoder.JpegEncoderId, ms, encodingOptions);
                 encoder.SetSoftwareBitmap(compatibleBitmap);
 
                 try
@@ -136,31 +139,36 @@ namespace referenceEnrollApp
                 array = new byte[ms.Size];
                 await ms.ReadAsync(array.AsBuffer(), (uint)ms.Size, InputStreamOptions.None);
                 base64 = Convert.ToBase64String(array);
+                compatibleBitmap.Dispose();
             }
 
             return base64;
         }
 
-        public class nameProperty : IReactPropertyName
+        private static IReactPropertyNamespace propertyNamespace = ReactPropertyBagHelper.GetNamespace("WindowsCameraViewManager");
+        private static IReactPropertyName propertyName = ReactPropertyBagHelper.GetName(propertyNamespace, "FrameArrive");
+    /*
+    public class nameProperty : IReactPropertyName
+    {
+        public nameProperty(string name, IReactPropertyNamespace ns)
         {
-            public nameProperty(string name, IReactPropertyNamespace ns)
-            {
-                LocalName = name;
-                Namespace = ns;
-            }
-
-            public string LocalName { get; set; }
-
-            public IReactPropertyNamespace Namespace { get; set; }
+            LocalName = name;
+            Namespace = ns;
         }
 
-        public class namespaceProperty : IReactPropertyNamespace
+        public string LocalName { get; set; }
+
+        public IReactPropertyNamespace Namespace { get; set; }
+    }
+
+    public class namespaceProperty : IReactPropertyNamespace
+    {
+        public namespaceProperty(string n)
         {
-            public namespaceProperty(string n)
-            {
-                NamespaceName = n;
-            }
-            public string NamespaceName { get; set; }
+            NamespaceName = n;
         }
+        public string NamespaceName { get; set; }
+    }
+    */
     }
 }

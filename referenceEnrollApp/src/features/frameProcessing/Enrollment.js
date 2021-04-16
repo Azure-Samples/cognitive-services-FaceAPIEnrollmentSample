@@ -55,7 +55,7 @@ function Enrollment(props) {
         Create cancellation token when component mounts
         token will cancel during cancel click or timeout
     */
-    setCancelToken(new CancellationToken());
+    //setCancelToken(new CancellationToken());
   }, []);
 
   // Runs entire enrollment flow
@@ -75,7 +75,7 @@ function Enrollment(props) {
     let completedTaskCount = 0;
 
     // Give time for camera to adjust
-    await sleep(900);
+    await sleep(800);
 
     // Show initial progress
     updateProgress(progressRef.current + 1);
@@ -83,6 +83,7 @@ function Enrollment(props) {
     const processFrame = async (frame) => {
       // Send frame for detection
       let face = await dispatchForDetection(frame);
+      console.log('sending face for enrolling');
       if (face.faceId) {
         // Lock, only enroll/verify 1 face at a time
         let release = await mutex.acquire();
@@ -118,10 +119,11 @@ function Enrollment(props) {
     while (
       !enrollmentSucceeded &&
       cancelToken.isCancellationRequested == false &&
-      i < 3
+      i < 500
     ) {
       let frame = await props.takePicture();
-      console.log('ENROLLING frame', frame);
+      console.log('took pic ', frame);
+      await sleep(10);
       if (frame) {
         // Prevent too many process requests
         if (completedTaskCount > tasks.length - 5) {
@@ -173,9 +175,6 @@ function Enrollment(props) {
     */
 
     setEnrollStarted(true);
-    // props.takePicture().then((pic) => {
-    //   console.log('TOOK PIC: ', pic);
-    // });
 
     let t1 = performance.now();
     runEnrollment().then((enrollmentResult) => {

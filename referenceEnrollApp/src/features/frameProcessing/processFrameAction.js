@@ -8,8 +8,9 @@ import {FEEDBACK} from '../filtering/filterFeedback';
 // Detects and Filters faces
 export const getFilteredFaceAction = (frameData) => {
   return async (dispatch) => {
+    console.log('detection begins');
     let face = await dispatch(detectFaceAction(frameData));
-
+    console.log('detection ends');
     if (face.faceId) {
       let passedFilters = dispatch(filterFaceAction(face));
       return passedFilters ? face : {};
@@ -30,6 +31,8 @@ export const detectFaceAction = (frameData) => {
       '&' +
       constants.REC_MODEL;
 
+    console.log('making api call');
+
     let response = await fetch(detectEndpoint, {
       method: 'POST',
       headers: {
@@ -40,6 +43,8 @@ export const detectFaceAction = (frameData) => {
       },
       body: frameData,
     });
+
+    console.log('detection done');
 
     if (response.status == '200') {
       let result = await response.text();
