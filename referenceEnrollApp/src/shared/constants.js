@@ -82,4 +82,4 @@ export const mutex = new Mutex();
 
 export var EnrollDict = {};
 
-export var Cam = requireNativeComponent('WindowsCameraView');
+//export var Cam = requireNativeComponent('WindowsCameraView');

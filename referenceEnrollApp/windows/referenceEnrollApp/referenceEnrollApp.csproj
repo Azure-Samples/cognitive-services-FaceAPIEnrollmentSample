@@ -125,14 +125,19 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
+    <Compile Include="MyMod.cs" />
     <Compile Include="fancymath.cs" />
     <Compile Include="MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="MyView.cs" />
+    <Compile Include="MyViewManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="AutolinkedNativeModules.g.cs" />
     <Compile Include="ReactPackageProvider.cs" />
+    <Compile Include="WindowsCameraModule.cs" />
     <Compile Include="WindowsCameraSource.cs" />
+    <Compile Include="WindowsCameraView.cs" />
     <Compile Include="WindowsCameraViewManager.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -22,18 +22,14 @@ using System.Runtime.InteropServices.WindowsRuntime;
 
 namespace referenceEnrollApp
 {
-    [ReactModule]
-    public class WindowsCameraViewManager : AttributedViewManager<CaptureElement>, IViewManagerWithReactContext
+    public class WindowsCameraViewManager : 
+        AttributedViewManager<CaptureElement>
     {
         protected string _data;
 
-        private ReactDispatcherCallback callback;
+        //private IReactDispatcher dispatcher;
 
-        private WindowsCameraSource wcs;
-
-        private IReactDispatcher dispatcher;
-
-        private IReactPropertyBag props;
+        //private IReactPropertyBag props;
 
         //private namespaceProperty nsp;
 
@@ -49,23 +45,22 @@ namespace referenceEnrollApp
 
         public override FrameworkElement CreateView()
         {
-            var view = new CaptureElement();
+            var cameraView = WindowsCameraView.Create();
+            views.Add(cameraView);
 
-            dispatcher = ReactContext.UIDispatcher;
-            callback = new ReactDispatcherCallback(frameArriveUIEvent);
-            props = ReactPropertyBagHelper.CreatePropertyBag();
-
-            //nsp = new namespaceProperty("WindowsCameraViewManager");
-            //prop = new nameProperty("FraveArrive", nsp);
-
-            wcs = new WindowsCameraSource(view, FrameReader_FrameArrived);
-            return view;
+            return cameraView.CaptureElement;
         }
 
         [ViewManagerProperty("type")]
         public async void SetType(CaptureElement view, int type)
         {
-            await wcs.InitializeAsync();
+            int tag = Convert.ToInt32(view.Tag);
+            var index = FindCameraView(tag);
+
+            if(index != -1)
+            {
+                await views[index].InitializeSource();
+            }
         }
 
         [ViewManagerExportedDirectEventTypeConstant]
@@ -73,102 +68,48 @@ namespace referenceEnrollApp
 
         public void frameArriveUIEvent()
         {
-            var k = props.Get(propertyName);
+            //var k = props.Get(propertyName);
             //props.Set(propertyName, null);
-            FrameArrivedEvent?.Invoke(wcs.CaptureElement, k.ToString());
+            //var k = ReactContext.Properties.Get(propertyName);
+            //var s = k.ToString(); 
+            //FrameArrivedEvent?.Invoke(wcs.CaptureElement, "");
         }
 
-        public void FrameReader_FrameArrived(ExampleMediaFrameReader sender, ExampleMediaFrameArrivedEventArgs args)
+        public static async Task TakePicture(int viewTag, IReactPromise<string> promise)
         {
-            try
+            int index = FindCameraView(viewTag);
+
+            if (index != -1)
             {
-                using (var mediaFrameReference = sender.TryAcquireLatestFrameBySourceKind(args.SourceKind))
-                {
-                    if (dispatcher.HasThreadAccess == false)
-                    {
-                        if (mediaFrameReference != null)
-                        {
-                            if(mediaFrameReference.SourceKind == MediaFrameSourceKind.Color)
-                            {
-                               var base64 = ConvertToBase64(mediaFrameReference).GetAwaiter().GetResult();
-                                props.Set(propertyName, base64);
-                                dispatcher.Post(callback);
-                            }
-                        }
-                    }
-                }
+                await views[index].TakePictureAsync(promise);
             }
-            catch (ObjectDisposedException) { }
-            finally
+            else
             {
+                ReactError err = new ReactError();
+                err.Message = "Camera view not found.";
+
+                promise.Reject(err);
             }
         }
 
-        private async Task<string> ConvertToBase64(MediaFrameReference mediaFrameReference)
+        private static int FindCameraView(int viewTag)
         {
-            var bitmap = mediaFrameReference.VideoMediaFrame.SoftwareBitmap;
-            byte[] array = null;
-            string base64 = "";
-
-            using (var ms = new InMemoryRandomAccessStream())
+            for (int i = 0; i < views.Count(); i++)
             {
-                SoftwareBitmap compatibleBitmap = null;
-                if (bitmap.BitmapPixelFormat != BitmapPixelFormat.Bgra8 ||
-                    bitmap.BitmapAlphaMode != BitmapAlphaMode.Ignore)
+                var value = views[i].CaptureElement.GetValue(FrameworkElement.TagProperty);
+                var tag = Convert.ToInt64(value);
+                if (tag == viewTag)
                 {
-                    compatibleBitmap = SoftwareBitmap.Convert(bitmap, BitmapPixelFormat.Bgra8, BitmapAlphaMode.Ignore);
+                    return i;
                 }
-                else
-                {
-                    compatibleBitmap = bitmap;
-                }
-                var encodingOptions = new BitmapPropertySet();
-                encodingOptions.Add("ImageQuality", new BitmapTypedValue(
-                        1.0, // Maximum quality
-                        Windows.Foundation.PropertyType.Single));
-
-                BitmapEncoder encoder = await BitmapEncoder.CreateAsync(BitmapEncoder.JpegEncoderId, ms, encodingOptions);
-                encoder.SetSoftwareBitmap(compatibleBitmap);
-
-                try
-                {
-                    await encoder.FlushAsync();
-                }
-                catch (Exception ex) { }
-
-                array = new byte[ms.Size];
-                await ms.ReadAsync(array.AsBuffer(), (uint)ms.Size, InputStreamOptions.None);
-                base64 = Convert.ToBase64String(array);
-                compatibleBitmap.Dispose();
             }
 
-            return base64;
+            return -1;
         }
+
+        private static List<WindowsCameraView> views = new List<WindowsCameraView>();
 
         private static IReactPropertyNamespace propertyNamespace = ReactPropertyBagHelper.GetNamespace("WindowsCameraViewManager");
         private static IReactPropertyName propertyName = ReactPropertyBagHelper.GetName(propertyNamespace, "FrameArrive");
-    /*
-    public class nameProperty : IReactPropertyName
-    {
-        public nameProperty(string name, IReactPropertyNamespace ns)
-        {
-            LocalName = name;
-            Namespace = ns;
-        }
-
-        public string LocalName { get; set; }
-
-        public IReactPropertyNamespace Namespace { get; set; }
-    }
-
-    public class namespaceProperty : IReactPropertyNamespace
-    {
-        public namespaceProperty(string n)
-        {
-            NamespaceName = n;
-        }
-        public string NamespaceName { get; set; }
-    }
-    */
     }
 }

@@ -8,7 +8,7 @@ export default function Camera(props) {
   const [startEnroll, setStartEnroll] = useState(true);
   let cameraRef = React.useRef(null);
 
-  console.log('USING AND');
+  console.log('USING AND', cameraRef.current);
 
   const onCameraReady = () => {
     /*
@@ -22,7 +22,6 @@ export default function Camera(props) {
 
   async function takeBase64Picture() {
     let frameData;
-
     try {
       frameData = await cameraRef.current.takePictureAsync({base64: true});
     } catch (error) {

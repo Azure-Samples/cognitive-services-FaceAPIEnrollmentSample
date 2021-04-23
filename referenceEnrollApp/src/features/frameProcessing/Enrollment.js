@@ -75,7 +75,7 @@ function Enrollment(props) {
     let completedTaskCount = 0;
 
     // Give time for camera to adjust
-    await sleep(800);
+    await sleep(6000);
 
     // Show initial progress
     updateProgress(progressRef.current + 1);

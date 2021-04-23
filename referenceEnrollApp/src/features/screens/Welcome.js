@@ -17,14 +17,10 @@ import * as constants from '../../shared/constants';
 import {deletePersonGroup, validatePersonGroup} from '../../shared/helper';
 //var RNFS = require('react-native-fs');
 import useIsPortrait from '../portrait/isPortrait';
-//import {Cam} from '../../shared/constants';
 
 function Welcome({navigation}) {
   let dispatch = useDispatch();
   var isPortrait = useIsPortrait();
-
-  console.log(NativeModules.fancymath);
-  console.log(NativeModules.WindowsCameraViewManager);
 
   const setStyles = () => {
     let style;
@@ -109,8 +105,6 @@ function Welcome({navigation}) {
       if (personGroupValidated == false) {
         showAlert();
       }
-
-      console.log('added listener');
     });
   }, []);
 
