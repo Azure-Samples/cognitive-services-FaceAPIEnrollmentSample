@@ -15,5 +15,11 @@ namespace referenceEnrollApp
         {
             await WindowsCameraViewManager.TakePicture(viewTag, promise);
         }
+
+        [ReactMethod("turnCameraOff")]
+        public void turnCameraOff(int viewTag)
+        {
+           WindowsCameraViewManager.TurnCameraOff(viewTag);
+        }
     }
 }

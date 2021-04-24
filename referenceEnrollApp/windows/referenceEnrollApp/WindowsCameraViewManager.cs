@@ -25,7 +25,6 @@ namespace referenceEnrollApp
     public class WindowsCameraViewManager : 
         AttributedViewManager<CaptureElement>
     {
-        protected string _data;
 
         //private IReactDispatcher dispatcher;
 
@@ -46,9 +45,16 @@ namespace referenceEnrollApp
         public override FrameworkElement CreateView()
         {
             var cameraView = WindowsCameraView.Create();
+            cameraView.InitializeSource();
             views.Add(cameraView);
 
+
             return cameraView.CaptureElement;
+        }
+
+        ~WindowsCameraViewManager()
+        {
+            //
         }
 
         [ViewManagerProperty("type")]
@@ -59,21 +65,15 @@ namespace referenceEnrollApp
 
             if(index != -1)
             {
-                await views[index].InitializeSource();
+                //await views[index].InitializeSource();
             }
         }
 
         [ViewManagerExportedDirectEventTypeConstant]
-        public ViewManagerEvent<CaptureElement, string> FrameArrivedEvent = null;
+        static public ViewManagerEvent<CaptureElement, string> FrameArrived = null;
 
-        public void frameArriveUIEvent()
-        {
-            //var k = props.Get(propertyName);
-            //props.Set(propertyName, null);
-            //var k = ReactContext.Properties.Get(propertyName);
-            //var s = k.ToString(); 
-            //FrameArrivedEvent?.Invoke(wcs.CaptureElement, "");
-        }
+        [ViewManagerExportedDirectEventTypeConstant]
+        static public ViewManagerEvent<CaptureElement, bool> CameraInitialized = null;
 
         public static async Task TakePicture(int viewTag, IReactPromise<string> promise)
         {
@@ -89,6 +89,17 @@ namespace referenceEnrollApp
                 err.Message = "Camera view not found.";
 
                 promise.Reject(err);
+            }
+        }
+
+        public static async Task TurnCameraOff(int viewTag)
+        {
+            int index = FindCameraView(viewTag);
+
+            if (index != -1)
+            {
+                await views[index].RemoveSource();
+                views.RemoveAt(index);
             }
         }
 

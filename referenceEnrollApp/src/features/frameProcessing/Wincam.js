@@ -10,8 +10,9 @@ export var Camera = requireNativeComponent('WindowsCameraView');
 const cameraManager = NativeModules.WindowsCameraModule;
 
 class WindowsCamera extends Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
+    console.log(this.props);
     this.inputRef = React.createRef();
   }
 
@@ -33,9 +34,23 @@ class WindowsCamera extends Component {
     return image;
   }
 
+  componentWillUnmount() {
+    console.log('runs');
+    cameraManager.turnCameraOff(this._handle);
+  }
+
+  _onCameraInitialized = () => {
+    if (this.props.onCameraInitialized) {
+      this.props.onCameraInitialized();
+    }
+  };
+
   render() {
     return (
-      <Camera ref={this._setReference} type="1" style={styles.camera}></Camera>
+      <Camera
+        ref={this._setReference}
+        onCameraInitialized={this._onCameraInitialized}
+        style={styles.camera}></Camera>
     );
   }
 }

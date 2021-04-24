@@ -37,12 +37,26 @@ namespace referenceEnrollApp
         public async Task TakePictureAsync(IReactPromise<string> promise)
         {
             var base64Frame = await source.AquireLatestColorFrame();
+
+            if (string.IsNullOrEmpty(base64Frame))
+            {
+                var err = new ReactError();
+                err.Message = "Frame reader not initialized";
+                promise.Reject(err);
+            }
+
             promise.Resolve(base64Frame);
         }
 
         public async Task InitializeSource()
         {
             await source.InitializeAsync();
+            WindowsCameraViewManager.CameraInitialized(CaptureElement, true);
+        }
+        
+        public async Task RemoveSource()
+        {
+            await source.CleanUp();
         }
 
         public void FrameReader_FrameArrived(ExampleMediaFrameReader sender, ExampleMediaFrameArrivedEventArgs args)
@@ -51,16 +65,12 @@ namespace referenceEnrollApp
             {
                 using (var mediaFrameReference = sender.TryAcquireLatestFrameBySourceKind(args.SourceKind))
                 {
-                    //if (dispatcher.HasThreadAccess == false)
                     {
                         if (mediaFrameReference != null)
                         {
                             if (mediaFrameReference.SourceKind == MediaFrameSourceKind.Color)
                             {
                                 var base64 = ConvertToBase64(mediaFrameReference).GetAwaiter().GetResult();
-                                //props.Set(propertyName, base64);
-                                //ReactContext.Properties.Set(propertyName, base64);
-                                //dispatcher.Post(callback);
                                 frame = base64;
                             }
                         }

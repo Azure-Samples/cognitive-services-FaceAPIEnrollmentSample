@@ -10,6 +10,7 @@ using Windows.Foundation;
 using Windows.Graphics.Imaging;
 using Windows.Media.Capture;
 using Windows.Media.Capture.Frames;
+using Windows.Media.Devices;
 using Windows.Storage.Streams;
 using Windows.UI.Xaml.Controls;
 using static referenceEnrollApp.WindowsCameraViewManager;
@@ -45,15 +46,38 @@ namespace referenceEnrollApp
             await FrameReader.StartAsync();
         }
 
+        public async Task CleanUp()
+        {
+            CaptureElement.Source = null;
+            FrameReader.FrameArrived -= fa;
+
+            try
+            {
+                await emc.StopPreviewAsync();
+            }
+            catch (Exception e) when (e.HResult == unchecked((int)0xc00dabe4) &&
+                                      emc.PreviewMediaCapture.CameraStreamState != CameraStreamState.Streaming)
+            {
+                // StopPreview is not idempotent, silence exception when camera is not streaming
+            }
+
+            await FrameReader.StopAsync();
+            FrameReader.Dispose();
+        }
+
         public async Task<string> AquireLatestColorFrame()
         {
             string base64 = "";
 
-            using (var frameRef = FrameReader.TryAcquireLatestFrameBySourceKind(MediaFrameSourceKind.Color))
+            if (FrameReader != null)
             {
-                if(frameRef != null)
+
+                using (var frameRef = FrameReader.TryAcquireLatestFrameBySourceKind(MediaFrameSourceKind.Color))
                 {
-                    base64 = await ConvertToBase64(frameRef);
+                    if (frameRef != null)
+                    {
+                        base64 = await ConvertToBase64(frameRef);
+                    }
                 }
             }
 
