@@ -25,15 +25,6 @@ namespace referenceEnrollApp
     public class WindowsCameraViewManager : 
         AttributedViewManager<CaptureElement>
     {
-
-        //private IReactDispatcher dispatcher;
-
-        //private IReactPropertyBag props;
-
-        //private namespaceProperty nsp;
-
-        //private nameProperty prop;
-
         public override string Name
         {
             get
@@ -52,36 +43,16 @@ namespace referenceEnrollApp
             return cameraView.CaptureElement;
         }
 
-        ~WindowsCameraViewManager()
-        {
-            //
-        }
-
-        [ViewManagerProperty("type")]
-        public async void SetType(CaptureElement view, int type)
-        {
-            int tag = Convert.ToInt32(view.Tag);
-            var index = FindCameraView(tag);
-
-            if(index != -1)
-            {
-                //await views[index].InitializeSource();
-            }
-        }
-
-        [ViewManagerExportedDirectEventTypeConstant]
-        static public ViewManagerEvent<CaptureElement, string> FrameArrived = null;
-
         [ViewManagerExportedDirectEventTypeConstant]
         static public ViewManagerEvent<CaptureElement, bool> CameraInitialized = null;
 
-        public static async Task TakePicture(int viewTag, IReactPromise<string> promise)
+        public static async Task TakePicture(int viewTag, MediaFrameSourceKind type, IReactPromise<string> promise)
         {
             int index = FindCameraView(viewTag);
 
             if (index != -1)
             {
-                await views[index].TakePictureAsync(promise);
+                await views[index].TakePictureAsync(type, promise);
             }
             else
             {
@@ -119,8 +90,5 @@ namespace referenceEnrollApp
         }
 
         private static List<WindowsCameraView> views = new List<WindowsCameraView>();
-
-        private static IReactPropertyNamespace propertyNamespace = ReactPropertyBagHelper.GetNamespace("WindowsCameraViewManager");
-        private static IReactPropertyName propertyName = ReactPropertyBagHelper.GetName(propertyNamespace, "FrameArrive");
     }
 }

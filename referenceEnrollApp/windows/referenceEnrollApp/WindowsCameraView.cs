@@ -19,7 +19,9 @@ namespace referenceEnrollApp
 
         private WindowsCameraSource source;
 
-        private string frame;
+        private volatile SoftwareBitmap colorFrame = null;
+
+        private volatile SoftwareBitmap irFrame = null;
 
         WindowsCameraView()
         {
@@ -34,14 +36,24 @@ namespace referenceEnrollApp
             return view;
         }
 
-        public async Task TakePictureAsync(IReactPromise<string> promise)
+        public async Task TakePictureAsync(MediaFrameSourceKind type, IReactPromise<string> promise)
         {
-            var base64Frame = await source.AquireLatestColorFrame();
+            var base64Frame = "";
+
+            if (type == MediaFrameSourceKind.Color && colorFrame != null)
+            {
+                base64Frame = await ConvertToBase64(colorFrame);
+            }
+
+            if (type == MediaFrameSourceKind.Infrared && irFrame != null)
+            {
+                base64Frame = await ConvertToBase64(irFrame);
+            }
 
             if (string.IsNullOrEmpty(base64Frame))
             {
                 var err = new ReactError();
-                err.Message = "Frame reader not initialized";
+                err.Message = "Error taking picture";
                 promise.Reject(err);
             }
 
@@ -53,9 +65,13 @@ namespace referenceEnrollApp
             await source.InitializeAsync();
             WindowsCameraViewManager.CameraInitialized(CaptureElement, true);
         }
-        
+
         public async Task RemoveSource()
         {
+            colorFrame.Dispose();
+            colorFrame = null;
+            irFrame.Dispose();
+            irFrame = null;
             await source.CleanUp();
         }
 
@@ -70,8 +86,15 @@ namespace referenceEnrollApp
                         {
                             if (mediaFrameReference.SourceKind == MediaFrameSourceKind.Color)
                             {
-                                var base64 = ConvertToBase64(mediaFrameReference).GetAwaiter().GetResult();
-                                frame = base64;
+                                colorFrame = mediaFrameReference.VideoMediaFrame.SoftwareBitmap;
+                            }
+
+                            if (mediaFrameReference.SourceKind == MediaFrameSourceKind.Infrared)
+                            {
+                                if (mediaFrameReference.VideoMediaFrame.InfraredMediaFrame.IsIlluminated)
+                                {
+                                    irFrame = mediaFrameReference.VideoMediaFrame.SoftwareBitmap;
+                                }
                             }
                         }
                     }
@@ -83,9 +106,8 @@ namespace referenceEnrollApp
             }
         }
 
-        private async Task<string> ConvertToBase64(MediaFrameReference mediaFrameReference)
+        public static async Task<string> ConvertToBase64(SoftwareBitmap bitmap)
         {
-            var bitmap = mediaFrameReference.VideoMediaFrame.SoftwareBitmap;
             byte[] array = null;
             string base64 = "";
 
