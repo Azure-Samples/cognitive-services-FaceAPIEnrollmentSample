@@ -36,8 +36,8 @@ export const TRAIN_STATUS_ENDPOINT = (personGroupId) => {
 export const VERIFY_ENDPOINT = ROOT + 'verify';
 
 // face attributes to retrieve from FaceAPI
-export const FACE_ATTRIBUTES =
-  'returnFaceAttributes=headPose,occlusion,glasses,accessories,blur,exposure,noise';
+export const FACE_ATTRIBUTES = '';
+// 'returnFaceAttributes=headPose,occlusion,glasses,accessories,blur,exposure,noise';
 
 export const REC_MODEL = 'recognitionModel=' + CONFIG.RECOGNITION_MODEL_RGB;
 

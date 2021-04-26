@@ -30,7 +30,8 @@ class WindowsCamera extends Component {
   };
 
   async TakePictureAsync() {
-    var image = await cameraManager.takePictureAsync(this._handle);
+    var image = await cameraManager.takeInfraredPictureAsync(this._handle);
+    console.log('Called');
     return image;
   }
 

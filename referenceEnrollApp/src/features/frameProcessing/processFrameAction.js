@@ -12,7 +12,7 @@ export const getFilteredFaceAction = (frameData) => {
     let face = await dispatch(detectFaceAction(frameData));
     console.log('detection ends');
     if (face.faceId) {
-      let passedFilters = dispatch(filterFaceAction(face));
+      let passedFilters = true; //dispatch(filterFaceAction(face));
       return passedFilters ? face : {};
     }
     return {};
