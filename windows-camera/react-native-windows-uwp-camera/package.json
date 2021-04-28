@@ -1,0 +1,42 @@
+{
+  "name": "react-native-windows-uwp-camera",
+  "title": "React Native Windows Uwp Camera",
+  "version": "1.0.0",
+  "description": "TODO",
+  "main": "index.js",
+  "files": [
+    "README.md",
+    "android",
+    "index.js",
+    "ios",
+    "react-native-windows-uwp-camera.podspec"
+  ],
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "windows": "react-native run-windows"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/github_account/react-native-windows-uwp-camera.git",
+    "baseUrl": "https://github.com/github_account/react-native-windows-uwp-camera"
+  },
+  "keywords": [
+    "react-native"
+  ],
+  "author": {
+    "name": "Your Name",
+    "email": "yourname@email.com"
+  },
+  "license": "MIT",
+  "licenseFilename": "LICENSE",
+  "readmeFilename": "README.md",
+  "peerDependencies": {
+    "react": ">=16.8.1",
+    "react-native": ">=0.60.0-rc.0 <1.0.x"
+  },
+  "devDependencies": {
+    "react": "17.0.1",
+    "react-native": "0.64.0",
+    "react-native-windows": "^0.64.5"
+  }
+}
