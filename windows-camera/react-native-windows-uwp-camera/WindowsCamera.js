@@ -12,8 +12,7 @@ const cameraManager = NativeModules.WindowsCameraModule;
 class WindowsCamera extends Component {
   constructor(props) {
     super(props);
-    console.log(this.props);
-    this.inputRef = React.createRef();
+    this.inputRef = React.createRef(null);
   }
 
   _ref;
@@ -31,12 +30,10 @@ class WindowsCamera extends Component {
 
   async TakePictureAsync() {
     var image = await cameraManager.takeInfraredPictureAsync(this._handle);
-    console.log('Called');
     return image;
   }
 
   componentWillUnmount() {
-    console.log('runs');
     cameraManager.turnCameraOff(this._handle);
   }
 
@@ -59,9 +56,6 @@ class WindowsCamera extends Component {
 export default WindowsCamera;
 
 const styles = StyleSheet.create({
-  root: {
-    flex: 1,
-  },
   camera: {
     flex: 1,
     width: '100%',
