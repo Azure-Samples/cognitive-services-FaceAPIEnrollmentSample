@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Windows.Graphics.Imaging;
 using Windows.Media.Capture.Frames;
 using Windows.Storage.Streams;
+using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 
 namespace ReactNativeWindowsUwpCamera
@@ -28,7 +29,7 @@ namespace ReactNativeWindowsUwpCamera
 
         public static WindowsCameraView Create()
         {
-           return new WindowsCameraView();
+            return new WindowsCameraView();
         }
 
         /// <summary>
@@ -71,7 +72,8 @@ namespace ReactNativeWindowsUwpCamera
         public async Task InitializeSource()
         {
             await source.InitializeAsync();
-            WindowsCameraViewManager.CameraInitialized(CaptureElement, true);
+            var tag = CaptureElement.GetValue(FrameworkElement.TagProperty);
+            WindowsCameraViewManager.AddView(Convert.ToInt64(tag), this);
         }
 
         /// <summary>

@@ -1,14 +1,15 @@
 {
   "name": "react-native-windows-uwp-camera",
   "title": "React Native Windows Uwp Camera",
-  "version": "1.0.0",
-  "description": "TODO",
+  "version": "1.0.2",
+  "description": "Offers infrared and color camera access on windows for UWP C#.",
   "main": "index.js",
   "files": [
     "README.md",
-    "android",
     "index.js",
-    "ios",
+    "windows",
+    "uwpCamera",
+    "WindowsCamera.js",
     "react-native-windows-uwp-camera.podspec"
   ],
   "scripts": {
@@ -17,19 +18,15 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/github_account/react-native-windows-uwp-camera.git",
-    "baseUrl": "https://github.com/github_account/react-native-windows-uwp-camera"
+    "url": "git+https://github.com/Azure-Samples/cognitive-services-FaceAPIEnrollmentSample.git",
+    "baseUrl": "https://github.com/Azure-Samples/cognitive-services-FaceAPIEnrollmentSample"
   },
   "keywords": [
     "react-native"
   ],
-  "author": {
-    "name": "Your Name",
-    "email": "yourname@email.com"
-  },
+  "author": "elmouzak <elmouzak@email.com>",
   "license": "MIT",
   "licenseFilename": "LICENSE",
-  "readmeFilename": "README.md",
   "peerDependencies": {
     "react": ">=16.8.1",
     "react-native": ">=0.60.0-rc.0 <1.0.x"
@@ -38,5 +35,10 @@
     "react": "17.0.1",
     "react-native": "0.64.0",
     "react-native-windows": "^0.64.5"
-  }
+  },
+  "bugs": {
+    "url": "https://github.com/Azure-Samples/cognitive-services-FaceAPIEnrollmentSample/issues"
+  },
+  "homepage": "https://github.com/Azure-Samples/cognitive-services-FaceAPIEnrollmentSample/tree/main/windows-camera/react-native-windows-uwp-camera#readme",
+  "dependencies": {}
 }

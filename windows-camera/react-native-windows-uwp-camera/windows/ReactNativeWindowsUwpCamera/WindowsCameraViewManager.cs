@@ -28,8 +28,6 @@ namespace ReactNativeWindowsUwpCamera
         {
             var cameraView = WindowsCameraView.Create();
             cameraView.InitializeSource();
-            Views.Add(cameraView);
-
             return cameraView.CaptureElement;
         }
 
@@ -48,11 +46,9 @@ namespace ReactNativeWindowsUwpCamera
         /// <returns></returns>
         public static async Task TakePicture(int viewTag, MediaFrameSourceKind type, IReactPromise<JSValueObject> promise)
         {
-            int index = FindCameraView(viewTag);
-
-            if (index != -1)
+            if (Views.ContainsKey(viewTag))
             {
-                await Views[index].TakePictureAsync(type, promise);
+                await Views[viewTag].TakePictureAsync(type, promise);
             }
             else
             {
@@ -70,35 +66,19 @@ namespace ReactNativeWindowsUwpCamera
         /// <returns></returns>
         public static async Task TurnCameraOff(int viewTag)
         {
-            int index = FindCameraView(viewTag);
-
-            if (index != -1)
+            if (Views.ContainsKey(viewTag))
             {
-                await Views[index].RemoveSource();
-                Views.RemoveAt(index);
+                await Views[viewTag].RemoveSource();
+                Views.Remove(viewTag);
             }
         }
 
-        /// <summary>
-        /// Uses viewTag to find corresponding camera View in Views list. 
-        /// </summary>
-        /// <param name="viewTag"></param>
-        /// <returns>Returns index of view. -1 otherwise. </returns>
-        private static int FindCameraView(int viewTag)
+        public static void AddView(long tag, WindowsCameraView view)
         {
-            for (int i = 0; i < Views.Count(); i++)
-            {
-                var value = Views[i].CaptureElement.GetValue(FrameworkElement.TagProperty);
-                var tag = Convert.ToInt64(value);
-                if (tag == viewTag)
-                {
-                    return i;
-                }
-            }
-
-            return -1;
+            Views.Add(tag, view);
+            CameraInitialized(view.CaptureElement, true);
         }
 
-        private static List<WindowsCameraView> Views = new List<WindowsCameraView>();
+        private static Dictionary<long, WindowsCameraView> Views = new Dictionary<long, WindowsCameraView>();
     }
 }
