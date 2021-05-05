@@ -38,7 +38,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.ReactNative.Manag
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ReactNativeCameraCPP", "..\node_modules\react-native-camera\windows\ReactNativeCameraCPP\ReactNativeCameraCPP.vcxproj", "{7432C343-CC07-4BC7-9BD0-8C467BE0F018}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExampleMediaCapture", "..\..\..\HelloMediaCapture\ExampleMediaCapture\ExampleMediaCapture.csproj", "{9BDBF6DC-2700-4AC4-ABF4-00C807F49910}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExampleMediaCapture", "..\node_modules\react-native-windows-uwp-camera\uwpCamera\ExampleMediaCapture\ExampleMediaCapture.csproj", "{9BDBF6DC-2700-4AC4-ABF4-00C807F49910}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ReactNativeWindowsUwpCamera", "..\node_modules\react-native-windows-uwp-camera\windows\ReactNativeWindowsUwpCamera\ReactNativeWindowsUwpCamera.csproj", "{D706BAB5-0DFC-4A38-8AA5-597DC23AF5E6}"
 EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
@@ -257,8 +259,28 @@ Global
 		{9BDBF6DC-2700-4AC4-ABF4-00C807F49910}.Release|x64.Build.0 = Release|x64
 		{9BDBF6DC-2700-4AC4-ABF4-00C807F49910}.Release|x86.ActiveCfg = Release|x86
 		{9BDBF6DC-2700-4AC4-ABF4-00C807F49910}.Release|x86.Build.0 = Release|x86
+		{D706BAB5-0DFC-4A38-8AA5-597DC23AF5E6}.Debug|Any CPU.ActiveCfg = Debug|x86
+		{D706BAB5-0DFC-4A38-8AA5-597DC23AF5E6}.Debug|ARM.ActiveCfg = Debug|ARM
+		{D706BAB5-0DFC-4A38-8AA5-597DC23AF5E6}.Debug|ARM.Build.0 = Debug|ARM
+		{D706BAB5-0DFC-4A38-8AA5-597DC23AF5E6}.Debug|ARM64.ActiveCfg = Debug|ARM64
+		{D706BAB5-0DFC-4A38-8AA5-597DC23AF5E6}.Debug|ARM64.Build.0 = Debug|ARM64
+		{D706BAB5-0DFC-4A38-8AA5-597DC23AF5E6}.Debug|x64.ActiveCfg = Debug|x64
+		{D706BAB5-0DFC-4A38-8AA5-597DC23AF5E6}.Debug|x64.Build.0 = Debug|x64
+		{D706BAB5-0DFC-4A38-8AA5-597DC23AF5E6}.Debug|x86.ActiveCfg = Debug|x86
+		{D706BAB5-0DFC-4A38-8AA5-597DC23AF5E6}.Debug|x86.Build.0 = Debug|x86
+		{D706BAB5-0DFC-4A38-8AA5-597DC23AF5E6}.Release|Any CPU.ActiveCfg = Release|x86
+		{D706BAB5-0DFC-4A38-8AA5-597DC23AF5E6}.Release|ARM.ActiveCfg = Release|ARM
+		{D706BAB5-0DFC-4A38-8AA5-597DC23AF5E6}.Release|ARM.Build.0 = Release|ARM
+		{D706BAB5-0DFC-4A38-8AA5-597DC23AF5E6}.Release|ARM64.ActiveCfg = Release|ARM64
+		{D706BAB5-0DFC-4A38-8AA5-597DC23AF5E6}.Release|ARM64.Build.0 = Release|ARM64
+		{D706BAB5-0DFC-4A38-8AA5-597DC23AF5E6}.Release|x64.ActiveCfg = Release|x64
+		{D706BAB5-0DFC-4A38-8AA5-597DC23AF5E6}.Release|x64.Build.0 = Release|x64
+		{D706BAB5-0DFC-4A38-8AA5-597DC23AF5E6}.Release|x86.ActiveCfg = Release|x86
+		{D706BAB5-0DFC-4A38-8AA5-597DC23AF5E6}.Release|x86.Build.0 = Release|x86
 		{7432C343-CC07-4BC7-9BD0-8C467BE0F018}.CPU.ActiveCfg = CPU
 		{7432C343-CC07-4BC7-9BD0-8C467BE0F018}.CPU.Build.0 = CPU
+		{D706BAB5-0DFC-4A38-8AA5-597DC23AF5E6}.CPU.ActiveCfg = CPU
+		{D706BAB5-0DFC-4A38-8AA5-597DC23AF5E6}.CPU.Build.0 = CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

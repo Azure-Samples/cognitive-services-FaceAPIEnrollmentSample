@@ -29,6 +29,7 @@ namespace referenceEnrollApp
 
             PackageProviders.Add(new Microsoft.ReactNative.Managed.ReactPackageProvider());
             PackageProviders.Add(new ReactPackageProvider());
+            PackageProviders.Add(new ReactNativeWindowsUwpCamera.ReactPackageProvider());
 
             InitializeComponent();
         }

@@ -5,6 +5,9 @@ using System.Collections.Generic;
 // Namespaces from react-native-camera
 using ReactNativeCameraCPP;
 
+// Namespaces from react-native-windows-uwp-camera
+using ReactNativeWindowsUwpCamera;
+
 namespace Microsoft.ReactNative.Managed
 {
     internal static class AutolinkedNativeModules
@@ -13,6 +16,8 @@ namespace Microsoft.ReactNative.Managed
         { 
             // IReactPackageProviders from react-native-camera
             packageProviders.Add(new ReactNativeCameraCPP.ReactPackageProvider());
+            // IReactPackageProviders from react-native-windows-uwp-camera
+            packageProviders.Add(new ReactNativeWindowsUwpCamera.ReactPackageProvider());
         }
     }
 }

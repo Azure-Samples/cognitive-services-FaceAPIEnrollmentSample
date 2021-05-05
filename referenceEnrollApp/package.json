@@ -42,6 +42,7 @@
     "react-native-user-agent": "^2.1.0",
     "react-native-web": "^0.13.18",
     "react-native-windows": "^0.63.0-0",
+    "react-native-windows-uwp-camera": "^1.0.2",
     "react-redux": "^7.2.2",
     "redux": "^4.0.5",
     "redux-thunk": "^2.3.0",

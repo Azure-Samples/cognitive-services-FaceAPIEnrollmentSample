@@ -131,10 +131,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="AutolinkedNativeModules.g.cs" />
     <Compile Include="ReactPackageProvider.cs" />
-    <Compile Include="WindowsCameraModule.cs" />
-    <Compile Include="WindowsCameraSource.cs" />
-    <Compile Include="WindowsCameraView.cs" />
-    <Compile Include="WindowsCameraViewManager.cs" />
   </ItemGroup>
   <ItemGroup>
     <AppxManifest Include="Package.appxmanifest">
@@ -168,9 +164,9 @@
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\..\HelloMediaCapture\ExampleMediaCapture\ExampleMediaCapture.csproj">
-      <Project>{9bdbf6dc-2700-4ac4-abf4-00c807f49910}</Project>
-      <Name>ExampleMediaCapture</Name>
+    <ProjectReference Include="..\..\node_modules\react-native-windows-uwp-camera\windows\ReactNativeWindowsUwpCamera\ReactNativeWindowsUwpCamera.csproj">
+      <Project>{d706bab5-0dfc-4a38-8aa5-597dc23af5e6}</Project>
+      <Name>ReactNativeWindowsUwpCamera</Name>
     </ProjectReference>
   </ItemGroup>
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '16.0' ">

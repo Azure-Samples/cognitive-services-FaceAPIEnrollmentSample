@@ -7,11 +7,13 @@ import {
   findNodeHandle,
 } from 'react-native';
 import Enrollment from './Enrollment';
-import WindowsCamera from './Wincam';
+import {WindowsCamera} from 'react-native-windows-uwp-camera';
 
 export default function Camera(props) {
   const [startEnroll, setStartEnroll] = useState(false);
   let cameraRef = React.useRef(null);
+
+  console.log('WINDOWS');
 
   function onInitialized() {
     console.log('camera ready');
@@ -20,8 +22,8 @@ export default function Camera(props) {
 
   async function takeBase64Picture() {
     try {
-      var frame = await cameraRef.current.TakePictureAsync();
-      return {base64: frame};
+      var frame = await cameraRef.current.TakeColorPictureAsync();
+      return frame;
     } catch (error) {
       console.log(error);
       return null;

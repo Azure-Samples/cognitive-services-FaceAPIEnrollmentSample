@@ -73,19 +73,19 @@ export const detectFaceAction = (frameData) => {
 };
 
 // Enrolls a face
-export const processFaceAction = (face, frameData) => {
+export const processFaceAction = (face, frameData, personGroup, personId) => {
   return async (dispatch, getState) => {
     // If re-enrollment, use the new personId
-    let newPersonId = getState().newEnrollment.newRgbPersonId;
-    let personId =
-      newPersonId && newPersonId != ''
-        ? newPersonId
-        : getState().userInfo.rgbPersonId;
+    // let newPersonId = getState().newEnrollment.newRgbPersonId;
+    // let personId =
+    //   newPersonId && newPersonId != ''
+    //     ? newPersonId
+    //     : getState().userInfo.rgbPersonId;
 
     // Add face
     let addFaceEndpoint =
       constants.FACEAPI_ENDPOINT +
-      constants.ADD_FACE_ENDPOINT(CONFIG.PERSONGROUP_RGB, personId) +
+      constants.ADD_FACE_ENDPOINT(personGroup, personId) +
       '?targetFace=' +
       getTargetFace(face);
 
@@ -113,16 +113,16 @@ export const processFaceAction = (face, frameData) => {
 };
 
 // Verfies a face
-export const verifyFaceAction = (face) => {
+export const verifyFaceAction = (face, personGroup, personId) => {
   return async (dispatch, getState) => {
     dispatch(enrollFeedbackAction(FEEDBACK.verifying));
 
-    // If re-enrollment, use the new personId
-    let newPersonId = getState().newEnrollment.newRgbPersonId;
-    let personId =
-      newPersonId && newPersonId != ''
-        ? newPersonId
-        : getState().userInfo.rgbPersonId;
+    // // If re-enrollment, use the new personId
+    // let newPersonId = getState().newEnrollment.newRgbPersonId;
+    // let personId =
+    //   newPersonId && newPersonId != ''
+    //     ? newPersonId
+    //     : getState().userInfo.rgbPersonId;
 
     // Verify
     let verifyEndpoint = constants.FACEAPI_ENDPOINT + constants.VERIFY_ENDPOINT;
@@ -130,7 +130,7 @@ export const verifyFaceAction = (face) => {
     let requestBody = {
       faceId: face.faceId,
       personId: personId,
-      largePersonGroupId: CONFIG.PERSONGROUP_RGB,
+      largePersonGroupId: personGroup,
     };
 
     let response = await fetch(verifyEndpoint, {
