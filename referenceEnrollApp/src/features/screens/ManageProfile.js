@@ -1,5 +1,12 @@
 import React, {useState, useEffect} from 'react';
-import {View, StyleSheet, BackHandler, ScrollView, Dimensions, Image} from 'react-native';
+import {
+  View,
+  StyleSheet,
+  BackHandler,
+  ScrollView,
+  Dimensions,
+  Image,
+} from 'react-native';
 import {useDispatch} from 'react-redux';
 import {
   Headline,
@@ -240,7 +247,7 @@ function ManageProfile({navigation}) {
                 </View>
               </View>
             </View>
-            <View style={screenWidth >= 600 ? { flex: 5 } : {}}></View>
+            <View style={screenWidth >= 600 ? {flex: 5} : {}}></View>
           </View>
         </View>
       )}

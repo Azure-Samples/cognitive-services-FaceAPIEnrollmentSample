@@ -5,50 +5,91 @@ if (Platform.OS != 'windows') {
   RNFS = require('react-native-fs');
 }
 
-import {setUserInfo} from './saveUserInfoAction';
+import {createPerson, setUserInfo} from './saveUserInfoAction';
 import {Platform} from 'react-native';
 
-export const checkEnrollmentExistsAction = (username) => {
+export const checkIfReEnrollment = (username) => {
   return async (dispatch) => {
     /*
-        This app writes to the enrollment directory path for demonstration only.
+      for RGB only or IR only enrollment:
+        - If no personId found, method returns false.
+      for both RGB and IR enrollment: 
+        - If RGB & IR personIds found, method returns true.
+        - If neither RGB nor IR personId found, method returns false. 
+        - If only one of RGB or IR personId is found, the method returns false.
+          This is considered a new enrollment. For example, if RGB personId found, 
+          and IR personId is not found, new personIds are created for both RGB and IR,
+          and the old personID for RGB is deleted. If a failure occurs during enrollment,
+          it is a no-op. 
+    */
+
+    let isReEnrollment = true;
+    let existingPersonIdRgb = '';
+    let existingPersonIdIr = '';
+
+    if (CONFIG.ENROLL_SETTINGS.RGB_FRAMES_TOENROLL > 0) {
+      existingPersonIdRgb = await findEnrollmentAction(
+        username,
+        CONFIG.PERSONGROUP_RGB,
+      );
+      if (!existingPersonIdRgb || existingPersonIdRgb == '') {
+        isReEnrollment = false;
+      }
+    }
+
+    if (CONFIG.ENROLL_SETTINGS.IR_FRAMES_TOENROLL > 0) {
+      existingPersonIdIr = await findEnrollmentAction(
+        username,
+        CONFIG.PERSONGROUP_IR,
+      );
+      if (!existingPersonIdIr || existingPersonIdIr == '') {
+        isReEnrollment = false;
+      }
+    }
+
+    // save data
+    let userInfo = {
+      username: username,
+      personIdRgb: existingPersonIdRgb,
+      personidIr: existingPersonIdIr,
+    };
+
+    dispatch(setUserInfo(userInfo));
+
+    return isReEnrollment;
+  };
+};
+
+export const findEnrollmentAction = (username, personGroup) => {
+  return async (dispatch) => {
+    /*
+        This app reads/writes to the enrollment directory path for demonstration only.
         Store existing enrollment information in a secured database. 
     */
 
-    let personGroup = '';
     let personId = '';
 
     if (Platform.OS == 'windows') {
       var mapping = constants.EnrollDict.username;
       if (mapping) {
-        personId = constants.EnrollDict.username[CONFIG.PERSONGROUP_RGB];
-        personGroup = CONFIG.PERSONGROUP_RGB;
+        personId = constants.EnrollDict.username[personGroup];
       }
     } else {
       let path =
-        RNFS.DocumentDirectoryPath + '/enrollment/' + username + '.txt';
+        RNFS.DocumentDirectoryPath + '/enrollment/' + username + '/' + personGroup + '.txt';
       let fileExists = await RNFS.exists(path);
       if (fileExists) {
         let mapping = await RNFS.readFile(path, 'utf8');
         if (mapping && mapping != '') {
-          personGroup = mapping.split(',')[0];
-          personId = mapping.split(',')[1];
+          mappedPersonGroup = mapping.split(',')[0];
+          if (mappedPersonGroup == personGroup) {
+            personId = mapping.split(',')[1];
+          }
         }
       }
     }
 
-    if (personGroup == CONFIG.PERSONGROUP_RGB && personId && personId != '') {
-      let userInfo = {
-        username: username,
-        personIdRgb: personId,
-        personidIr: '',
-      };
-
-      dispatch(setUserInfo(userInfo));
-      return true;
-    }
-
-    return false;
+    return personId;
   };
 };
 
@@ -57,40 +98,20 @@ export const newEnrollmentAction = () => {
     // Create a new personId for a re-enrollment
     // old personId will be deleted
 
-    let infoSaved = true;
+    let newPersonIdRgb = '';
+    let newPersonIdIr = '';
 
-    let personId;
+    if (CONFIG.ENROLL_SETTINGS.RGB_FRAMES_TOENROLL > 0) {
+      newPersonIdRgb = createPerson(CONFIG.PERSONGROUP_RGB);
+    }
 
-    let createPersonRgbEndpoint =
-      constants.FACEAPI_ENDPOINT +
-      constants.PERSON_ENDPOINT(CONFIG.PERSONGROUP_RGB);
-
-    let requestBody = {name: 'person-name'};
-    let response = await fetch(createPersonRgbEndpoint, {
-      method: 'POST',
-      headers: {
-        'User-Agent': constants.USER_AGENT,
-        'Content-Type': 'application/json',
-        Accept: 'application/json',
-        'Ocp-Apim-Subscription-Key': constants.FACEAPI_KEY,
-      },
-      body: JSON.stringify(requestBody),
-    });
-
-    if (response.status == '200') {
-      let result = await response.text();
-      personId = JSON.parse(result).personId;
-      console.log('new pid', personId);
-
-      infoSaved = true;
-    } else {
-      console.log('Create person failure: ', response);
-      infoSaved = false;
+    if (CONFIG.ENROLL_SETTINGS.IR_FRAMES_TOENROLL > 0) {
+      newPersonIdIr = createPerson(CONFIG.PERSONGROUP_IR);
     }
 
     let newIds = {
-      personIdRgb: !personId ? '' : personId,
-      personIdIr: '',
+      personIdRgb: newPersonIdRgb,
+      personIdIr: newPersonIdIr,
     };
 
     dispatch(setNewIds(newIds));
@@ -99,27 +120,48 @@ export const newEnrollmentAction = () => {
 };
 
 // Deletes a person from large person group
-export const deleteEnrollmentAction = () => {
+export const deleteCurrentEnrollmentAction = (personGroup, personId) => {
   return async (dispatch, getState) => {
-    // Select the newer personId if it was a re-enrollment
-    // otherwise select the only personId
-    let newPersonId = getState().newEnrollment.newRgbPersonId;
-    let personId =
-      newPersonId && newPersonId != ''
-        ? newPersonId
-        : getState().userInfo.rgbPersonId;
-
-    if (!personId || personId == '') {
-      console.log('pid is empty');
-      return false;
-    }
 
     let username = getState().userInfo.username;
+    let deleted = deletePerson(personGroup, personId);
 
-    // Delete person
-    let deletePersonEndpoint =
+    if (deleted) {
+      console.log('pid deleted');
+
+        // only delete file if this was new enrollment
+        if (Platform.OS == 'windows') {
+          let savedPersonId = constants.EnrollDict.username[personGroup];
+          if(personId == savedPersonId){
+            // delete
+            constants.EnrollDict.username[personGroup] = undefined;
+          }
+        } else {
+          let path =
+            RNFS.DocumentDirectoryPath + '/enrollment/' + username + "/" + personGroup + '.txt';
+          let savedPersonId = RNFS.readFile();
+          if(personId == savedPersonId){
+            RNFS.unlink(path)
+            .then(() => {
+              console.log('FILE DELETED');
+            })
+            .catch((err) => {
+              console.log(err.message);
+            });
+          }
+        }
+
+        return true;
+      }
+
+      return false;
+  };
+};
+
+function deletePerson(personGroup, personId){
+  let deletePersonEndpoint =
       constants.FACEAPI_ENDPOINT +
-      constants.GET_PERSON_ENDPOINT(CONFIG.PERSONGROUP_RGB, personId);
+      constants.GET_PERSON_ENDPOINT(personGroup, personId);
 
     let response = await fetch(deletePersonEndpoint, {
       method: 'DELETE',
@@ -131,30 +173,10 @@ export const deleteEnrollmentAction = () => {
       },
     });
 
-    if (response.status == '200') {
-      console.log('pid deleted');
-
-      // only delete file if this was new enrollment
-      if (personId != newPersonId) {
-        if (Platform.OS == 'windows') {
-          constants.EnrollDict.username[CONFIG.PERSONGROUP_RGB] = undefined;
-        } else {
-          let path =
-            RNFS.DocumentDirectoryPath + '/enrollment/' + username + '.txt';
-          RNFS.unlink(path)
-            .then(() => {
-              console.log('FILE DELETED');
-            })
-            .catch((err) => {
-              console.log(err.message);
-            });
-        }
-      }
-
+    if( response.status == '200'){
       return true;
     }
-
-    if (response.status == '404') {
+    else if (response.status == '404') {
       let result = await response.text();
       let deleteResult = JSON.parse(result);
       console.log('delete result', deleteResult);
@@ -166,53 +188,23 @@ export const deleteEnrollmentAction = () => {
 
     // Error occured
     throw new Error('Error deleting prints: ', response.status);
-  };
-};
+}
 
 // Deletes the old enrollment if it was a re-enrollment
-export const deleteOldEnrollmentAction = () => {
+export const updateEnrollmentAction = (personGroup, personIdOld, personIdNew) => {
   return async (dispatch, getState) => {
-    let personIdOld = getState().userInfo.rgbPersonId;
-    console.log('personId old', personIdOld);
-    let personIdNew = getState().newEnrollment.newRgbPersonId;
-    console.log('personId new', personIdNew);
-
-    if (
-      !personIdOld ||
-      personIdOld == '' ||
-      !personIdNew ||
-      personIdNew == ''
-    ) {
-      console.log('pid is empty');
-      return false;
-    }
-
+    
     let username = getState().userInfo.username;
 
-    // Delete person
-    let deletePersonEndpoint =
-      constants.FACEAPI_ENDPOINT +
-      constants.GET_PERSON_ENDPOINT(CONFIG.PERSONGROUP_RGB, personIdOld);
+    let deleted = deletePerson(personGroup, personIdOld);
 
-    let response = await fetch(deletePersonEndpoint, {
-      method: 'DELETE',
-      headers: {
-        'User-Agent': constants.USER_AGENT,
-        'Content-Type': 'application/json',
-        Accept: 'application/json',
-        'Ocp-Apim-Subscription-Key': constants.FACEAPI_KEY,
-      },
-    });
-
-    console.log('delete status', response.status);
-
-    if (response.status == '200') {
-      // delete file
+    if (deleted) {
+      // update saved info
       if (Platform.OS == 'windows') {
-        constants.EnrollDict.username[CONFIG.PERSONGROUP_RGB] = personIdNew;
+        constants.EnrollDict.username[personGroup] = personIdNew;
       } else {
         let path =
-          RNFS.DocumentDirectoryPath + '/enrollment/' + username + '.txt';
+          RNFS.DocumentDirectoryPath + '/enrollment/' + username + '/' + personGroup + '.txt';
 
         RNFS.unlink(path)
           .then(() => {
@@ -222,33 +214,20 @@ export const deleteOldEnrollmentAction = () => {
             console.log(err.message);
           });
 
-        let mappingData = CONFIG.PERSONGROUP_RGB + ',' + personIdNew;
-        console.log('new mapping ', mappingData);
+        console.log('new mapping ', personGroup, personIdNew);
 
-        RNFS.writeFile(path, mappingData, 'utf8')
+        RNFS.writeFile(path, personIdNew, 'utf8')
           .then((success) => {
             console.log('FILE WRITTEN');
           })
           .catch((err) => {
             console.log(err.message);
           });
-      }
 
-      return true;
-    }
-
-    if (response.status == '404') {
-      let result = await response.text();
-      let deleteResult = JSON.parse(result);
-      console.log('delete result', deleteResult);
-
-      if (deleteResult.error.message.includes('Person is not found.')) {
-        return false;
+          return true;
       }
     }
-
-    // Error occured
-    throw new Error('Error deleting prints: ', response.status);
+      return false;
   };
 };
 
