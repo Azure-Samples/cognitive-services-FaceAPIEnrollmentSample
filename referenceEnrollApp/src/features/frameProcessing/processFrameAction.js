@@ -75,13 +75,6 @@ export const detectFaceAction = (frameData) => {
 // Enrolls a face
 export const processFaceAction = (face, frameData, personGroup, personId) => {
   return async (dispatch, getState) => {
-    // If re-enrollment, use the new personId
-    // let newPersonId = getState().newEnrollment.newRgbPersonId;
-    // let personId =
-    //   newPersonId && newPersonId != ''
-    //     ? newPersonId
-    //     : getState().userInfo.rgbPersonId;
-
     // Add face
     let addFaceEndpoint =
       constants.FACEAPI_ENDPOINT +
@@ -116,13 +109,6 @@ export const processFaceAction = (face, frameData, personGroup, personId) => {
 export const verifyFaceAction = (face, personGroup, personId) => {
   return async (dispatch, getState) => {
     dispatch(enrollFeedbackAction(FEEDBACK.verifying));
-
-    // // If re-enrollment, use the new personId
-    // let newPersonId = getState().newEnrollment.newRgbPersonId;
-    // let personId =
-    //   newPersonId && newPersonId != ''
-    //     ? newPersonId
-    //     : getState().userInfo.rgbPersonId;
 
     // Verify
     let verifyEndpoint = constants.FACEAPI_ENDPOINT + constants.VERIFY_ENDPOINT;

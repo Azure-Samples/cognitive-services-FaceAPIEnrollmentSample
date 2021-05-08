@@ -20,6 +20,7 @@ import {
 import {StackActions} from '@react-navigation/native';
 import * as constants from '../../shared/constants';
 import useIsPortrait from '../portrait/isPortrait';
+import {createPersonsAction} from '../userEnrollment/saveUserInfoAction';
 
 /*
     IMPORTANT: 
@@ -77,7 +78,7 @@ function Login({route, navigation}) {
   async function createPersons(username) {
     return await dispatch(createPersonsAction(username));
   }
-  const checkIfReEnrollment = async (username) =>
+  const checkForReEnroll = async (username) =>
     await dispatch(checkIfReEnrollment(username));
 
   const signIn = async () => {
@@ -133,7 +134,7 @@ function Login({route, navigation}) {
       return;
     }
 
-    let enrollmentExists = await checkIfReEnrollment(username);
+    let enrollmentExists = await checkForReEnroll(username);
 
     if (enrollmentExists) {
       if (enrollmentPath) {

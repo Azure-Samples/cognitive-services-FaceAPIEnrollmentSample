@@ -12,7 +12,12 @@ import {CONFIG} from '../../env/env.json';
 import {CancellationToken, sleep} from '../../shared/helper';
 import CustomButton from '../../styles/CustomButton';
 import {ENROLL_RESULT} from '../../shared/constants';
-import {deleteEnrollmentAction} from '../userEnrollment/newEnrollmentAction';
+import {
+  deleteCurrentEnrollmentsAction,
+  deleteEnrollmentAction,
+  deleteNewEnrollmentsAction,
+  updateEnrollmentAction,
+} from '../userEnrollment/newEnrollmentAction';
 import {mutex} from '../../shared/constants';
 
 function Enrollment(props) {
@@ -48,10 +53,14 @@ function Enrollment(props) {
     await dispatch(verifyFaceAction(face, frame, personGroup, personId));
 
   // Delete
-  const dispatchDelete = async () => await dispatch(deleteEnrollmentAction());
-
+  const dispatchDelete = async () => {
+    await dispatch(deleteNewEnrollmentsAction());
+  };
   // Train
   const dispatchTrain = async () => await dispatch(trainAction());
+
+  // Update data
+  const updateInfo = async () => await dispatch(updateEnrollmentAction());
 
   useEffect(() => {
     /*
@@ -64,19 +73,11 @@ function Enrollment(props) {
     let newPersonIdRgb = useSelector(
       (state) => state.newEnrollment.newRgbPersonId,
     );
-    const personIdRgb =
-      newPersonId && newPersonId != ''
-        ? newPersonIdRgb
-        : useSelector((state) => state.userInfo.rgbPersonId);
     console.log('PID_RGB', personId);
 
     let newPersonIdIr = useSelector(
       (state) => state.newEnrollment.newIrPersonId,
     );
-    const personIdIr =
-      newPersonId && newPersonId != ''
-        ? newPersonIdIr
-        : useSelector((state) => state.userInfo.irPersonId);
     console.log('PID_IR', personId);
   }, []);
 
@@ -120,7 +121,7 @@ function Enrollment(props) {
               face,
               frame,
               CONFIG.PERSONGROUP_RGB,
-              personIdRgb,
+              newPersonIdRgb,
             );
 
             if (enrolled) {
@@ -132,7 +133,7 @@ function Enrollment(props) {
               face,
               frame,
               CONFIG.PERSONGROUP_RGB,
-              personIdRgb,
+              newPersonIdRgb,
             );
             if (verified) {
               updateProgress(progressRef.current + 1);
@@ -274,6 +275,9 @@ function Enrollment(props) {
     let trainResult = await dispatchTrain();
 
     console.log('train result:', trainResult);
+
+    // delete old data:
+    await updateInfo();
 
     if (trainResult) {
       return ENROLL_RESULT.success;

@@ -1,4 +1,3 @@
-import * as constants from '../../shared/constants';
 import {CONFIG} from '../../env/env.json';
 import {Platform} from 'react-native';
 var RNFS;
@@ -6,82 +5,93 @@ if (Platform.OS != 'windows') {
   RNFS = require('react-native-fs');
 }
 
-export const createPersonsAction = (username) => {
-  return async (dispatch, getState) => {
-    let infoSaved = true;
+export const saveUserInfoAction = (username) => {
+  return async (dispatch) => {
+    /*
+      for RGB only or IR only enrollment:
+        - If no personId found, method returns false.
+      for both RGB and IR enrollment: 
+        - If RGB & IR personIds found, method returns true.
+        - If neither RGB nor IR personId found, method returns false. 
+        - If only one of RGB or IR personId is found, the method returns false.
+          This is considered a new enrollment. For example, if RGB personId found, 
+          and IR personId is not found, new personIds are created for both RGB and IR,
+          and the old personID for RGB is deleted. If a failure occurs during enrollment,
+          it is a no-op. 
+    */
 
-    let createdPersonIdRgb = "";
-    let createdPersonIdIr = "";
+    let isReEnrollment = true;
+    let existingPersonIdRgb = '';
+    let existingPersonIdIr = '';
 
-    if(CONFIG.ENROLL_SETTINGS.RGB_FRAMES_TOENROLL > 0){
-      createdPersonIdRgb = createPerson(CONFIG.PERSONGROUP_RGB);
-      if(!createdPersonIdRgb || createdPersonIdRgb == ''){
-        return false;
+    if (CONFIG.ENROLL_SETTINGS.RGB_FRAMES_TOENROLL > 0) {
+      existingPersonIdRgb = await findExistingEnrollment(
+        username,
+        CONFIG.PERSONGROUP_RGB,
+      );
+      if (!existingPersonIdRgb || existingPersonIdRgb == '') {
+        isReEnrollment = false;
       }
     }
 
-    if(CONFIG.ENROLL_SETTINGS.IR_FRAMES_TOENROLL > 0){
-      createdPersonIdIr = createPerson(CONFIG.PERSONGROUP_IR);
-      if(!createdPersonIdIr || createdPersonIdIr == ''){
-        return false;
+    if (CONFIG.ENROLL_SETTINGS.IR_FRAMES_TOENROLL > 0) {
+      existingPersonIdIr = await findExistingEnrollment(
+        username,
+        CONFIG.PERSONGROUP_IR,
+      );
+      if (!existingPersonIdIr || existingPersonIdIr == '') {
+        isReEnrollment = false;
       }
     }
 
+    // save data
     let userInfo = {
       username: username,
-      personIdRgb: createdPersonIdRgb,
-      personidIr: createdPersonIdIr,
+      personIdRgb: existingPersonIdRgb,
+      personidIr: existingPersonIdIr,
     };
 
     dispatch(setUserInfo(userInfo));
-    return true;
+
+    return isReEnrollment;
   };
-};
+}
 
-export function createPerson(personGroup) {
-  let createPersonEndpoint =
-  constants.FACEAPI_ENDPOINT +
-  constants.PERSON_ENDPOINT(personGroup);
+const findExistingEnrollment = (username, personGroup) => {
+  /*
+      This app reads/writes to the enrollment directory path for demonstration only.
+      Store existing enrollment information in a secured database. 
+  */
 
-  let requestBody = {name: 'person-name'};
-  let response = await fetch(createPersonEndpoint, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      Accept: 'application/json',
-      'Ocp-Apim-Subscription-Key': constants.FACEAPI_KEY,
-    },
-    body: JSON.stringify(requestBody),
-  });
+  let personId = '';
 
-  if (response.status == '200') {
-    let result = await response.text();
-    personId = JSON.parse(result).personId;
-    console.log('new pid', personId);
-
-    let path =
-    RNFS.DocumentDirectoryPath + '/enrollment/' + username + '/' + personGroup + '.txt';
-
-    if (Platform.OS == 'windows') {
-      constants.EnrollDict.username = username;
-      constants.EnrollDict.username[personGroup] = personId;
-    } else {
-      try {
-        await RNFS.writeFile(path, personId, 'utf8');
-        console.log('FILE WRITTEN');
-        infoSaved = true;
-      } catch (error) {
-        console.log('Error writing file', error.message);
-        infoSaved = false;
-      }
+  if (Platform.OS == 'windows') {
+    var mapping = constants.EnrollDict.username;
+    if (mapping) {
+      personId = constants.EnrollDict.username[personGroup];
     }
   } else {
-    console.log('Create person failure: ', response);
-    infoSaved = false;
+    let path =
+      RNFS.DocumentDirectoryPath +
+      '/enrollment/' +
+      username +
+      '/' +
+      personGroup +
+      '.txt';
+    let fileExists = await RNFS.exists(path);
+    if (fileExists) {
+      let mapping = await RNFS.readFile(path, 'utf8');
+      if (mapping && mapping != '') {
+        mappedPersonGroup = mapping.split(',')[0];
+        if (mappedPersonGroup == personGroup) {
+          personId = mapping.split(',')[1];
+        }
+      }
+    }
   }
 
-  return infoSaved? personId : ''
-}
+  return personId;
+};
 
 export const setUserInfo = (userInfo) => ({
   type: 'SAVE_USERINFO',
