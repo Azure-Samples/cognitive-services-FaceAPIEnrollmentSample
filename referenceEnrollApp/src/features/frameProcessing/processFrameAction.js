@@ -8,11 +8,9 @@ import {FEEDBACK} from '../filtering/filterFeedback';
 // Detects and Filters faces
 export const getFilteredFaceforRgbAction = (frameData) => {
   return async (dispatch) => {
-    console.log('detection begins');
     let face = await dispatch(
       detectFaceAction(frameData, CONFIG.RECOGNITION_MODEL_RGB),
     );
-    console.log('detection ends');
     if (face.faceId) {
       let passedFilters = dispatch(filterFaceAction(face));
       return passedFilters ? face : {};
@@ -24,11 +22,9 @@ export const getFilteredFaceforRgbAction = (frameData) => {
 // Detects and Filters faces
 export const getFilteredFaceForIrAction = (frameData) => {
   return async (dispatch) => {
-    console.log('detection begins');
     let face = await dispatch(
       detectFaceAction(frameData, CONFIG.RECOGNITION_MODEL_IR),
     );
-    console.log('detection ends');
     if (face.faceId) {
       let passedFilters = true; //dispatch(filterFaceAction(face)); TODO: Filtering
       return passedFilters ? face : {};

@@ -34,6 +34,7 @@ import {saveUserInfoAction} from '../userEnrollment/saveUserInfoAction';
     to a secured and encrypted database. The user's personId should be considered
     a secret.
 */
+
 function Login({route, navigation}) {
   useEffect(() => {
     // Disables Android hardware back button
