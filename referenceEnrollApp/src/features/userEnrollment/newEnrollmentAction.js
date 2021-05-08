@@ -48,17 +48,25 @@ export const updateEnrollmentAction =  async () => {
     let newPersonIdRgb = getState().newEnrollment.newPersonIdRgb;
     let newPersonIdIr = getState().newEnrollment.newPersonIdIr;
 
-    let updatedSuccessfully = true;
+    let success = true;
 
     if(existingPersonIdRgb && existingPersonIdRgb != ''){
-      updatedSuccessfully &= await updateEnrollment(username, CONFIG.PERSONGROUP_RGB, existingPersonIdRgb, newPersonIdRgb);
+      // Reenrollment, update data
+      success &= await updateEnrollment(username, CONFIG.PERSONGROUP_RGB, existingPersonIdRgb, newPersonIdRgb);
+    }
+    else if(newPersonIdRgb && newPersonIdRgb != ''){
+      // First time enrolling, save data
+      success &= await saveEnrollment(username, CONFIG.PERSONGROUP_RGB, newPersonIdRgb);
     }
 
-    if(existingPersonIdIr && existingPersonIdIr != ''){
-      updatedSuccessfully &= await updateEnrollment(username, CONFIG.PERSONGROUP_RGB, existingPersonIdIr, newPersonIdIr);
+    if(existingPersonIdIr && existingPersonIdIr != '' ){
+      success &= await updateEnrollment(username, CONFIG.PERSONGROUP_IR, existingPersonIdIr, newPersonIdIr);
+    }
+    else if(newPersonIdIr && newPersonIdIr != '') {
+      success &= await saveEnrollment(username, CONFIG.PERSONGROUP_IR, newPersonIdIr);
     }
 
-    return updatedSuccessfully;
+    return success;
   };
 };
 
@@ -86,7 +94,7 @@ export const deleteNewEnrollmentsAction = async () => {
   };
 };
 
-export function createPerson(personGroup) {
+function createPerson(personGroup) {
   let createPersonEndpoint =
   constants.FACEAPI_ENDPOINT +
   constants.PERSON_ENDPOINT(personGroup);
@@ -106,38 +114,25 @@ export function createPerson(personGroup) {
     let result = await response.text();
     personId = JSON.parse(result).personId;
     console.log('new pid', personId);
+    return personId;
 
-    let path =
-    RNFS.DocumentDirectoryPath + '/enrollment/' + username + '/' + personGroup + '.txt';
-
-    if (Platform.OS == 'windows') {
-      constants.EnrollDict.username = username;
-      constants.EnrollDict.username[personGroup] = personId;
-    } else {
-      try {
-        await RNFS.writeFile(path, personId, 'utf8');
-        console.log('FILE WRITTEN');
-        infoSaved = true;
-      } catch (error) {
-        console.log('Error writing file', error.message);
-        infoSaved = false;
-      }
-    }
   } else {
     console.log('Create person failure: ', response);
-    infoSaved = false;
+    return '';
   }
-
-  return infoSaved? personId : ''
 }
 
-// Deletes the existing enrollment if it was a re-enrollment
-export const updateEnrollment = async (
+// Deletes the existing enrollment if it was a re-enrollment, and updates save info
+const updateEnrollment = async (
   username,
   personGroup,
   personIdOld,
   personIdNew,
 ) => {
+
+    if(!personIdNew || personIdNew == '' ){
+      return false;
+    }
 
     let deleted = await deletePerson(personGroup, personIdOld);
 
@@ -178,45 +173,66 @@ export const updateEnrollment = async (
     return false;
 };
 
-// Deletes a person from large person group
-const deleteEnrollment = async (username, personGroup, personId) => {
-  let deleted = await deletePerson(personGroup, personId);
+// saves enrollment info for first enrollment
+const saveEnrollment = async (username, personGroup, personId) => {
+  let path =
+  RNFS.DocumentDirectoryPath + '/enrollment/' + username + '/' + personGroup + '.txt';
 
-  if (deleted) {
-    console.log('pid deleted');
-
-    // only delete file if this was new enrollment
-    if (Platform.OS == 'windows') {
-      let savedPersonId = constants.EnrollDict.username[personGroup];
-      if (personId == savedPersonId) {
-        // delete
-        constants.EnrollDict.username[personGroup] = undefined;
-      }
-    } else {
-      let path =
-        RNFS.DocumentDirectoryPath +
-        '/enrollment/' +
-        username +
-        '/' +
-        personGroup +
-        '.txt';
-      let savedPersonId = RNFS.readFile();
-      if (personId == savedPersonId) {
-        RNFS.unlink(path)
-          .then(() => {
-            console.log('FILE DELETED');
-          })
-          .catch((err) => {
-            console.log(err.message);
-          });
-      }
+  if (Platform.OS == 'windows') {
+    constants.EnrollDict.username = username;
+    constants.EnrollDict.username[personGroup] = personId;
+  } else {
+    try {
+      await RNFS.writeFile(path, personId, 'utf8');
+      console.log('FILE WRITTEN');
+    } catch (error) {
+      console.log('Error writing file', error.message);
+      return false;
     }
-
-    return true;
   }
 
-  return false;
-};
+  return true;
+}
+
+// Deletes a person from large person group
+// const deleteEnrollment = async (username, personGroup, personId) => {
+//   let deleted = await deletePerson(personGroup, personId);
+
+//   if (deleted) {
+//     console.log('pid deleted');
+
+//     // only delete file if this was new enrollment
+//     if (Platform.OS == 'windows') {
+//       let savedPersonId = constants.EnrollDict.username[personGroup];
+//       if (personId == savedPersonId) {
+//         // delete
+//         constants.EnrollDict.username[personGroup] = undefined;
+//       }
+//     } else {
+//       let path =
+//         RNFS.DocumentDirectoryPath +
+//         '/enrollment/' +
+//         username +
+//         '/' +
+//         personGroup +
+//         '.txt';
+//       let savedPersonId = RNFS.readFile();
+//       if (personId == savedPersonId) {
+//         RNFS.unlink(path)
+//           .then(() => {
+//             console.log('FILE DELETED');
+//           })
+//           .catch((err) => {
+//             console.log(err.message);
+//           });
+//       }
+//     }
+
+//     return true;
+//   }
+
+//   return false;
+// };
 
 async function deletePerson(personGroup, personId) {
   let deletePersonEndpoint =

@@ -15,12 +15,13 @@ import Modal from '../../styles/Modal';
 import {
   checkEnrollmentExistsAction,
   checkIfReEnrollment,
+  newEnrollmentAction,
   setExistingPersonIds,
 } from '../userEnrollment/newEnrollmentAction';
 import {StackActions} from '@react-navigation/native';
 import * as constants from '../../shared/constants';
 import useIsPortrait from '../portrait/isPortrait';
-import {createPersonsAction} from '../userEnrollment/saveUserInfoAction';
+import {saveUserInfoAction} from '../userEnrollment/saveUserInfoAction';
 
 /*
     IMPORTANT: 
@@ -75,11 +76,13 @@ function Login({route, navigation}) {
     route.params.nextScreen == constants.SCREENS.instruction;
 
   const dispatch = useDispatch();
-  async function createPersons(username) {
-    return await dispatch(createPersonsAction(username));
+
+  async function createNewPersons(username) {
+    return await dispatch(newEnrollmentAction(username));
   }
-  const checkForReEnroll = async (username) =>
-    await dispatch(checkIfReEnrollment(username));
+
+  const checkForExistingEnrollment = async (username) =>
+    await dispatch(saveUserInfoAction(username));
 
   const signIn = async () => {
     setShowLoading(true);
@@ -134,7 +137,7 @@ function Login({route, navigation}) {
       return;
     }
 
-    let enrollmentExists = await checkForReEnroll(username);
+    let enrollmentExists = await checkForExistingEnrollment(username);
 
     if (enrollmentExists) {
       if (enrollmentPath) {
@@ -172,8 +175,8 @@ function Login({route, navigation}) {
         // First time enrolling
         // take to instructions
         // create person and save info
-        let saved = await createPersons(username);
-        if (saved) {
+        let created = await createNewPersons(username);
+        if (created) {
           navigation.navigate(route.params.nextScreen);
         } else {
           // Error with saving info, prompt login again

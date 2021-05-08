@@ -20,20 +20,12 @@ function ImageCapture({navigation}) {
   const [modalProps, setModalProps] = useState(null);
 
   const dispatch = useDispatch();
-  const updateInfo = async () => await dispatch(deleteOldEnrollmentAction());
 
   const onEnrollComplete = (enrollResult) => {
     let modalInfo = {};
     switch (enrollResult) {
       case ENROLL_RESULT.successNoTrain:
       case ENROLL_RESULT.success:
-        if (newEnrollInfo.newRgbPersonId) {
-          console.log('re enroll occurred updating info');
-          updateInfo().then(() => {
-            console.log('info updated');
-          });
-        }
-
         modalInfo.title = 'Success!';
         modalInfo.message = 'Your face template has been created.';
         modalInfo.buttonRight = {

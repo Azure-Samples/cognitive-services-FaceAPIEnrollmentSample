@@ -6,13 +6,31 @@ import {filterFaceAction} from '../filtering/qualityFilteringAction';
 import {FEEDBACK} from '../filtering/filterFeedback';
 
 // Detects and Filters faces
-export const getFilteredFaceAction = (frameData) => {
+export const getFilteredFaceforRgbAction = (frameData) => {
   return async (dispatch) => {
     console.log('detection begins');
-    let face = await dispatch(detectFaceAction(frameData));
+    let face = await dispatch(
+      detectFaceAction(frameData, CONFIG.RECOGNITION_MODEL_RGB),
+    );
     console.log('detection ends');
     if (face.faceId) {
-      let passedFilters = true; //dispatch(filterFaceAction(face));
+      let passedFilters = dispatch(filterFaceAction(face));
+      return passedFilters ? face : {};
+    }
+    return {};
+  };
+};
+
+// Detects and Filters faces
+export const getFilteredFaceForIrAction = (frameData) => {
+  return async (dispatch) => {
+    console.log('detection begins');
+    let face = await dispatch(
+      detectFaceAction(frameData, CONFIG.RECOGNITION_MODEL_IR),
+    );
+    console.log('detection ends');
+    if (face.faceId) {
+      let passedFilters = true; //dispatch(filterFaceAction(face)); TODO: Filtering
       return passedFilters ? face : {};
     }
     return {};
@@ -20,7 +38,7 @@ export const getFilteredFaceAction = (frameData) => {
 };
 
 // Detects a face
-export const detectFaceAction = (frameData) => {
+const detectFaceAction = (frameData, recognitionModel) => {
   return async (dispatch) => {
     // Detect face
     let detectEndpoint =
@@ -29,9 +47,7 @@ export const detectFaceAction = (frameData) => {
       '?' +
       constants.FACE_ATTRIBUTES +
       '&' +
-      constants.REC_MODEL;
-
-    console.log('making api call');
+      recognitionModel;
 
     let response = await fetch(detectEndpoint, {
       method: 'POST',
@@ -43,8 +59,6 @@ export const detectFaceAction = (frameData) => {
       },
       body: frameData,
     });
-
-    console.log('detection done');
 
     if (response.status == '200') {
       let result = await response.text();
@@ -152,71 +166,83 @@ export const verifyFaceAction = (face, personGroup, personId) => {
 // Trains person group
 export const trainAction = () => {
   return async (dispatch, getState) => {
-    let maxAttempts = CONFIG.ENROLL_SETTINGS.TRAIN_ATTEMPTS;
-    const maxStatusChecks = 50;
-
-    for (let trainAttempts = 0; trainAttempts < maxAttempts; trainAttempts++) {
-      console.log('train attempt ', trainAttempts);
-      // Train
-      let tainEndpoint =
-        constants.FACEAPI_ENDPOINT +
-        constants.TRAIN_ENDPOINT(CONFIG.PERSONGROUP_RGB);
-
-      let response = await fetch(tainEndpoint, {
-        method: 'POST',
-        headers: {
-          'User-Agent': constants.USER_AGENT,
-          'Content-Type': 'application/json',
-          Accept: 'application/json',
-          'Ocp-Apim-Subscription-Key': constants.FACEAPI_KEY,
-        },
-      });
-
-      // If train was accepted, check status
-      if (response.status == '202') {
-        let trainFailed = false;
-        for (
-          let statusAttempts = 0;
-          statusAttempts < maxStatusChecks && trainFailed == false;
-          statusAttempts++
-        ) {
-          console.log('train status attempt ', statusAttempts);
-
-          // Get training status
-          let tainStatusEndpoint =
-            constants.FACEAPI_ENDPOINT +
-            constants.TRAIN_STATUS_ENDPOINT(CONFIG.PERSONGROUP_RGB);
-
-          let response = await fetch(tainStatusEndpoint, {
-            method: 'GET',
-            headers: {
-              'User-Agent': constants.USER_AGENT,
-              'Content-Type': 'application/json',
-              Accept: 'application/json',
-              'Ocp-Apim-Subscription-Key': constants.FACEAPI_KEY,
-            },
-          });
-
-          if (response.status == '200') {
-            let result = await response.text();
-            let trainingResult = JSON.parse(result);
-            if (trainingResult.status == 'succeeded') {
-              // Training finished and succeeded
-              return true;
-            }
-
-            trainFailed = trainingResult.status == 'failed';
-          }
-          // Wait between status checks
-          await sleep(100);
-        }
-      }
-
-      // Wait between train attempts
-      await sleep(100);
+    let success = true;
+    if (CONFIG.ENROLL_SETTINGS.RGB_FRAMES_TOENROLL > 0) {
+      success &= await train(CONFIG.PERSONGROUP_RGB);
     }
 
-    // Training has failed
-    return false;
+    if (CONFIG.ENROLL_SETTINGS.IR_FRAMES_TOENROLL > 0) {
+      success &= await train(CONFIG.PERSONGROUP_IR);
+    }
+
+    return success;
   };
 };
+
+async function train(personGroup) {
+  let maxAttempts = CONFIG.ENROLL_SETTINGS.TRAIN_ATTEMPTS;
+  const maxStatusChecks = 50;
+
+  for (let trainAttempts = 0; trainAttempts < maxAttempts; trainAttempts++) {
+    console.log('train attempt ', trainAttempts);
+    // Train
+    let tainEndpoint =
+      constants.FACEAPI_ENDPOINT + constants.TRAIN_ENDPOINT(personGroup);
+
+    let response = await fetch(tainEndpoint, {
+      method: 'POST',
+      headers: {
+        'User-Agent': constants.USER_AGENT,
+        'Content-Type': 'application/json',
+        Accept: 'application/json',
+        'Ocp-Apim-Subscription-Key': constants.FACEAPI_KEY,
+      },
+    });
+
+    // If train was accepted, check status
+    if (response.status == '202') {
+      let trainFailed = false;
+      for (
+        let statusAttempts = 0;
+        statusAttempts < maxStatusChecks && trainFailed == false;
+        statusAttempts++
+      ) {
+        console.log('train status attempt ', statusAttempts);
+
+        // Get training status
+        let tainStatusEndpoint =
+          constants.FACEAPI_ENDPOINT +
+          constants.TRAIN_STATUS_ENDPOINT(CONFIG.PERSONGROUP_RGB);
+
+        let response = await fetch(tainStatusEndpoint, {
+          method: 'GET',
+          headers: {
+            'User-Agent': constants.USER_AGENT,
+            'Content-Type': 'application/json',
+            Accept: 'application/json',
+            'Ocp-Apim-Subscription-Key': constants.FACEAPI_KEY,
+          },
+        });
+
+        if (response.status == '200') {
+          let result = await response.text();
+          let trainingResult = JSON.parse(result);
+          if (trainingResult.status == 'succeeded') {
+            // Training finished and succeeded
+            return true;
+          }
+
+          trainFailed = trainingResult.status == 'failed';
+        }
+        // Wait between status checks
+        await sleep(100);
+      }
+    }
+
+    // Wait between train attempts
+    await sleep(100);
+  }
+
+  // Training has failed
+  return false;
+}

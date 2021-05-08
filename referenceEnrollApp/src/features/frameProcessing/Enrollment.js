@@ -5,6 +5,8 @@ import {
   processFaceAction,
   trainAction,
   getFilteredFaceAction,
+  getFilteredFaceForIrAction,
+  getFilteredFaceforRgbAction,
 } from './processFrameAction';
 import {View, StyleSheet} from 'react-native';
 import EnrollProgress from '../progress/EnrollProgress';
@@ -38,11 +40,11 @@ function Enrollment(props) {
 
   // Detection
   const dispatchForRgbDetection = async (frame) =>
-    await dispatch(getFilteredFaceAction(frame));
+    await dispatch(getFilteredFaceforRgbAction(frame));
 
   // Detection
   const dispatchForIrDetection = async (frame) =>
-    await dispatch(getFilteredFaceAction(frame));
+    await dispatch(getFilteredFaceForIrAction(frame));
 
   // Enrollment
   const dispatchForEnrollment = async (face, frame, personGroup, personId) =>
@@ -56,11 +58,13 @@ function Enrollment(props) {
   const dispatchDelete = async () => {
     await dispatch(deleteNewEnrollmentsAction());
   };
+
   // Train
   const dispatchTrain = async () => await dispatch(trainAction());
 
   // Update data
-  const updateInfo = async () => await dispatch(updateEnrollmentAction());
+  const dispatchUpdateInfo = async () =>
+    await dispatch(updateEnrollmentAction());
 
   useEffect(() => {
     /*
@@ -70,12 +74,12 @@ function Enrollment(props) {
     //setCancelToken(new CancellationToken());
 
     //get personIds:
-    let newPersonIdRgb = useSelector(
+    var newPersonIdRgb = useSelector(
       (state) => state.newEnrollment.newRgbPersonId,
     );
     console.log('PID_RGB', personId);
 
-    let newPersonIdIr = useSelector(
+    var newPersonIdIr = useSelector(
       (state) => state.newEnrollment.newIrPersonId,
     );
     console.log('PID_IR', personId);
@@ -276,8 +280,8 @@ function Enrollment(props) {
 
     console.log('train result:', trainResult);
 
-    // delete old data:
-    await updateInfo();
+    // update or save enrollment info
+    await dispatchUpdateInfo();
 
     if (trainResult) {
       return ENROLL_RESULT.success;
