@@ -5,26 +5,26 @@ if (Platform.OS != 'windows') {
   RNFS = require('react-native-fs');
 }
 
-import {createPerson, setUserInfo} from './saveUserInfoAction';
 import {Platform} from 'react-native';
 
 export const newEnrollmentAction = () => {
-  return async (dispatch, getState) => {
+  return async (dispatch) => {
+    console.log('Creating new personIds');
+    let createdPersonIdRgb = '';
+    let createdPersonIdIr = '';
+    let result = true;
 
-    let createdPersonIdRgb = "";
-    let createdPersonIdIr = "";
-
-    if(CONFIG.ENROLL_SETTINGS.RGB_FRAMES_TOENROLL > 0){
-      createdPersonIdRgb = createPerson(CONFIG.PERSONGROUP_RGB);
-      if(!createdPersonIdRgb || createdPersonIdRgb == ''){
-        return false;
+    if (CONFIG.ENROLL_SETTINGS.RGB_FRAMES_TOENROLL > 0) {
+      createdPersonIdRgb = await createPerson(CONFIG.PERSONGROUP_RGB);
+      if (!createdPersonIdRgb || createdPersonIdRgb == '') {
+        result &&= false;
       }
     }
 
-    if(CONFIG.ENROLL_SETTINGS.IR_FRAMES_TOENROLL > 0){
-      createdPersonIdIr = createPerson(CONFIG.PERSONGROUP_IR);
-      if(!createdPersonIdIr || createdPersonIdIr == ''){
-        return false;
+    if (CONFIG.ENROLL_SETTINGS.IR_FRAMES_TOENROLL > 0) {
+      createdPersonIdIr = await createPerson(CONFIG.PERSONGROUP_IR);
+      if (!createdPersonIdIr || createdPersonIdIr == '') {
+        result &&= false;
       }
     }
 
@@ -33,71 +33,93 @@ export const newEnrollmentAction = () => {
       personIdIr: createdPersonIdIr,
     };
 
+    console.log('New Enrollment: ', newEnrollment);
+
     dispatch(setNewIds(newEnrollment));
-    return true;
+    return result;
   };
 };
 
-export const updateEnrollmentAction =  async () => {
+export const updateEnrollmentAction = () => {
   return async (dispatch, getState) => {
-
-    let existingPersonIdRgb = getState().userInfo.existingPersonIdRgb;
-    let existingPersonIdIr= getState().userInfo.existingPersonIdIr;
+    console.log('HERE');
+    let existingPersonIdRgb = getState().userInfo.existingRgbPersonId;
+    let existingPersonIdIr = getState().userInfo.existingIrPersonId;
     let username = getState().userInfo.username;
+    console.log('IR', existingPersonIdIr);
 
-    let newPersonIdRgb = getState().newEnrollment.newPersonIdRgb;
-    let newPersonIdIr = getState().newEnrollment.newPersonIdIr;
-
+    let newPersonIdRgb = getState().newEnrollment.newRgbPersonId;
+    let newPersonIdIr = getState().newEnrollment.newIrPersonId;
+    console.log('HEREE', newPersonIdIr, newPersonIdRgb);
     let success = true;
 
-    if(existingPersonIdRgb && existingPersonIdRgb != ''){
+    if (existingPersonIdRgb && existingPersonIdRgb != '') {
       // Reenrollment, update data
-      success &= await updateEnrollment(username, CONFIG.PERSONGROUP_RGB, existingPersonIdRgb, newPersonIdRgb);
-    }
-    else if(newPersonIdRgb && newPersonIdRgb != ''){
+      success &&= await updateEnrollment(
+        username,
+        CONFIG.PERSONGROUP_RGB,
+        existingPersonIdRgb,
+        newPersonIdRgb,
+      );
+    } else if (newPersonIdRgb && newPersonIdRgb != '') {
       // First time enrolling, save data
-      success &= await saveEnrollment(username, CONFIG.PERSONGROUP_RGB, newPersonIdRgb);
+      success &&= await saveEnrollment(
+        username,
+        CONFIG.PERSONGROUP_RGB,
+        newPersonIdRgb,
+      );
     }
 
-    if(existingPersonIdIr && existingPersonIdIr != '' ){
-      success &= await updateEnrollment(username, CONFIG.PERSONGROUP_IR, existingPersonIdIr, newPersonIdIr);
-    }
-    else if(newPersonIdIr && newPersonIdIr != '') {
-      success &= await saveEnrollment(username, CONFIG.PERSONGROUP_IR, newPersonIdIr);
+    if (existingPersonIdIr && existingPersonIdIr != '') {
+      console.log('updating IR');
+      success &&= await updateEnrollment(
+        username,
+        CONFIG.PERSONGROUP_IR,
+        existingPersonIdIr,
+        newPersonIdIr,
+      );
+    } else if (newPersonIdIr && newPersonIdIr != '') {
+      success &&= await saveEnrollment(
+        username,
+        CONFIG.PERSONGROUP_IR,
+        newPersonIdIr,
+      );
     }
 
     return success;
   };
 };
 
-export const deleteNewEnrollmentsAction = async () => {
+export const deleteNewEnrollmentsAction = () => {
   return async (dispatch, getState) => {
-    let personIdRgb = getState().newEnrollment.newPersonIdRgb;
-    let personIdIr = getState().newEnrollment.newPersonIdIr;
+    console.log('Deleting new enrollment');
+    let personIdRgb = getState().newEnrollment.newRgbPersonId;
+    let personIdIr = getState().newEnrollment.newIrPersonId;
+    console.log('deleting', personIdIr, personIdRgb);
     let deletedSuccessfully = true;
 
     if (personIdRgb && personIdRgb != '') {
-      deletedSuccessfully &= await deletePerson(
+      deletedSuccessfully &&= await deletePerson(
         CONFIG.PERSONGROUP_RGB,
         personIdRgb,
       );
     }
 
     if (personIdIr && personIdIr != '') {
-      deletedSuccessfully &= await deletePerson(
+      deletedSuccessfully &&= await deletePerson(
         CONFIG.PERSONGROUP_IR,
         personIdIr,
       );
     }
 
+    console.log('RES', deletedSuccessfully);
     return deletedSuccessfully;
   };
 };
 
-function createPerson(personGroup) {
+async function createPerson(personGroup) {
   let createPersonEndpoint =
-  constants.FACEAPI_ENDPOINT +
-  constants.PERSON_ENDPOINT(personGroup);
+    constants.FACEAPI_ENDPOINT + constants.PERSON_ENDPOINT(personGroup);
 
   let requestBody = {name: 'person-name'};
   let response = await fetch(createPersonEndpoint, {
@@ -112,10 +134,9 @@ function createPerson(personGroup) {
 
   if (response.status == '200') {
     let result = await response.text();
-    personId = JSON.parse(result).personId;
+    let personId = JSON.parse(result).personId;
     console.log('new pid', personId);
     return personId;
-
   } else {
     console.log('Create person failure: ', response);
     return '';
@@ -129,60 +150,68 @@ const updateEnrollment = async (
   personIdOld,
   personIdNew,
 ) => {
-
-    if(!personIdNew || personIdNew == '' ){
-      return false;
-    }
-
-    let deleted = await deletePerson(personGroup, personIdOld);
-
-    if (deleted) {
-      // update saved info
-      if (Platform.OS == 'windows') {
-        constants.EnrollDict.username[personGroup] = personIdNew;
-      } else {
-        let path =
-          RNFS.DocumentDirectoryPath +
-          '/enrollment/' +
-          username +
-          '/' +
-          personGroup +
-          '.txt';
-
-        RNFS.unlink(path)
-          .then(() => {
-            console.log('FILE DELETED');
-          })
-          .catch((err) => {
-            console.log(err.message);
-          });
-
-        console.log('new mapping ', personGroup, personIdNew);
-
-        RNFS.writeFile(path, personIdNew, 'utf8')
-          .then((success) => {
-            console.log('FILE WRITTEN');
-          })
-          .catch((err) => {
-            console.log(err.message);
-          });
-
-        return true;
-      }
-    }
+  if (!personIdNew || personIdNew == '') {
     return false;
+  }
+
+  let deleted = await deletePerson(personGroup, personIdOld);
+
+  if (deleted) {
+    // update saved info
+    if (Platform.OS == 'windows') {
+      constants.EnrollDict[username][personGroup] = personIdNew;
+    } else {
+      let path =
+        RNFS.DocumentDirectoryPath +
+        '/enrollment/' +
+        username +
+        '/' +
+        personGroup +
+        '.txt';
+
+      RNFS.unlink(path)
+        .then(() => {
+          console.log('FILE DELETED');
+        })
+        .catch((err) => {
+          console.log(err.message);
+        });
+
+      console.log('new mapping ', personGroup, personIdNew);
+
+      RNFS.writeFile(path, personIdNew, 'utf8')
+        .then((success) => {
+          console.log('FILE WRITTEN');
+        })
+        .catch((err) => {
+          console.log(err.message);
+        });
+
+      return true;
+    }
+  }
+  return false;
 };
 
 // saves enrollment info for first enrollment
 const saveEnrollment = async (username, personGroup, personId) => {
-  let path =
-  RNFS.DocumentDirectoryPath + '/enrollment/' + username + '/' + personGroup + '.txt';
-
+  console.log('saving...');
   if (Platform.OS == 'windows') {
-    constants.EnrollDict.username = username;
-    constants.EnrollDict.username[personGroup] = personId;
+    if (constants.EnrollDict[username] == null) {
+      constants.EnrollDict[username] = {};
+    }
+    constants.EnrollDict[username][personGroup] = personId;
+
+    console.log(constants.EnrollDict);
   } else {
     try {
+      let path =
+        RNFS.DocumentDirectoryPath +
+        '/enrollment/' +
+        username +
+        '/' +
+        personGroup +
+        '.txt';
       await RNFS.writeFile(path, personId, 'utf8');
       console.log('FILE WRITTEN');
     } catch (error) {
@@ -192,7 +221,7 @@ const saveEnrollment = async (username, personGroup, personId) => {
   }
 
   return true;
-}
+};
 
 // Deletes a person from large person group
 // const deleteEnrollment = async (username, personGroup, personId) => {
@@ -250,11 +279,12 @@ async function deletePerson(personGroup, personId) {
   });
 
   if (response.status == '200') {
+    console.log('deleted person successfully: ', personId);
     return true;
   } else if (response.status == '404') {
     let result = await response.text();
     let deleteResult = JSON.parse(result);
-    console.log('delete result', deleteResult);
+    console.log('delete error', deleteResult);
 
     if (deleteResult.error.message.includes('Person is not found.')) {
       return false;

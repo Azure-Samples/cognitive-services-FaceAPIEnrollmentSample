@@ -8,11 +8,18 @@ import {FEEDBACK} from '../filtering/filterFeedback';
 // Detects and Filters faces
 export const getFilteredFaceforRgbAction = (frameData) => {
   return async (dispatch) => {
+    console.log('detection rgb called');
     let face = await dispatch(
-      detectFaceAction(frameData, CONFIG.RECOGNITION_MODEL_RGB),
+      detectFaceAction(
+        frameData,
+        constants.REC_MODEL_RGB,
+        constants.FACE_ATTRIBUTES_RGB,
+      ),
     );
     if (face.faceId) {
+      console.log('Rgb face found');
       let passedFilters = dispatch(filterFaceAction(face));
+      console.log('Passed: ', passedFilters);
       return passedFilters ? face : {};
     }
     return {};
@@ -22,10 +29,16 @@ export const getFilteredFaceforRgbAction = (frameData) => {
 // Detects and Filters faces
 export const getFilteredFaceForIrAction = (frameData) => {
   return async (dispatch) => {
+    console.log('detection for IR.');
     let face = await dispatch(
-      detectFaceAction(frameData, CONFIG.RECOGNITION_MODEL_IR),
+      detectFaceAction(
+        frameData,
+        constants.REC_MODEL_IR,
+        constants.FACE_ATTRIBUTES_IR,
+      ),
     );
     if (face.faceId) {
+      console.log('IR face found');
       let passedFilters = true; //dispatch(filterFaceAction(face)); TODO: Filtering
       return passedFilters ? face : {};
     }
@@ -34,14 +47,14 @@ export const getFilteredFaceForIrAction = (frameData) => {
 };
 
 // Detects a face
-const detectFaceAction = (frameData, recognitionModel) => {
+const detectFaceAction = (frameData, recognitionModel, faceAttributes) => {
   return async (dispatch) => {
     // Detect face
     let detectEndpoint =
       constants.FACEAPI_ENDPOINT +
       constants.DETECT_ENDPOINT +
       '?' +
-      constants.FACE_ATTRIBUTES +
+      faceAttributes +
       '&' +
       recognitionModel;
 
@@ -66,10 +79,8 @@ const detectFaceAction = (frameData, recognitionModel) => {
         // dispatch no face detected message
         dispatch(enrollFeedbackAction(FEEDBACK.noFaceDetected));
         // return empty face object
-        console.log('No face detected');
         return {};
       } else {
-        console.log('Face found');
         return faceToEnroll;
       }
     } else {
@@ -103,7 +114,12 @@ export const processFaceAction = (face, frameData, personGroup, personId) => {
       body: frameData,
     });
 
-    console.log('AddFace status', response.status);
+    console.log(
+      'AddFace status for persongroup: ',
+      personGroup,
+      response.status,
+    );
+
     if (response.status == '200') {
       return true;
     } else {
@@ -164,11 +180,11 @@ export const trainAction = () => {
   return async (dispatch, getState) => {
     let success = true;
     if (CONFIG.ENROLL_SETTINGS.RGB_FRAMES_TOENROLL > 0) {
-      success &= await train(CONFIG.PERSONGROUP_RGB);
+      success &&= await train(CONFIG.PERSONGROUP_RGB);
     }
 
     if (CONFIG.ENROLL_SETTINGS.IR_FRAMES_TOENROLL > 0) {
-      success &= await train(CONFIG.PERSONGROUP_IR);
+      success &&= await train(CONFIG.PERSONGROUP_IR);
     }
 
     return success;

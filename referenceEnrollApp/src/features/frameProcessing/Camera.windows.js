@@ -20,9 +20,19 @@ export default function Camera(props) {
     setStartEnroll(true);
   }
 
-  async function takeBase64Picture() {
+  async function takeBase64PictureRgb() {
     try {
       var frame = await cameraRef.current.TakeColorPictureAsync();
+      return frame;
+    } catch (error) {
+      console.log(error);
+      return null;
+    }
+  }
+
+  async function takeBase64PictureIr() {
+    try {
+      var frame = await cameraRef.current.TakeInfraredPictureAsync();
       return frame;
     } catch (error) {
       console.log(error);
@@ -37,7 +47,8 @@ export default function Camera(props) {
         onCameraInitialized={onInitialized}></WindowsCamera>
       <Enrollment
         onCompleted={props.onCompleted}
-        takePicture={takeBase64Picture}
+        takeColorPicture={takeBase64PictureRgb}
+        takeIrPicture={takeBase64PictureIr}
         beginEnrollment={startEnroll}
       />
     </View>

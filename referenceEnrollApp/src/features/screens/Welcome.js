@@ -14,7 +14,7 @@ import CustomButton from '../../styles/CustomButton';
 import {CONFIG} from '../../env/env.json';
 import {useDispatch} from 'react-redux';
 import * as constants from '../../shared/constants';
-import {deletePersonGroup, validatePersonGroup} from '../../shared/helper';
+import {deletePersonGroup, validatePersonGroups} from '../../shared/helper';
 //var RNFS = require('react-native-fs');
 import useIsPortrait from '../portrait/isPortrait';
 
@@ -80,10 +80,7 @@ function Welcome({navigation}) {
             {
               text: 'Try again',
               onPress: async () => {
-                let validated = await validatePersonGroup(
-                  CONFIG.PERSONGROUP_RGB,
-                );
-
+                let validated = await validatePersonGroups();
                 if (validated == false) {
                   showAlert();
                 }
@@ -101,8 +98,8 @@ function Welcome({navigation}) {
   };
 
   useEffect(() => {
-    validatePersonGroup(CONFIG.PERSONGROUP_RGB).then((personGroupValidated) => {
-      if (personGroupValidated == false) {
+    validatePersonGroups().then((personGroupsValidated) => {
+      if (personGroupsValidated == false) {
         showAlert();
       }
     });

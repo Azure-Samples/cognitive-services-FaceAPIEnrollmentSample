@@ -1,5 +1,7 @@
 import {CONFIG} from '../../env/env.json';
 import {Platform} from 'react-native';
+import * as constants from '../../shared/constants';
+
 var RNFS;
 if (Platform.OS != 'windows') {
   RNFS = require('react-native-fs');
@@ -31,6 +33,9 @@ export const saveUserInfoAction = (username) => {
       );
       if (!existingPersonIdRgb || existingPersonIdRgb == '') {
         isReEnrollment = false;
+        console.log('RGB enrollment not found');
+      } else {
+        console.log('RGB enrollment found: ', existingPersonIdRgb);
       }
     }
 
@@ -41,6 +46,9 @@ export const saveUserInfoAction = (username) => {
       );
       if (!existingPersonIdIr || existingPersonIdIr == '') {
         isReEnrollment = false;
+        console.log('IR enrollment not found.');
+      } else {
+        console.log('IR enrollment found: ', existingPersonIdIr);
       }
     }
 
@@ -48,16 +56,19 @@ export const saveUserInfoAction = (username) => {
     let userInfo = {
       username: username,
       personIdRgb: existingPersonIdRgb,
-      personidIr: existingPersonIdIr,
+      personIdIr: existingPersonIdIr,
     };
+
+    console.log('Saving userInfo: ', userInfo);
 
     dispatch(setUserInfo(userInfo));
 
+    console.log('Is reenrollment: ', isReEnrollment);
     return isReEnrollment;
   };
-}
+};
 
-const findExistingEnrollment = (username, personGroup) => {
+const findExistingEnrollment = async (username, personGroup) => {
   /*
       This app reads/writes to the enrollment directory path for demonstration only.
       Store existing enrollment information in a secured database. 
@@ -66,9 +77,12 @@ const findExistingEnrollment = (username, personGroup) => {
   let personId = '';
 
   if (Platform.OS == 'windows') {
-    var mapping = constants.EnrollDict.username;
-    if (mapping) {
-      personId = constants.EnrollDict.username[personGroup];
+    console.log(constants.EnrollDict);
+    var mapping = constants.EnrollDict[username];
+    console.log('mapping', mapping);
+    if (mapping && mapping != '') {
+      personId = constants.EnrollDict[username][personGroup];
+      console.log('existing pid', personId);
     }
   } else {
     let path =

@@ -22,6 +22,7 @@ import {StackActions} from '@react-navigation/native';
 import * as constants from '../../shared/constants';
 import useIsPortrait from '../portrait/isPortrait';
 import {saveUserInfoAction} from '../userEnrollment/saveUserInfoAction';
+import {beginAsyncEvent} from 'react-native/Libraries/Performance/Systrace';
 
 /*
     IMPORTANT: 
@@ -78,9 +79,10 @@ function Login({route, navigation}) {
 
   const dispatch = useDispatch();
 
-  async function createNewPersons(username) {
-    return await dispatch(newEnrollmentAction(username));
-  }
+  const createNewPersons = async () => {
+    console.log('creating...');
+    return await dispatch(newEnrollmentAction());
+  };
 
   const checkForExistingEnrollment = async (username) =>
     await dispatch(saveUserInfoAction(username));
@@ -91,11 +93,7 @@ function Login({route, navigation}) {
     setShowLoading(false);
   };
 
-  const checkValidUsername = (usernameInput) => {
-    // Clear up any spaces in username
-    let username = usernameInput.replace(/\s/g, '').toLowerCase();
-    console.log('username: ', username);
-
+  const checkValidUsername = (username) => {
     var lettersAndNumbers = /^[0-9a-zA-Z]+$/;
 
     if (!username || username == '' || !username.match(lettersAndNumbers)) {
@@ -132,8 +130,12 @@ function Login({route, navigation}) {
       },
     };
 
+    // Clear up any spaces in username
+    let username = usernameInput.replace(/\s/g, '').toLowerCase();
+    console.log('username: ', username);
+
     // Validate username
-    if (checkValidUsername(usernameInput) == false) {
+    if (checkValidUsername(username) == false) {
       setModalProps(defaultModal);
       return;
     }
@@ -176,7 +178,7 @@ function Login({route, navigation}) {
         // First time enrolling
         // take to instructions
         // create person and save info
-        let created = await createNewPersons(username);
+        let created = await createNewPersons();
         if (created) {
           navigation.navigate(route.params.nextScreen);
         } else {

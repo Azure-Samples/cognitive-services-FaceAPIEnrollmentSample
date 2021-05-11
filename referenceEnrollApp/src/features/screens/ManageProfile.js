@@ -137,7 +137,7 @@ function ManageProfile({navigation}) {
   let reEnroll = async () => {
     // create new personId
     // enroll with new personId
-    // if succeeded delete old info and replace
+    // if succeeded delete old info and replace TODO
     if (!newEnrollmentCreated) {
       newEnrollmentCreated = true;
       await dispatchNewEnrollment();
