@@ -2,7 +2,10 @@ import UserAgent from 'react-native-user-agent';
 import {CONFIG} from '../env/env.json';
 import {requireNativeComponent} from 'react-native';
 
-import createQualityFilter from '../features/filtering/filters';
+import {
+  createQualityFilterRgb,
+  createQualityFilterIr,
+} from '../features/filtering/filters';
 import {Mutex} from 'async-mutex';
 
 const ROOT = 'face/v1.0/';
@@ -44,7 +47,8 @@ export const FACE_ATTRIBUTES_IR = 'returnFaceAttributes=headPose,exposure';
 export const REC_MODEL_RGB = 'recognitionModel=' + CONFIG.RECOGNITION_MODEL_RGB;
 export const REC_MODEL_IR = 'recognitionModel=' + CONFIG.RECOGNITION_MODEL_IR;
 
-export const QUALITY_FILTER = createQualityFilter();
+export const QUALITY_FILTER_RGB = createQualityFilterRgb();
+export const QUALITY_FILTER_IR = createQualityFilterIr();
 
 export const ENROLL_RESULT = Object.freeze({
   success: 0,

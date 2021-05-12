@@ -2,7 +2,10 @@ import {getLargestFace, getTargetFace, sleep} from '../../shared/helper';
 import {enrollFeedbackAction} from '../feedback/enrollFeedbackAction';
 import {CONFIG} from '../../env/env.json';
 import * as constants from '../../shared/constants';
-import {filterFaceAction} from '../filtering/qualityFilteringAction';
+import {
+  filterFaceActionRgb,
+  filterFaceActionIr,
+} from '../filtering/qualityFilteringAction';
 import {FEEDBACK} from '../filtering/filterFeedback';
 
 // Detects and Filters faces
@@ -18,8 +21,8 @@ export const getFilteredFaceforRgbAction = (frameData) => {
     );
     if (face.faceId) {
       console.log('Rgb face found');
-      let passedFilters = dispatch(filterFaceAction(face));
-      console.log('Passed: ', passedFilters);
+      let passedFilters = dispatch(filterFaceActionRgb(face));
+      console.log('Passed RGB: ', passedFilters);
       return passedFilters ? face : {};
     }
     return {};
@@ -39,7 +42,8 @@ export const getFilteredFaceForIrAction = (frameData) => {
     );
     if (face.faceId) {
       console.log('IR face found');
-      let passedFilters = true; //dispatch(filterFaceAction(face)); TODO: Filtering
+      let passedFilters = dispatch(filterFaceActionIr(face));
+      console.log('Passed IR: ', passedFilters);
       return passedFilters ? face : {};
     }
     return {};

@@ -1,14 +1,14 @@
 import React from 'react';
-import {View, StyleSheet, Dimensions} from 'react-native';
+import {View, StyleSheet, Dimensions, Easing} from 'react-native';
 // import {Svg, Defs, Rect, Mask, Circle} from 'react-native-svg';
-// import {AnimatedCircularProgress} from 'react-native-circular-progress';
+//import {AnimatedCircularProgress} from 'react-native-circular-progress';
 import EnrollFeedback from '../feedback/EnrollFeedback';
 import {CONFIG} from '../../env/env.json';
 import useIsPortrait from '../portrait/isPortrait';
 
 function EnrollProgress(props) {
   var isPortrait = useIsPortrait();
-
+  var progressRef = React.useRef(null);
   /*
     Get window dimensions to determine 
     circle placement and size
