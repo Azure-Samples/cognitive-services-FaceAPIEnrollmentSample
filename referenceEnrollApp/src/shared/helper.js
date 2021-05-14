@@ -51,11 +51,11 @@ async function validatePersonGroups() {
   let validated = true;
 
   if (CONFIG.ENROLL_SETTINGS.RGB_FRAMES_TOENROLL > 0) {
-    validated &&= await validatePersonGroup(CONFIG.PERSONGROUP_RGB);
+    validated &= await validatePersonGroup(CONFIG.PERSONGROUP_RGB);
   }
 
   if (CONFIG.ENROLL_SETTINGS.IR_FRAMES_TOENROLL > 0) {
-    validated &&= await validatePersonGroup(CONFIG.PERSONGROUP_IR);
+    validated &= await validatePersonGroup(CONFIG.PERSONGROUP_IR);
   }
 
   return validated;

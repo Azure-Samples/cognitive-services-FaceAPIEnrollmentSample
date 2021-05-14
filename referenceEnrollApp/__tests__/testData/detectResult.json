@@ -3,8 +3,8 @@
     "faceId": "c5c24a82-6845-4031-9d5d-978df9175426",
     "recognitionModel": "recognition_03",
     "faceRectangle": {
-        "width": 78,
-        "height": 78,
+        "width": 100,
+        "height": 100,
         "left": 394,
         "top": 54
     },

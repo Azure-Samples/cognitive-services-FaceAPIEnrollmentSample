@@ -52,7 +52,11 @@ export const getFilteredFaceForIrAction = (frameData) => {
 };
 
 // Detects a face
-const detectFaceAction = (frameData, recognitionModel, faceAttributes) => {
+export const detectFaceAction = (
+  frameData,
+  recognitionModel,
+  faceAttributes,
+) => {
   return async (dispatch) => {
     // Detect face
     let detectEndpoint =
@@ -185,11 +189,11 @@ export const trainAction = () => {
   return async (dispatch, getState) => {
     let success = true;
     if (CONFIG.ENROLL_SETTINGS.RGB_FRAMES_TOENROLL > 0) {
-      success &&= await train(CONFIG.PERSONGROUP_RGB);
+      success &= await train(CONFIG.PERSONGROUP_RGB);
     }
 
     if (CONFIG.ENROLL_SETTINGS.IR_FRAMES_TOENROLL > 0) {
-      success &&= await train(CONFIG.PERSONGROUP_IR);
+      success &= await train(CONFIG.PERSONGROUP_IR);
     }
 
     return success;

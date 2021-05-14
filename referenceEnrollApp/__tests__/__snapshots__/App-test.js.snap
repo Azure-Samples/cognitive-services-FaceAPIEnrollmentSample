@@ -399,8 +399,8 @@ exports[`renders correctly 1`] = `
                                             "fontFamily": "Arial",
                                             "fontSize": 16,
                                             "fontStyle": "normal",
-                                            "fontWeight": "normal",
-                                            "lineHeight": 22,
+                                            "fontWeight": "500",
+                                            "lineHeight": 16,
                                           },
                                           undefined,
                                           "",
@@ -411,25 +411,13 @@ exports[`renders correctly 1`] = `
                                         style={
                                           Array [
                                             Object {
-                                              "fontWeight": "500",
+                                              "color": "white",
                                             },
                                             undefined,
-                                            "",
                                           ]
                                         }
                                       >
-                                        <Text
-                                          style={
-                                            Array [
-                                              Object {
-                                                "color": "white",
-                                              },
-                                              undefined,
-                                            ]
-                                          }
-                                        >
-                                          Get started
-                                        </Text>
+                                        Get started
                                       </Text>
                                     </Text>
                                   </View>
@@ -488,8 +476,8 @@ exports[`renders correctly 1`] = `
                                             "fontFamily": "Arial",
                                             "fontSize": 16,
                                             "fontStyle": "normal",
-                                            "fontWeight": "normal",
-                                            "lineHeight": 22,
+                                            "fontWeight": "500",
+                                            "lineHeight": 16,
                                           },
                                           undefined,
                                           "",
@@ -500,25 +488,13 @@ exports[`renders correctly 1`] = `
                                         style={
                                           Array [
                                             Object {
-                                              "fontWeight": "500",
+                                              "color": "#0078D4",
                                             },
                                             undefined,
-                                            "",
                                           ]
                                         }
                                       >
-                                        <Text
-                                          style={
-                                            Array [
-                                              Object {
-                                                "color": "#0078D4",
-                                              },
-                                              undefined,
-                                            ]
-                                          }
-                                        >
-                                          Manage profile
-                                        </Text>
+                                        Manage profile
                                       </Text>
                                     </Text>
                                   </View>

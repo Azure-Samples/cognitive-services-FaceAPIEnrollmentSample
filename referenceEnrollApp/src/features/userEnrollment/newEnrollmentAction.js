@@ -17,14 +17,14 @@ export const newEnrollmentAction = () => {
     if (CONFIG.ENROLL_SETTINGS.RGB_FRAMES_TOENROLL > 0) {
       createdPersonIdRgb = await createPerson(CONFIG.PERSONGROUP_RGB);
       if (!createdPersonIdRgb || createdPersonIdRgb == '') {
-        result &&= false;
+        result &= false;
       }
     }
 
     if (CONFIG.ENROLL_SETTINGS.IR_FRAMES_TOENROLL > 0) {
       createdPersonIdIr = await createPerson(CONFIG.PERSONGROUP_IR);
       if (!createdPersonIdIr || createdPersonIdIr == '') {
-        result &&= false;
+        result &= false;
       }
     }
 
@@ -55,7 +55,7 @@ export const updateEnrollmentAction = () => {
 
     if (existingPersonIdRgb && existingPersonIdRgb != '') {
       // Reenrollment, update data
-      success &&= await updateEnrollment(
+      success &= await updateEnrollment(
         username,
         CONFIG.PERSONGROUP_RGB,
         existingPersonIdRgb,
@@ -63,7 +63,7 @@ export const updateEnrollmentAction = () => {
       );
     } else if (newPersonIdRgb && newPersonIdRgb != '') {
       // First time enrolling, save data
-      success &&= await saveEnrollment(
+      success &= await saveEnrollment(
         username,
         CONFIG.PERSONGROUP_RGB,
         newPersonIdRgb,
@@ -72,14 +72,14 @@ export const updateEnrollmentAction = () => {
 
     if (existingPersonIdIr && existingPersonIdIr != '') {
       console.log('updating IR');
-      success &&= await updateEnrollment(
+      success &= await updateEnrollment(
         username,
         CONFIG.PERSONGROUP_IR,
         existingPersonIdIr,
         newPersonIdIr,
       );
     } else if (newPersonIdIr && newPersonIdIr != '') {
-      success &&= await saveEnrollment(
+      success &= await saveEnrollment(
         username,
         CONFIG.PERSONGROUP_IR,
         newPersonIdIr,
@@ -99,14 +99,14 @@ export const deleteNewEnrollmentsAction = () => {
     let deletedSuccessfully = true;
 
     if (personIdRgb && personIdRgb != '') {
-      deletedSuccessfully &&= await deletePerson(
+      deletedSuccessfully &= await deletePerson(
         CONFIG.PERSONGROUP_RGB,
         personIdRgb,
       );
     }
 
     if (personIdIr && personIdIr != '') {
-      deletedSuccessfully &&= await deletePerson(
+      deletedSuccessfully &= await deletePerson(
         CONFIG.PERSONGROUP_IR,
         personIdIr,
       );
@@ -232,28 +232,28 @@ export const deleteExistingEnrollmentsAction = () => {
     let deletedSuccessfully = true;
 
     if (personIdRgb && personIdRgb != '') {
-      deletedSuccessfully &&= await deletePerson(
+      deletedSuccessfully &= await deletePerson(
         CONFIG.PERSONGROUP_RGB,
         personIdRgb,
       );
     }
 
     if (personIdIr && personIdIr != '') {
-      deletedSuccessfully &&= await deletePerson(
+      deletedSuccessfully &= await deletePerson(
         CONFIG.PERSONGROUP_IR,
         personIdIr,
       );
     }
 
-    if(deletedSuccessfully){
-    // deleted saved info
+    if (deletedSuccessfully) {
+      // deleted saved info
       if (Platform.OS == 'windows') {
-         delete constants.EnrollDict[username];
+        delete constants.EnrollDict[username];
       } else {
-        if(personIdRgb && personIdRgb != ''){
+        if (personIdRgb && personIdRgb != '') {
           deleteFile(username, CONFIG.PERSONGROUP_RGB);
         }
-        if(personIdIr && personIdIr != ''){
+        if (personIdIr && personIdIr != '') {
           deleteFile(username, CONFIG.PERSONGROUP_IR);
         }
       }
@@ -262,7 +262,6 @@ export const deleteExistingEnrollmentsAction = () => {
     return deletedSuccessfully;
   };
 };
-
 
 async function deletePerson(personGroup, personId) {
   let deletePersonEndpoint =
@@ -296,14 +295,14 @@ async function deletePerson(personGroup, personId) {
   throw new Error('Error deleting prints: ', response.status);
 }
 
-function deleteFile(username, personGroup){
+function deleteFile(username, personGroup) {
   let path =
-          RNFS.DocumentDirectoryPath +
-          '/enrollment/' +
-          username +
-          '/' +
-          personGroup +
-          '.txt';
+    RNFS.DocumentDirectoryPath +
+    '/enrollment/' +
+    username +
+    '/' +
+    personGroup +
+    '.txt';
 
   RNFS.unlink(path)
     .then(() => {

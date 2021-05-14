@@ -8,7 +8,7 @@
     "env:prod": "node  src/scripts/setEnvironment.js production",
     "_android": "react-native run-android",
     "_ios": "react-native run-ios",
-    "_test": "jest",
+    "_test": "jest --updateSnapshot",
     "start": "react-native start",
     "test": "npm run env:test && npm run _test",
     "web": "react-scripts start",
