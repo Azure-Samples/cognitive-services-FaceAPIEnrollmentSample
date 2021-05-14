@@ -65,6 +65,7 @@ function Login({route, navigation}) {
             tintColor="white"
             disabled={modalProps != null}
             onPress={() => {
+              clearFocus();
               navigation.dispatch(StackActions.popToTop());
             }}
           />
@@ -88,6 +89,7 @@ function Login({route, navigation}) {
     await dispatch(saveUserInfoAction(username));
 
   const signIn = async () => {
+    clearFocus();
     setShowLoading(true);
     await handleSignIn();
     setShowLoading(false);
@@ -103,6 +105,11 @@ function Login({route, navigation}) {
 
     return true;
   };
+
+  function clearFocus(){
+    setUsernameFocused(false);
+    setPasswordFocused(false);
+  }
 
   const handleSignIn = async () => {
     /* 

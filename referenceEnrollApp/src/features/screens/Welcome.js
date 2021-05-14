@@ -10,6 +10,7 @@ import {
   NativeEventEmitter,
 } from 'react-native';
 import {Caption, Headline, Subheading1} from '../../styles/fontStyles';
+import AnimatedProgressWheel from 'react-native-progress-wheel';
 import CustomButton from '../../styles/CustomButton';
 import {CONFIG} from '../../env/env.json';
 import {useDispatch} from 'react-redux';
@@ -133,8 +134,10 @@ function Welcome({navigation}) {
 
   return (
     <View style={styles.container}>
+      
       <View style={styles.backgroundColumn}>
         <View style={styles.backroundTopRow}>
+
           <View
             style={[
               styles.imgContainer,

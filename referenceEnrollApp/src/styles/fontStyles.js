@@ -74,6 +74,19 @@ function Subheading2(props) {
   );
 }
 
+function Subheading3(props) {
+  return (
+      <Text
+        style={[
+          fontStyles.subheading3,
+          props.style,
+          useAndroidFont ? androidStyle.font : '',
+        ]}>
+        {props.children}
+      </Text>
+  );
+}
+
 function Title1(props) {
   return (
     <Text
@@ -122,8 +135,15 @@ const fontStyles = StyleSheet.create({
     fontWeight: 'normal',
     fontStyle: 'normal',
   },
-
   subheading2: {
+    fontWeight: '500',
+  },
+  subheading3: {
+    fontSize: 16,
+    lineHeight: 16,
+    fontFamily: 'Arial',
+    fontWeight: 'normal',
+    fontStyle: 'normal',
     fontWeight: '500',
   },
   title1: {
@@ -155,6 +175,7 @@ export {
   Body2,
   Subheading1,
   Subheading2,
+  Subheading3,
   Title1,
   Headline,
   fontStyles,

@@ -27,18 +27,18 @@ function Enrollment(props) {
   const [enrollStarted, setEnrollStarted] = useState(false);
   const [rgbProgress, setRgbProgress] = useState(0);
   const [irProgress, setIrProgress] = useState(0);
+  // This progress can be used for other completed tasks like initial startup
+  const [progress, setProgress] = useState(0); 
   const [cancelToken, setCancelToken] = useState(new CancellationToken());
   const rgbProgressRef = useRef(rgbProgress);
   const irProgressRef = useRef(irProgress);
+  const progressRef = useRef(progress);
 
   //get personIds:
   var newPersonIdRgb = useSelector(
     (state) => state.newEnrollment.newRgbPersonId,
   );
-  console.log('PID_RGB', newPersonIdRgb);
-
   var newPersonIdIr = useSelector((state) => state.newEnrollment.newIrPersonId);
-  console.log('PID_IR', newPersonIdIr);
 
   // Keeps the progress state/ref value equal
   function updateRgbProgress(newProgress) {
@@ -49,6 +49,27 @@ function Enrollment(props) {
   function updateIrProgress(newProgress) {
     irProgressRef.current = newProgress;
     setIrProgress(newProgress);
+  }
+
+  function updateGeneralProgress(newProgress) {
+    progressRef.current = newProgress;
+    setProgress(newProgress);
+  }
+
+  function getTotalProgressVal(){
+    // Enrollment updates progress on startup, so total must be 1 greater.
+    let total = 1;
+
+    if(CONFIG.ENROLL_SETTINGS.RGB_FRAMES_TOENROLL > 0){
+      // add 1 for verify check
+      total += CONFIG.ENROLL_SETTINGS.RGB_FRAMES_TOENROLL + 1; 
+    }
+    if(CONFIG.ENROLL_SETTINGS.IR_FRAMES_TOENROLL > 0){
+      // add 1 for verify check
+      total += CONFIG.ENROLL_SETTINGS.IR_FRAMES_TOENROLL + 1; 
+    }
+
+    return total;
   }
 
   // Dispatch
@@ -71,9 +92,8 @@ function Enrollment(props) {
     await dispatch(verifyFaceAction(face, personGroup, personId));
 
   // Delete
-  const dispatchDelete = async () => {
+  const dispatchDelete = async () =>
     await dispatch(deleteNewEnrollmentsAction());
-  };
 
   // Train
   const dispatchTrain = async () => await dispatch(trainAction());
@@ -92,7 +112,7 @@ function Enrollment(props) {
 
   // Runs entire enrollment flow
   const runEnrollment = async () => {
-    console.log('ENROLLMENT BEGINS');
+    console.log('Enrollmen begins...');
     const timeoutInMs = CONFIG.ENROLL_SETTINGS.TIMEOUT_SECONDS * 1000;
 
     let timer = setTimeout(() => {
@@ -100,7 +120,7 @@ function Enrollment(props) {
       cancelToken.timeoutCancel();
     }, timeoutInMs);
 
-    // Add one to start up progress bar
+    
     const rgbFramesToEnroll = CONFIG.ENROLL_SETTINGS.RGB_FRAMES_TOENROLL;
     const irFramesToEnroll = CONFIG.ENROLL_SETTINGS.IR_FRAMES_TOENROLL;
     let tasksForRgb = [];
@@ -112,10 +132,10 @@ function Enrollment(props) {
     let completedTaskCountIr = 0;
 
     // Give time for camera to adjust
-    await sleep(500);
+    await sleep(900);
 
     // Show initial progress
-    //updateProgress(progressRef.current + 1);
+    updateGeneralProgress(progressRef.current + 1);
 
     const processRgbFrame = async (frame) => {
       // Send frame for detection
@@ -203,8 +223,6 @@ function Enrollment(props) {
       completedTaskCountIr++;
     };
 
-    // Begin enrollment
-
     const RgbEnrollment = async () => {
       while (
         rgbEnrollmentSucceeded == false &&
@@ -238,7 +256,7 @@ function Enrollment(props) {
             tasksForIr.push(processIrFrame(frame));
           }
         } else {
-          console.log('issue');
+          console.log('Failed to take picture');
         }
       }
 
@@ -249,18 +267,14 @@ function Enrollment(props) {
     var irPromise = Promise.resolve(true);
 
     if (rgbFramesToEnroll > 0) {
-      console.log('Beginning Rgb');
       rgbPromise = RgbEnrollment();
     }
     if (irFramesToEnroll > 0) {
-      console.log('Beginning Ir');
       irPromise = IrEnrollment();
     }
 
-    var rgbSuceeded = await rgbPromise;
-    var irSucceeded = await irPromise;
-
-    enrollmentSucceeded = rgbSuceeded && irSucceeded;
+    var succeeded = await Promise.all([rgbPromise, irPromise]);
+    enrollmentSucceeded = succeeded[0] && succeeded[1];
 
     console.log('Clearing timeout');
     clearTimeout(timer);
@@ -314,17 +328,20 @@ function Enrollment(props) {
 
       console.log('Total enrollment time:', t2 - t1);
     });
-  }
+   }
 
   function cancelEnrollment() {
     console.log('Cancel clicked');
     cancelToken.cancel();
+    if(enrollStarted == false){
+       props.onCompleted(ENROLL_RESULT.cancel);
+    }
   }
 
   return (
     <View style={styles.root}>
       <View style={styles.overlay}>
-        <EnrollProgress rgbProgressCount={rgbProgress} />
+        <EnrollProgress progressCount={rgbProgress + irProgress + progress } total={getTotalProgressVal()} />
       </View>
       <CustomButton
         onPress={cancelEnrollment}

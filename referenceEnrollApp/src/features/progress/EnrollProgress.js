@@ -1,18 +1,17 @@
 import React from 'react';
-import {View, StyleSheet, Dimensions, Easing} from 'react-native';
-// import {Svg, Defs, Rect, Mask, Circle} from 'react-native-svg';
-//import {AnimatedCircularProgress} from 'react-native-circular-progress';
+import {View, StyleSheet, Dimensions, Easing, Platform} from 'react-native';
+import {Svg, Defs, Rect, Mask, Circle} from 'react-native-svg';
+import {AnimatedCircularProgress} from 'react-native-circular-progress';
 import EnrollFeedback from '../feedback/EnrollFeedback';
 import {CONFIG} from '../../env/env.json';
 import useIsPortrait from '../portrait/isPortrait';
 
 function EnrollProgress(props) {
   var isPortrait = useIsPortrait();
-  var progressRef = React.useRef(null);
   /*
     Get window dimensions to determine 
     circle placement and size
-    */
+  */
   let dim = Dimensions.get('window');
   let width = dim.width;
   let height = dim.height;
@@ -32,18 +31,11 @@ function EnrollProgress(props) {
   // 5 seconds to update the progress
   let progressDuration = 3000;
 
-  /*
-    Progress is # of frames enrolled + 
-    the verification check (1), +
-    1 for initial progress 
-    converted to a percentage
-  */
-  let rgbProgress =
-    (props.rgbProgressCount /
-      (CONFIG.ENROLL_SETTINGS.RGB_FRAMES_TOENROLL + 2)) *
-    100;
+  let progressValue =
+    (props.progressCount /
+      props.total) * 100;
 
-  if (rgbProgress == 100) {
+  if (progressValue == 100) {
     /*
         On the last update, speed up the duration
         so that it completes before page changes
@@ -53,7 +45,7 @@ function EnrollProgress(props) {
 
   return (
     <View>
-      {/* <View style={{position: 'absolute'}}>
+      <View style={{position: 'absolute'}}>
         <Svg height={height} width={width}>
           <Defs>
             <Mask id="mask" x="0" y="0" height="100%" width="100%">
@@ -69,22 +61,21 @@ function EnrollProgress(props) {
             fill-opacity="0"
           />
         </Svg>
-      </View> */}
-
+      </View>
       <View style={([styles.root], {top: y - radius - 50})}>
         <View style={styles.feedback}>
           <EnrollFeedback />
         </View>
         <View style={{left: x - radius}}>
-          {/* <AnimatedCircularProgress
+          <AnimatedCircularProgress
             size={radius * 2}
             duration={progressDuration}
             width={10}
-            fill={rgbProgress}
+            fill={progressValue}
             rotation={0}
             tintColor="#92C353"
             backgroundColor="white"
-          /> */}
+          />
         </View>
       </View>
     </View>

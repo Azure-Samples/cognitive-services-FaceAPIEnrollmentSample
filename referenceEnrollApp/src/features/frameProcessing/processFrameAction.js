@@ -32,6 +32,7 @@ export const getFilteredFaceforRgbAction = (frameData) => {
 // Detects and Filters faces
 export const getFilteredFaceForIrAction = (frameData) => {
   return async (dispatch) => {
+    //return {};
     console.log('detection for IR.');
     let face = await dispatch(
       detectFaceAction(

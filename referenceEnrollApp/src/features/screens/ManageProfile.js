@@ -16,7 +16,7 @@ import {
   Body2,
 } from '../../styles/fontStyles';
 import CustomButton from '../../styles/CustomButton';
-import {deleteEnrollmentAction} from '../userEnrollment/newEnrollmentAction';
+import {deleteExistingEnrollmentsAction} from '../userEnrollment/newEnrollmentAction';
 import {HeaderBackButton} from '@react-navigation/stack';
 import * as constants from '../../shared/constants';
 
@@ -56,7 +56,7 @@ function ManageProfile({navigation}) {
   }, []);
 
   const dispatch = useDispatch();
-  const dispatchDelete = async () => await dispatch(deleteEnrollmentAction());
+  const dispatchDelete = async () => await dispatch(deleteExistingEnrollmentsAction());
   const dispatchNewEnrollment = async () =>
     await dispatch(newEnrollmentAction());
 

@@ -223,45 +223,46 @@ const saveEnrollment = async (username, personGroup, personId) => {
   return true;
 };
 
-// Deletes a person from large person group
-// const deleteEnrollment = async (username, personGroup, personId) => {
-//   let deleted = await deletePerson(personGroup, personId);
+export const deleteExistingEnrollmentsAction = () => {
+  return async (dispatch, getState) => {
+    let personIdRgb = getState().userInfo.existingRgbPersonId;
+    let personIdIr = getState().userInfo.existingIrPersonId;
+    let username = getState().userInfo.username;
+    console.log('deleting', personIdIr, personIdRgb);
+    let deletedSuccessfully = true;
 
-//   if (deleted) {
-//     console.log('pid deleted');
+    if (personIdRgb && personIdRgb != '') {
+      deletedSuccessfully &&= await deletePerson(
+        CONFIG.PERSONGROUP_RGB,
+        personIdRgb,
+      );
+    }
 
-//     // only delete file if this was new enrollment
-//     if (Platform.OS == 'windows') {
-//       let savedPersonId = constants.EnrollDict.username[personGroup];
-//       if (personId == savedPersonId) {
-//         // delete
-//         constants.EnrollDict.username[personGroup] = undefined;
-//       }
-//     } else {
-//       let path =
-//         RNFS.DocumentDirectoryPath +
-//         '/enrollment/' +
-//         username +
-//         '/' +
-//         personGroup +
-//         '.txt';
-//       let savedPersonId = RNFS.readFile();
-//       if (personId == savedPersonId) {
-//         RNFS.unlink(path)
-//           .then(() => {
-//             console.log('FILE DELETED');
-//           })
-//           .catch((err) => {
-//             console.log(err.message);
-//           });
-//       }
-//     }
+    if (personIdIr && personIdIr != '') {
+      deletedSuccessfully &&= await deletePerson(
+        CONFIG.PERSONGROUP_IR,
+        personIdIr,
+      );
+    }
 
-//     return true;
-//   }
+    if(deletedSuccessfully){
+    // deleted saved info
+      if (Platform.OS == 'windows') {
+         delete constants.EnrollDict[username];
+      } else {
+        if(personIdRgb && personIdRgb != ''){
+          deleteFile(username, CONFIG.PERSONGROUP_RGB);
+        }
+        if(personIdIr && personIdIr != ''){
+          deleteFile(username, CONFIG.PERSONGROUP_IR);
+        }
+      }
+    }
 
-//   return false;
-// };
+    return deletedSuccessfully;
+  };
+};
+
 
 async function deletePerson(personGroup, personId) {
   let deletePersonEndpoint =
@@ -293,6 +294,26 @@ async function deletePerson(personGroup, personId) {
 
   // Error occured
   throw new Error('Error deleting prints: ', response.status);
+}
+
+function deleteFile(username, personGroup){
+  let path =
+          RNFS.DocumentDirectoryPath +
+          '/enrollment/' +
+          username +
+          '/' +
+          personGroup +
+          '.txt';
+
+  RNFS.unlink(path)
+    .then(() => {
+      console.log('FILE DELETED');
+      return true;
+    })
+    .catch((err) => {
+      console.log(err.message);
+      return false;
+    });
 }
 
 export const setNewIds = (userInfo) => ({

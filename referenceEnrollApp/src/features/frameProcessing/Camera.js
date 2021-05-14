@@ -49,7 +49,8 @@ export default function Camera(props) {
       />
       <Enrollment
         onCompleted={props.onCompleted}
-        takePicture={takeBase64Picture}
+        takeColorPicture={takeBase64Picture}
+        takeInfraredPicture={() => {return null}}
         beginEnrollment={startEnroll}
       />
     </View>
