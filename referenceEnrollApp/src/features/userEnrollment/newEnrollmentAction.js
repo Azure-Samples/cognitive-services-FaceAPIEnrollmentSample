@@ -204,16 +204,15 @@ const saveEnrollment = async (username, personGroup, personId) => {
 
     console.log(constants.EnrollDict);
   } else {
+    let path = RNFS.DocumentDirectoryPath + '/enrollment/' + username;
+    if ((await RNFS.exists(path)) == false) {
+      RNFS.mkdir(path);
+    }
     try {
-      let path =
-        RNFS.DocumentDirectoryPath +
-        '/enrollment/' +
-        username +
-        '/' +
-        personGroup +
-        '.txt';
-      await RNFS.writeFile(path, personId, 'utf8');
-      console.log('FILE WRITTEN');
+      let file = path + '/' + personGroup + '.txt';
+
+      await RNFS.writeFile(file, personId, 'utf8');
+      console.log('FILE WRITTEN', path, file);
     } catch (error) {
       console.log('Error writing file', error.message);
       return false;

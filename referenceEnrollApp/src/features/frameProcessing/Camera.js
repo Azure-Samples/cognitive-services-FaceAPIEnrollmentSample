@@ -8,8 +8,6 @@ export default function Camera(props) {
   const [startEnroll, setStartEnroll] = useState(true);
   let cameraRef = React.useRef(null);
 
-  console.log('USING AND', cameraRef.current);
-
   const onCameraReady = () => {
     /*
       when camera signals ready,
@@ -50,7 +48,9 @@ export default function Camera(props) {
       <Enrollment
         onCompleted={props.onCompleted}
         takeColorPicture={takeBase64Picture}
-        takeInfraredPicture={() => {return null}}
+        takeInfraredPicture={() => {
+          return null;
+        }}
         beginEnrollment={startEnroll}
       />
     </View>

@@ -94,12 +94,9 @@ const findExistingEnrollment = async (username, personGroup) => {
       '.txt';
     let fileExists = await RNFS.exists(path);
     if (fileExists) {
-      let mapping = await RNFS.readFile(path, 'utf8');
-      if (mapping && mapping != '') {
-        mappedPersonGroup = mapping.split(',')[0];
-        if (mappedPersonGroup == personGroup) {
-          personId = mapping.split(',')[1];
-        }
+      let value = await RNFS.readFile(path, 'utf8');
+      if (value && value != '') {
+        personId = value;
       }
     }
   }

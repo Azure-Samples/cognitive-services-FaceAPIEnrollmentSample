@@ -2,6 +2,8 @@ import React from 'react';
 import {StyleSheet, Text, Platform} from 'react-native';
 
 let useAndroidFont = Platform.OS == 'android';
+let increaseLineheight = Platform.OS != 'windows';
+
 console.log('android', useAndroidFont);
 function Caption(props) {
   return (
@@ -76,14 +78,15 @@ function Subheading2(props) {
 
 function Subheading3(props) {
   return (
-      <Text
-        style={[
-          fontStyles.subheading3,
-          props.style,
-          useAndroidFont ? androidStyle.font : '',
-        ]}>
-        {props.children}
-      </Text>
+    <Text
+      style={[
+        fontStyles.subheading3,
+        props.style,
+        useAndroidFont ? androidStyle.font : '',
+        increaseLineheight ? {lineHeight: 22} : '',
+      ]}>
+      {props.children}
+    </Text>
   );
 }
 
