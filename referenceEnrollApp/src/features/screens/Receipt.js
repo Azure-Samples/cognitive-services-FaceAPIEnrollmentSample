@@ -67,11 +67,10 @@ function Receipt({navigation}) {
             </Subheading1>
           </View>
 
-          <View style={screenWidth >= 600 ? {flexDirection: 'row'} : {}} >
+          <View style={screenWidth >= 600 ? { flexDirection: 'row' } : {}} >
             <View
               style={
-                [styles.column1, {marginRight: 30}]
-                
+                [styles.column1, { flex: 7 }]
               }>
               <View>
                 <Body2 style={styles.blueheading}>
@@ -133,7 +132,9 @@ function Receipt({navigation}) {
                 </View>
               </View>
             </View>
-            <View style={[styles.column1]}>
+
+            {screenWidth >= 600 ? <View style={{ width: 30 }}></View> : <View />}
+            <View style={styles.column1}>
               <View style={styles.titleMargin}>
                 <Body2 style={styles.blueheading}>
                   What to expect at the door
@@ -235,7 +236,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   column1: {
-    flex: 7,
+    flex: 4,
     flexDirection: 'column',
   },
   imgFormat: {
