@@ -3,11 +3,21 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
-    "android": "react-native run-android",
-    "ios": "react-native run-ios",
+    "env:test": "node src/scripts/setEnvironment.js test",
+    "env:dev": "node  src/scripts/setEnvironment.js development",
+    "env:prod": "node  src/scripts/setEnvironment.js production",
+    "_android": "react-native run-android",
+    "_ios": "react-native run-ios",
+    "_test": "jest",
     "start": "react-native start",
-    "test": "jest",
+    "test": "npm run env:test && npm run _test",
     "web": "react-scripts start",
+    "android": "npm run env:dev && npm run _android",
+    "android:dev": "npm run env:dev && npm run _android",
+    "android:prod": "npm run env:prod && npm run _android",
+    "ios": "npm run env:dev && npm run _ios",
+    "ios:dev": "npm run env:dev && npm run _ios",
+    "ios:prod": "npm run env:prod && npm run _ios",
     "lint": "eslint ."
   },
   "dependencies": {
@@ -17,6 +27,7 @@
     "@react-navigation/native": "^5.9.0",
     "@react-navigation/stack": "^5.13.0",
     "axios": "^0.21.1",
+    "async-mutex": "^0.2.6",
     "react": "16.13.1",
     "react-dom": "^16.14.0",
     "react-native": "0.63.2",
@@ -42,18 +53,33 @@
     "@babel/core": "^7.12.10",
     "@babel/runtime": "^7.12.5",
     "@react-native-community/eslint-config": "^2.0.0",
-    "eslint": "^7.17.0",
+    "@testing-library/jest-native": "^3.4.3",
+    "@testing-library/react-native": "^7.1.0",
+    "babel-plugin-transform-inline-environment-variables": "^0.4.3",
+    "babel-plugin-transform-remove-console": "^6.9.4",
+    "eslint": "^7.2.0",
     "eslint-config-airbnb": "^18.2.1",
     "eslint-plugin-import": "^2.22.1",
     "eslint-plugin-jsx-a11y": "^6.4.1",
     "eslint-plugin-react": "^7.22.0",
     "eslint-plugin-react-hooks": "^4.2.0",
     "metro-react-native-babel-preset": "^0.62.0",
-    "react-scripts": "^3.4.4",
-    "react-test-renderer": "16.13.1"
+    "react-scripts": "^4.0.1",
+    "react-test-renderer": "16.13.1",
+    "redux-mock-store": "^1.5.4"
   },
   "jest": {
-    "preset": "react-native"
+    "preset": "react-native",
+    "transformIgnorePatterns": [
+      "node_modules/(?!(jest-)?react-native|@?react-navigation)"
+    ],
+    "setupFiles": [
+      "./node_modules/react-native-gesture-handler/jestSetup.js",
+      "./setup.js"
+    ],
+    "setupFilesAfterEnv": [
+      "@testing-library/jest-native/extend-expect"
+    ]
   },
   "browserslist": {
     "production": [

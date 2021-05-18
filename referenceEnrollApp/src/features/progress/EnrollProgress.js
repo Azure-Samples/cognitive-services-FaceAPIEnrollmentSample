@@ -1,28 +1,13 @@
-import React, {useState, useEffect} from 'react';
+import React from 'react';
 import {View, StyleSheet, Dimensions} from 'react-native';
 import {Svg, Defs, Rect, Mask, Circle} from 'react-native-svg';
 import {AnimatedCircularProgress} from 'react-native-circular-progress';
 import EnrollFeedback from '../feedback/EnrollFeedback';
 import {CONFIG} from '../../env/env.json';
+import useIsPortrait from '../portrait/isPortrait';
 
 function EnrollProgress(props) {
-  const checkIsPortrait = () => {
-    const dim = Dimensions.get('window');
-    return dim.height >= dim.width;
-  };
-
-  const [isPortrait, setIsPortrait] = useState(checkIsPortrait());
-
-  useEffect(() => {
-    const orientationCallback = () => {
-      setIsPortrait(checkIsPortrait());
-    };
-    Dimensions.addEventListener('change', orientationCallback);
-
-    return () => {
-      Dimensions.removeEventListener('change', orientationCallback);
-    };
-  }, []);
+  var isPortrait = useIsPortrait();
 
   /*
     Get window dimensions to determine 
@@ -31,23 +16,31 @@ function EnrollProgress(props) {
   let dim = Dimensions.get('window');
   let width = dim.width;
   let height = dim.height;
+  let radius;
 
-  // Radius changes based on orientation
-  let radius = isPortrait ? width / 2.2 : height / 3;
+  if (isPortrait && width >= 640) {
+    radius = width / 2.5;
+  } else if (isPortrait) {
+    radius = width / 2.1;
+  } else {
+    radius = height / 3;
+  }
+
   let x = width / 2;
   let y = height / 2;
 
   // 5 seconds to update the progress
-  let progressDuration = 5000;
+  let progressDuration = 3000;
 
   /*
     Progress is # of frames enrolled + 
-    the verification check (1),
+    the verification check (1), +
+    1 for initial progress 
     converted to a percentage
-    */
+  */
   let rgbProgress =
     (props.rgbProgressCount /
-      (CONFIG.ENROLL_SETTINGS.RGB_FRAMES_TOENROLL + 1)) *
+      (CONFIG.ENROLL_SETTINGS.RGB_FRAMES_TOENROLL + 2)) *
     100;
 
   if (rgbProgress == 100) {
@@ -65,7 +58,7 @@ function EnrollProgress(props) {
           <Defs>
             <Mask id="mask" x="0" y="0" height="100%" width="100%">
               <Rect height="100%" width="100%" fill="#fff" />
-              <Circle r={radius} cx={x} cy={y} fill="black" />
+              <Circle r={radius} cx={x} cy={y + 60} fill="black" />
             </Mask>
           </Defs>
           <Rect
@@ -78,25 +71,21 @@ function EnrollProgress(props) {
         </Svg>
       </View>
 
-      <View style={([styles.root], {top: y - radius - 2, left: x - radius})}>
-        <AnimatedCircularProgress
-          size={radius * 2 + 5}
-          duration={progressDuration}
-          width={40}
-          fill={rgbProgress}
-          rotation={0}
-          tintColor="green"
-          backgroundColor="transparent"
-        />
-      </View>
-
-      <View
-        style={
-          isPortrait
-            ? [styles.feedback, {top: 100}]
-            : [styles.feedback, {top: 5}]
-        }>
-        <EnrollFeedback />
+      <View style={([styles.root], {top: y - radius - 50})}>
+        <View style={styles.feedback}>
+          <EnrollFeedback />
+        </View>
+        <View style={{left: x - radius}}>
+          <AnimatedCircularProgress
+            size={radius * 2}
+            duration={progressDuration}
+            width={10}
+            fill={rgbProgress}
+            rotation={0}
+            tintColor="#92C353"
+            backgroundColor="white"
+          />
+        </View>
       </View>
     </View>
   );
@@ -104,15 +93,14 @@ function EnrollProgress(props) {
 
 const styles = StyleSheet.create({
   root: {
-    flex: 1,
-    flexDirection: 'row',
-    position: 'absolute',
+    flexDirection: 'column',
   },
   feedback: {
-    flex: 1,
-    position: 'absolute',
     flexDirection: 'column',
     alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 10,
+    height: 100,
     right: 0,
     left: 0,
   },

@@ -1,6 +1,6 @@
 import * as constants from '../../shared/constants';
 import {CONFIG} from '../../env/env.json';
-var RNFS = require('react-native-fs');
+import * as RNFS from 'react-native-fs';
 
 export const saveUserInfoAction = (username) => {
   return async (dispatch, getState) => {
@@ -20,11 +20,9 @@ export const saveUserInfoAction = (username) => {
       }
     }
 
-    console.log('pid');
-
     if (!personId) {
       let createPersonRgbEndpoint =
-        CONFIG.FACEAPI_ENDPOINT +
+        constants.FACEAPI_ENDPOINT +
         constants.PERSON_ENDPOINT(CONFIG.PERSONGROUP_RGB);
 
       let requestBody = {name: 'person-name'};
@@ -33,7 +31,7 @@ export const saveUserInfoAction = (username) => {
         headers: {
           'Content-Type': 'application/json',
           Accept: 'application/json',
-          'Ocp-Apim-Subscription-Key': CONFIG.FACEAPI_KEY,
+          'Ocp-Apim-Subscription-Key': constants.FACEAPI_KEY,
         },
         body: JSON.stringify(requestBody),
       });
@@ -45,15 +43,14 @@ export const saveUserInfoAction = (username) => {
 
         let mappingdata = CONFIG.PERSONGROUP_RGB + ',' + personId;
 
-        RNFS.writeFile(path, mappingdata, 'utf8')
-          .then((success) => {
-            console.log('FILE WRITTEN!');
-          })
-          .catch((err) => {
-            console.log(' ERRRR', err.message);
-          });
-
-        infoSaved = true;
+        try {
+          await RNFS.writeFile(path, mappingdata, 'utf8');
+          console.log('FILE WRITTEN');
+          infoSaved = true;
+        } catch (error) {
+          console.log('Error writing file', error.message);
+          infoSaved = false;
+        }
       } else {
         console.log('Create person failure: ', response);
         infoSaved = false;
@@ -62,7 +59,7 @@ export const saveUserInfoAction = (username) => {
 
     let userInfo = {
       username: username,
-      personIdRgb: personId,
+      personIdRgb: !personId ? '' : personId,
       personidIr: '',
     };
 

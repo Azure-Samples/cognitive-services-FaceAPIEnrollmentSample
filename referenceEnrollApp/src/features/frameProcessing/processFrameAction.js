@@ -5,44 +5,26 @@ import * as constants from '../../shared/constants';
 import {filterFaceAction} from '../filtering/qualityFilteringAction';
 import {FEEDBACK} from '../filtering/filterFeedback';
 
-// Gets largest face from frame and enrolls
-export const processFrameForEnrollmentAction = async (frameData) => {
+// Detects and Filters faces
+export const getFilteredFaceAction = (frameData) => {
   return async (dispatch) => {
-    let face = await Promise.resolve(
-      dispatch(await detectFaceAction(frameData)),
-    );
-    if (face.faceId) {
-      // Attempts to enroll face
-      return dispatch(await processFaceAction(face, frameData));
-    }
-    // No face detected, no face enrolled
-    return false;
-  };
-};
+    let face = await dispatch(detectFaceAction(frameData));
 
-// Gets largest face from frame and verifies
-export const processFrameForVerifyAction = async (frameData) => {
-  return async (dispatch) => {
-    let face = await Promise.resolve(
-      dispatch(await detectFaceAction(frameData)),
-    );
     if (face.faceId) {
-      // Attempts to verify face
-      return await Promise.resolve(
-        dispatch(await verifyFaceAction(face, frameData)),
-      );
+      let passedFilters = dispatch(filterFaceAction(face));
+      return passedFilters ? face : {};
     }
-    // No face detected, no face verified
-    return false;
+
+    return {};
   };
 };
 
 // Detects a face
-export const detectFaceAction = async (frameData) => {
+export const detectFaceAction = (frameData) => {
   return async (dispatch) => {
     // Detect face
     let detectEndpoint =
-      CONFIG.FACEAPI_ENDPOINT +
+      constants.FACEAPI_ENDPOINT +
       constants.DETECT_ENDPOINT +
       '?' +
       constants.FACE_ATTRIBUTES +
@@ -55,7 +37,7 @@ export const detectFaceAction = async (frameData) => {
         'User-Agent': constants.USER_AGENT,
         'Content-Type': 'application/octet-stream',
         Accept: 'application/octet-stream',
-        'Ocp-Apim-Subscription-Key': CONFIG.FACEAPI_KEY,
+        'Ocp-Apim-Subscription-Key': constants.FACEAPI_KEY,
       },
       body: frameData,
     });
@@ -64,8 +46,6 @@ export const detectFaceAction = async (frameData) => {
       let result = await response.text();
       let detectResult = JSON.parse(result);
       let faceToEnroll = getLargestFace(detectResult);
-
-      console.log('faceToEnroll: ', faceToEnroll);
 
       // If no face, report no face detected
       if (!faceToEnroll.faceId) {
@@ -87,15 +67,8 @@ export const detectFaceAction = async (frameData) => {
 };
 
 // Enrolls a face
-export const processFaceAction = async (face, frameData) => {
+export const processFaceAction = (face, frameData) => {
   return async (dispatch, getState) => {
-    // Run quality filters
-    let passedFilters = dispatch(filterFaceAction(face));
-    if (passedFilters == false) {
-      // Face failed filters, do not enroll
-      return Promise.resolve(false);
-    }
-
     // If re-enrollment, use the new personId
     let newPersonId = getState().newEnrollment.newRgbPersonId;
     let personId =
@@ -105,7 +78,7 @@ export const processFaceAction = async (face, frameData) => {
 
     // Add face
     let addFaceEndpoint =
-      CONFIG.FACEAPI_ENDPOINT +
+      constants.FACEAPI_ENDPOINT +
       constants.ADD_FACE_ENDPOINT(CONFIG.PERSONGROUP_RGB, personId) +
       '?targetFace=' +
       getTargetFace(face);
@@ -116,33 +89,26 @@ export const processFaceAction = async (face, frameData) => {
         'User-Agent': constants.USER_AGENT,
         'Content-Type': 'application/octet-stream',
         Accept: 'application/octet-stream',
-        'Ocp-Apim-Subscription-Key': CONFIG.FACEAPI_KEY,
+        'Ocp-Apim-Subscription-Key': constants.FACEAPI_KEY,
       },
       body: frameData,
     });
 
     console.log('AddFace status', response.status);
     if (response.status == '200') {
-      return Promise.resolve(true);
+      return true;
     } else {
       let result = await response.text();
       console.log('AddFace Failure', result);
       dispatch(enrollFeedbackAction("Couldn't enroll photo"));
-      return Promise.resolve(false);
+      return false;
     }
   };
 };
 
 // Verfies a face
-export const verifyFaceAction = async (face) => {
+export const verifyFaceAction = (face) => {
   return async (dispatch, getState) => {
-    // Run quality filters
-    let passedFilters = dispatch(filterFaceAction(face));
-    if (passedFilters == false) {
-      // Face failed filters, do not enroll
-      return Promise.resolve(false);
-    }
-
     dispatch(enrollFeedbackAction(FEEDBACK.verifying));
 
     // If re-enrollment, use the new personId
@@ -153,7 +119,7 @@ export const verifyFaceAction = async (face) => {
         : getState().userInfo.rgbPersonId;
 
     // Verify
-    let verifyEndpoint = CONFIG.FACEAPI_ENDPOINT + constants.VERIFY_ENDPOINT;
+    let verifyEndpoint = constants.FACEAPI_ENDPOINT + constants.VERIFY_ENDPOINT;
 
     let requestBody = {
       faceId: face.faceId,
@@ -167,7 +133,7 @@ export const verifyFaceAction = async (face) => {
         'User-Agent': constants.USER_AGENT,
         'Content-Type': 'application/json',
         Accept: 'application/json',
-        'Ocp-Apim-Subscription-Key': CONFIG.FACEAPI_KEY,
+        'Ocp-Apim-Subscription-Key': constants.FACEAPI_KEY,
       },
       body: JSON.stringify(requestBody),
     });
@@ -182,17 +148,17 @@ export const verifyFaceAction = async (face) => {
         verifyResult.isIdentical == true &&
         verifyResult.confidence >= CONFIG.ENROLL_SETTINGS.VERIFY_CONFIDENCE
       ) {
-        return Promise.resolve(true);
+        return true;
       }
     }
 
     dispatch(enrollFeedbackAction("Couldn't verify photo"));
-    return Promise.resolve(false);
+    return false;
   };
 };
 
 // Trains person group
-export const trainAction = async () => {
+export const trainAction = () => {
   return async (dispatch, getState) => {
     let maxAttempts = CONFIG.ENROLL_SETTINGS.TRAIN_ATTEMPTS;
     const maxStatusChecks = 50;
@@ -201,7 +167,7 @@ export const trainAction = async () => {
       console.log('train attempt ', trainAttempts);
       // Train
       let tainEndpoint =
-        CONFIG.FACEAPI_ENDPOINT +
+        constants.FACEAPI_ENDPOINT +
         constants.TRAIN_ENDPOINT(CONFIG.PERSONGROUP_RGB);
 
       let response = await fetch(tainEndpoint, {
@@ -210,7 +176,7 @@ export const trainAction = async () => {
           'User-Agent': constants.USER_AGENT,
           'Content-Type': 'application/json',
           Accept: 'application/json',
-          'Ocp-Apim-Subscription-Key': CONFIG.FACEAPI_KEY,
+          'Ocp-Apim-Subscription-Key': constants.FACEAPI_KEY,
         },
       });
 
@@ -226,7 +192,7 @@ export const trainAction = async () => {
 
           // Get training status
           let tainStatusEndpoint =
-            CONFIG.FACEAPI_ENDPOINT +
+            constants.FACEAPI_ENDPOINT +
             constants.TRAIN_STATUS_ENDPOINT(CONFIG.PERSONGROUP_RGB);
 
           let response = await fetch(tainStatusEndpoint, {
@@ -235,7 +201,7 @@ export const trainAction = async () => {
               'User-Agent': constants.USER_AGENT,
               'Content-Type': 'application/json',
               Accept: 'application/json',
-              'Ocp-Apim-Subscription-Key': CONFIG.FACEAPI_KEY,
+              'Ocp-Apim-Subscription-Key': constants.FACEAPI_KEY,
             },
           });
 

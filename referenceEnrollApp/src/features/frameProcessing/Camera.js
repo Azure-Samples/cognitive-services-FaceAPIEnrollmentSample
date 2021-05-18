@@ -10,10 +10,10 @@ export default function Camera(props) {
 
   const onCameraReady = () => {
     /*
-        when camera signals ready,
-        update state to begin enrollment
-        in child component
-        */
+      when camera signals ready,
+      update state to begin enrollment
+      in child component
+    */
     console.log('camera ready');
     setStartEnroll(true);
   };
@@ -36,7 +36,7 @@ export default function Camera(props) {
         ref={cameraRef}
         style={styles.camera}
         type={RNCamera.Constants.Type.front}
-        flashMode={RNCamera.Constants.FlashMode.on}
+        flashMode={RNCamera.Constants.FlashMode.off}
         onCameraReady={onCameraReady}
         captureAudio={false} // Required for iOS
         androidCameraPermissionOptions={{

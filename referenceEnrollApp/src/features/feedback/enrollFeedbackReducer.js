@@ -1,3 +1,5 @@
+import {FEEDBACK} from '../filtering/filterFeedback';
+
 let initialState = {
   message: '',
 };
@@ -5,10 +7,13 @@ let initialState = {
 const enrollFeedbackReducer = (state = initialState, action) => {
   switch (action.type) {
     case 'UPDATE_FEEDBACK':
-      return {
-        ...state,
-        message: action.payload,
-      };
+      // Don't process further requests if verifying
+      if (state.message != FEEDBACK.verifying) {
+        return {
+          ...state,
+          message: action.payload,
+        };
+      }
     default:
       return state;
   }

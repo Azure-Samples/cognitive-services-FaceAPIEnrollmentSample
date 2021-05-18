@@ -6,7 +6,7 @@ function getLargestFace(detectResponse) {
     According to FaceAPI detect :
     A successful call returns an array of face entries
     ranked by face rectangle size in descending order.
-    */
+  */
   if (detectResponse.length > 0) {
     // return first face in array
     return detectResponse[0];
@@ -40,7 +40,6 @@ async function validatePersonGroup(personGroupId) {
       personGroupExists = await createPersonGroup(personGroupId);
     }
   } catch {
-    console.log('An error occured');
     return false;
   }
 
@@ -50,13 +49,13 @@ async function validatePersonGroup(personGroupId) {
 
 async function checkPersonGroupExists(personGroupId) {
   let getPersonGroupEndpoint =
-    CONFIG.FACEAPI_ENDPOINT + constants.PERSONGROUP_ENDPOINT(personGroupId);
+    constants.FACEAPI_ENDPOINT + constants.PERSONGROUP_ENDPOINT(personGroupId);
 
   let response = await fetch(getPersonGroupEndpoint, {
     method: 'GET',
     headers: {
       'User-Agent': constants.USER_AGENT,
-      'Ocp-Apim-Subscription-Key': CONFIG.FACEAPI_KEY,
+      'Ocp-Apim-Subscription-Key': constants.FACEAPI_KEY,
     },
   });
 
@@ -79,7 +78,7 @@ async function checkPersonGroupExists(personGroupId) {
 
 async function createPersonGroup(personGroupId) {
   let createPersonGroupEndpoint =
-    CONFIG.FACEAPI_ENDPOINT + constants.PERSONGROUP_ENDPOINT(personGroupId);
+    constants.FACEAPI_ENDPOINT + constants.PERSONGROUP_ENDPOINT(personGroupId);
 
   let requestBody = {
     name: 'large-person-group-name',
@@ -93,7 +92,7 @@ async function createPersonGroup(personGroupId) {
       'User-Agent': constants.USER_AGENT,
       'Content-Type': 'application/json',
       Accept: 'application/json',
-      'Ocp-Apim-Subscription-Key': CONFIG.FACEAPI_KEY,
+      'Ocp-Apim-Subscription-Key': constants.FACEAPI_KEY,
     },
     body: JSON.stringify(requestBody),
   });
@@ -107,7 +106,7 @@ async function createPersonGroup(personGroupId) {
 
 async function deletePersonGroup(personGroupId) {
   let createPersonGroupEndpoint =
-    CONFIG.FACEAPI_ENDPOINT + constants.PERSONGROUP_ENDPOINT(personGroupId);
+    constants.FACEAPI_ENDPOINT + constants.PERSONGROUP_ENDPOINT(personGroupId);
 
   let response = await fetch(createPersonGroupEndpoint, {
     method: 'DELETE',
@@ -115,7 +114,7 @@ async function deletePersonGroup(personGroupId) {
       'User-Agent': constants.USER_AGENT,
       'Content-Type': 'application/json',
       Accept: 'application/json',
-      'Ocp-Apim-Subscription-Key': CONFIG.FACEAPI_KEY,
+      'Ocp-Apim-Subscription-Key': constants.FACEAPI_KEY,
     },
   });
 

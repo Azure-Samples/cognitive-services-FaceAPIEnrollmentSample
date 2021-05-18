@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import {View, StyleSheet, BackHandler, ScrollView, Image} from 'react-native';
+import {View, StyleSheet, BackHandler, ScrollView, Dimensions, Image} from 'react-native';
 import {useDispatch} from 'react-redux';
 import {
   Headline,
@@ -16,9 +16,13 @@ import * as constants from '../../shared/constants';
 import Modal from '../../styles/Modal';
 import {newEnrollmentAction} from '../userEnrollment/newEnrollmentAction';
 import {StackActions} from '@react-navigation/native';
+import useIsPortrait from '../portrait/isPortrait';
 
 function ManageProfile({navigation}) {
   const [modalProps, setModalProps] = useState(null);
+
+  useIsPortrait();
+  var screenWidth = Dimensions.get('window').width;
 
   React.useLayoutEffect(() => {
     // Back button goes to Welcome page
@@ -26,6 +30,7 @@ function ManageProfile({navigation}) {
       headerLeft: () => {
         return (
           <HeaderBackButton
+            tintColor="white"
             disabled={modalProps != null}
             onPress={() => {
               navigation.dispatch(StackActions.popToTop());
@@ -44,9 +49,9 @@ function ManageProfile({navigation}) {
   }, []);
 
   const dispatch = useDispatch();
-  const dispatchDelete = async () => dispatch(await deleteEnrollmentAction());
+  const dispatchDelete = async () => await dispatch(deleteEnrollmentAction());
   const dispatchNewEnrollment = async () =>
-    dispatch(await newEnrollmentAction());
+    await dispatch(newEnrollmentAction());
 
   let deletePrints = async () => {
     // delete prints
@@ -121,24 +126,26 @@ function ManageProfile({navigation}) {
 
     setModalProps(modalInfo);
   };
-
+  let newEnrollmentCreated = false;
   let reEnroll = async () => {
     // create new personId
     // enroll with new personId
     // if succeeded delete old info and replace
-    await dispatchNewEnrollment();
+    if (!newEnrollmentCreated) {
+      newEnrollmentCreated = true;
+      await dispatchNewEnrollment();
+    }
     navigation.navigate(constants.SCREENS.instruction);
   };
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
-      <View style={styles.smallRow} />
       {modalProps ? (
         <Modal {...modalProps}></Modal>
       ) : (
         <View style={styles.centerRow}>
           <View style={styles.column1}>
-            <View style={{marginBottom: 30}}>
+            <View style={{marginBottom: 48}}>
               <View style={styles.headlineMargin}>
                 <Headline>Manage your profile</Headline>
               </View>
@@ -146,30 +153,23 @@ function ManageProfile({navigation}) {
 
             <View style={styles.picturesRow}>
               <View style={styles.column1}>
-                <View
-                  style={{
-                    borderBottomWidth: 1,
-                    paddingBottom: 20,
-                    marginBottom: 10,
-                  }}>
+                <View style={styles.borderLine}>
                   <Body2 style={styles.blueheading}>
                     Summary of data being stored
                   </Body2>
                 </View>
                 <View style={styles.borderLine}>
-                  <View
-                    style={[styles.rowNoFlex, {height: 100, flexWrap: 'wrap'}]}>
-                    <View
-                      style={[
-                        {flex: 1, minWidth: 100, justifyContent: 'center'},
-                      ]}>
-                      <View style={{marginBottom: 10}}>
+                  <View style={styles.rowNoFlex}>
+                    <View style={[{flex: 8, justifyContent: 'center'}]}>
+                      <View style={styles.headerStyle}>
                         <Subheading2>Your face template</Subheading2>
                       </View>
 
-                      <Body1>Used to unlock touchless access doors</Body1>
+                      <Body1 style={styles.greyText}>
+                        Used to unlock touchless access doors
+                      </Body1>
                     </View>
-                    <View style={{flex: 1}}>
+                    <View style={{flex: 4}}>
                       <Image
                         style={styles.imgFormat}
                         source={require('../../assets/img_faceTemp_s.png')}
@@ -182,8 +182,10 @@ function ManageProfile({navigation}) {
                       source={require('../../assets/icon_key.png')}
                     />
                     <View style={styles.column1}>
-                      <Body2>Who has access</Body2>
-                      <Body1>No one</Body1>
+                      <View style={styles.headerStyle}>
+                        <Body2>Who has access</Body2>
+                      </View>
+                      <Body1 style={styles.greyText}>No one</Body1>
                     </View>
                   </View>
                   <View style={styles.rowNoFlex}>
@@ -192,21 +194,21 @@ function ManageProfile({navigation}) {
                       source={require('../../assets/icon_timer.png')}
                     />
                     <View style={styles.column1}>
-                      <Body2>How long it’s stored</Body2>
-                      <Body1>
+                      <View style={styles.headerStyle}>
+                        <Body2>How long it’s stored</Body2>
+                      </View>
+                      <Body1 style={styles.greyText}>
                         For the duration of your employment or until you delete
                         your data
                       </Body1>
                     </View>
                   </View>
                 </View>
-                <View style={styles.borderLine}>
+                <View>
                   <View style={[styles.smallRow]}>
-                    <View style={styles.column1}>
-                      <View style={{paddingBottom: 20, marginBottom: 10}}>
-                        <Body2 style={styles.blueheading}>
-                          Summary of data being stored
-                        </Body2>
+                    <View style={[styles.column1, {minWidth: 300}]}>
+                      <View style={{paddingBottom: 24}}>
+                        <Body2 style={styles.blueheading}>Make Changes</Body2>
                       </View>
                       <Subheading1>
                         Update your face template to improve recognition at the
@@ -233,10 +235,12 @@ function ManageProfile({navigation}) {
                         />
                       </View>
                     </View>
+                    <View style={{flex: 4}}></View>
                   </View>
                 </View>
               </View>
             </View>
+            <View style={screenWidth >= 600 ? { flex: 5 } : {}}></View>
           </View>
         </View>
       )}
@@ -254,14 +258,15 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'row',
     alignSelf: 'center',
-    paddingLeft: 40,
-    paddingRight: 40,
+    paddingLeft: 12,
+    paddingRight: 12,
+    paddingTop: 32,
     maxWidth: 840,
   },
   borderLine: {
     borderBottomWidth: 1,
-    paddingBottom: 20,
-    marginBottom: 20,
+    paddingBottom: 16,
+    marginBottom: 16,
     borderColor: '#E1E1E1',
   },
   iconFormat: {
@@ -271,7 +276,6 @@ const styles = StyleSheet.create({
     marginRight: 15,
   },
   smallRow: {
-    flex: 1,
     marginBottom: 20,
     flexDirection: 'row',
   },
@@ -280,15 +284,15 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   column1: {
-    flex: 1,
+    flex: 7,
     flexDirection: 'column',
-    paddingRight: 30,
   },
   imgFormat: {
     flex: 1,
     width: null,
     height: null,
     borderRadius: 4,
+    minHeight: 75,
     resizeMode: 'contain',
   },
   picturesRow: {
@@ -300,14 +304,16 @@ const styles = StyleSheet.create({
     marginTop: 10,
     marginBottom: 10,
   },
-  buttonStyle: {
-    marginTop: 20,
-    minWidth: 200,
+  buttonStyle: {},
+  greyText: {
+    color: '#6E6E6E',
+  },
+  headerStyle: {
+    marginBottom: 4,
   },
   buttonContainer: {
-    flex: 1,
-    marginTop: 25,
-    marginBottom: 30,
+    marginTop: 12,
+    marginBottom: 32,
     flexDirection: 'column',
     alignItems: 'flex-start',
   },

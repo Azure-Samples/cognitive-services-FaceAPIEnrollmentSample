@@ -3,16 +3,26 @@ import {StyleSheet, Text} from 'react-native';
 
 function Caption(props) {
   return (
-    <Text style={{...fontStyles.caption, ...props.style}}>
+    <Text
+      style={[
+        fontStyles.caption,
+        props.style,
+      ]}>
       {props.children}
     </Text>
   );
 }
 
-function Body1({children}) {
+function Body1(props) {
   return (
     <Caption>
-      <Text style={fontStyles.body1}>{children}</Text>
+      <Text
+        style={[
+          fontStyles.body1,
+          props.style,
+        ]}>
+        {props.children}
+      </Text>
     </Caption>
   );
 }
@@ -20,7 +30,11 @@ function Body1({children}) {
 function Body2(props) {
   return (
     <Body1>
-      <Text style={{...fontStyles.body2, ...props.style}}>
+      <Text
+        style={[
+          fontStyles.body2,
+          props.style
+        ]}>
         {props.children}
       </Text>
     </Body1>
@@ -29,7 +43,11 @@ function Body2(props) {
 
 function Subheading1(props) {
   return (
-    <Text style={{...fontStyles.subheading1, ...props.style}}>
+    <Text
+      style={[
+        fontStyles.subheading1,
+        props.style
+      ]}>
       {props.children}
     </Text>
   );
@@ -38,7 +56,11 @@ function Subheading1(props) {
 function Subheading2(props) {
   return (
     <Subheading1>
-      <Text style={{...fontStyles.subheading2, ...props.style}}>
+      <Text
+        style={[
+          fontStyles.subheading2,
+          props.style
+        ]}>
         {props.children}
       </Text>
     </Subheading1>
@@ -47,13 +69,23 @@ function Subheading2(props) {
 
 function Title1(props) {
   return (
-    <Text style={{...fontStyles.title1, ...props.style}}>{props.children}</Text>
+    <Text
+      style={[
+        fontStyles.title1,
+        props.style,
+      ]}>
+      {props.children}
+    </Text>
   );
 }
 
 function Headline(props) {
   return (
-    <Text style={{...fontStyles.headline, ...props.style}}>
+    <Text
+      style={[
+        fontStyles.headline,
+        props.style
+      ]}>
       {props.children}
     </Text>
   );
@@ -63,43 +95,39 @@ const fontStyles = StyleSheet.create({
   caption: {
     fontSize: 12,
     lineHeight: 16,
-    fontFamily: 'Roboto',
-    fontWeight: '400',
+    fontFamily: 'Roboto-Regular',
     fontStyle: 'normal',
   },
   body1: {
     fontSize: 14,
   },
-
   body2: {
-    fontWeight: 'bold',
+    fontFamily: 'Roboto-Medium',
   },
   subheading1: {
     fontSize: 16,
     lineHeight: 22,
-    fontFamily: 'Roboto',
-    fontWeight: 'normal',
+    fontFamily: 'Roboto-Regular',
     fontStyle: 'normal',
   },
 
   subheading2: {
-    fontWeight: 'bold',
+    fontFamily: 'Roboto-Medium',
   },
   title1: {
     fontSize: 20,
     lineHeight: 24,
-    fontFamily: 'Roboto',
-    fontWeight: 'bold',
+    fontFamily: 'Roboto-Medium',
     fontStyle: 'normal',
   },
   headline: {
     fontSize: 24,
     lineHeight: 28,
-    fontFamily: 'Roboto',
-    fontWeight: 'bold',
+    fontFamily: 'Roboto-Medium',
     fontStyle: 'normal',
   },
 });
+
 
 export {
   Caption,

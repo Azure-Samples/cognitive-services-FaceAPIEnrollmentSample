@@ -1,0 +1,10 @@
+{
+    "verifyResultIdentical" : {
+        "isIdentical": true,
+        "confidence": 0.9
+    },
+    "verifyResultNotIdentical": {
+        "isIdentical": true,
+        "confidence": 0.55
+    }
+}

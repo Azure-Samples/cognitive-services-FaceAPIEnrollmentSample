@@ -18,14 +18,14 @@ import Modal from '../../styles/Modal';
 import {HeaderBackButton} from '@react-navigation/stack';
 import {StackActions} from '@react-navigation/native';
 import * as constants from '../../shared/constants';
+import useIsPortrait from '../portrait/isPortrait';
 
 function Consent({navigation}) {
-  const getWidth = () => {
-    return Dimensions.get('window').width;
-  };
-
-  const [screenWidth, setScreenWidth] = useState(getWidth());
   const [showModal, setShowModal] = useState(false);
+
+  // needed for rerendering screenWidth
+  useIsPortrait();
+  const screenWidth = Dimensions.get('window').width;
 
   const showDeclineModal = () => {
     setShowModal(true);
@@ -35,14 +35,8 @@ function Consent({navigation}) {
     // Disables Android hardware back button
     BackHandler.addEventListener('hardwareBackPress', () => true);
 
-    const orientationCallback = () => {
-      setScreenWidth(getWidth());
-    };
-    Dimensions.addEventListener('change', orientationCallback);
-
     return () => {
       BackHandler.removeEventListener('hardwareBackPress', () => true);
-      Dimensions.removeEventListener('change', orientationCallback);
     };
   }, []);
 
@@ -52,6 +46,7 @@ function Consent({navigation}) {
       headerLeft: () => {
         return (
           <HeaderBackButton
+            tintColor="white"
             disabled={showModal}
             onPress={() => {
               navigation.dispatch(StackActions.popToTop());
@@ -81,35 +76,49 @@ function Consent({navigation}) {
           <View style={styles.topSection}>
             <View style={styles.imageBox}>
               <Image
-                style={styles.imageFormat}
+                style={[
+                  {
+                    width: screenWidth > 840 ? 840 : screenWidth,
+                    height: screenWidth > 840 ? 420 : screenWidth / 2,
+                  },
+                  styles.imageFormat,
+                ]}
                 source={require('../../assets/bg_heroIllustration_request.png')}
               />
             </View>
 
-            <View style={styles.textBox}>
-              <View style={{flex: 2, flexDirection: 'column', padding: 20}}>
-                <Headline style={{marginBottom: 10}}>
-                  Enroll in touchless access today
-                </Headline>
-                {screenWidth >= 500 ? (
-                  <Subheading2 style={styles.greyText}>
+            {screenWidth >= 600 ? (
+              <View style={styles.textBox}>
+                <View style={{flex: 0.5, justifyContent: 'center'}}>
+                  <Headline style={styles.textPadding}>
+                    Enroll in touchless access today
+                  </Headline>
+
+                  <Subheading1 style={styles.greyText}>
                     Touchless access uses face recognition to let you
-                    conveniently unlock building doors using a face template.
-                  </Subheading2>
-                ) : (
-                  <View />
-                )}
+                    conveniently unlock building doors using a{' '}
+                    <Subheading2>face template</Subheading2>.
+                  </Subheading1>
+                </View>
               </View>
-              <View style={{flex: 1, flexDirection: 'column'}} />
-            </View>
+            ) : (
+              <View />
+            )}
           </View>
 
           <View style={styles.bottomSection}>
-            {screenWidth < 500 ? (
-              <Subheading2 style={styles.greyText}>
-                Touchless access uses face recognition to let you conveniently
-                unlock building doors using a face template.
-              </Subheading2>
+            {screenWidth < 600 ? (
+              <View style={styles.headingPadding}>
+                <Headline style={styles.textPadding}>
+                  Enroll in touchless access today
+                </Headline>
+
+                <Subheading1 style={styles.greyText}>
+                  Touchless access uses face recognition to let you conveniently
+                  unlock building doors using a{' '}
+                  <Subheading2>face template</Subheading2>.
+                </Subheading1>
+              </View>
             ) : (
               <View />
             )}
@@ -117,39 +126,35 @@ function Consent({navigation}) {
             <View style={styles.row1}>
               <View
                 style={
-                  screenWidth >= 550
-                    ? [styles.centerMain, {flex: 1}]
+                  screenWidth >= 600
+                    ? [styles.centerMain, {flex: 1.5}]
                     : styles.centerMain
                 }>
-                <Title1>What is a face template?</Title1>
-                <Subheading1>
+                <Title1 style={[styles.textPadding, styles.headingPadding]}>
+                  What is a face template?
+                </Title1>
+                <Subheading1 style={styles.textPadding}>
                   A face template is a unique set of numbers that represent the
                   distinctive features of your face.
                 </Subheading1>
-              </View>
 
-              <View style={[styles.column1, {minHeight: 150}]}>
-                <Image
-                  style={styles.imageFormat2}
-                  source={require('../../assets/img_faceTemp_l.png')}
-                />
-              </View>
-            </View>
-            <View style={styles.row1}>
-              <View style={styles.column1}>
-                <View style={styles.row1}>
-                  <Title1>What information gets stored?</Title1>
-                  <Subheading1>
-                    Only your face template gets stored. No one has access to
-                    your face template.
-                  </Subheading1>
-                </View>
+                {screenWidth < 600 ? (
+                  <View style={[styles.column1, {minHeight: 150}]}>
+                    <Image
+                      style={styles.imageFormat2}
+                      source={require('../../assets/img_faceTemp_l.png')}
+                    />
+                  </View>
+                ) : (
+                  <View />
+                )}
+
                 <View style={styles.rowNoWrap}>
                   <Image
                     style={styles.iconFormat}
                     source={require('../../assets/icon_camera.png')}
                   />
-                  <View style={{flex: 1, marginBottom: 20}}>
+                  <View style={[styles.greyText, {flex: 1, marginBottom: 20}]}>
                     <Subheading1>
                       If you choose to enroll, you’ll take a few photos of your
                       face today to create one.
@@ -162,18 +167,38 @@ function Consent({navigation}) {
                     source={require('../../assets/icon_lock.png')}
                   />
                   <View style={{flex: 1}}>
-                    <Subheading1>
+                    <Subheading1 style={styles.greyText}>
                       Using face templates helps ensure that you always have
                       building access, and it’s more secure than a badge.
                     </Subheading1>
                   </View>
                 </View>
+                <Title1 style={[styles.headingPadding, styles.textPadding]}>
+                  What information gets stored?
+                </Title1>
+                <Subheading1>
+                  Only your face template gets stored. No one has access to your
+                  face template.
+                </Subheading1>
               </View>
+
+              {screenWidth >= 600 ? (
+                <View style={[styles.column1]}>
+                  <Image
+                    style={styles.imageFormat2}
+                    source={require('../../assets/img_faceTemp_l.png')}
+                  />
+                </View>
+              ) : (
+                <View />
+              )}
             </View>
 
             <View style={styles.row1}>
               <View style={styles.column1}>
-                <Title1>We protect your privacy at every step</Title1>
+                <Title1 style={[styles.headingPadding, styles.textPadding]}>
+                  We protect your privacy at every step
+                </Title1>
 
                 <View style={styles.row1}>
                   <View style={{...styles.column1, ...styles.smallColumn}}>
@@ -205,7 +230,9 @@ function Consent({navigation}) {
                         </Subheading2>
                         <Subheading1 style={styles.subheadingMargin}>
                           Your face template is encrypted following cloud
-                          security standards ISO 27018 and SOC 1, 2, 3.
+                          security standards{' '}
+                          <Subheading2>ISO 27018</Subheading2> and{' '}
+                          <Subheading2>SOC 1, 2, 3</Subheading2>.
                         </Subheading1>
                       </View>
                     </View>
@@ -246,25 +273,30 @@ function Consent({navigation}) {
               </View>
             </View>
           </View>
+
           <View style={styles.bottomSection}>
             <View style={styles.row1}>
               <View style={styles.column1} style={{flex: 2}}>
-                <Title1 style={styles.textPadding}>
+                <Title1 style={[styles.textPadding, styles.headingPadding]}>
                   Ready to try touchless access?
                 </Title1>
 
-                <Subheading1 style={styles.greyText}>
+                <Subheading1 style={[styles.greyText, styles.textPadding]}>
                   Participation is optional. If you don’t want to enroll, you
                   can continue to scan your badge for entry.
                 </Subheading1>
               </View>
-              <View style={screenWidth > 500 ? styles.column1 : ''} />
+              <View style={screenWidth >= 600 ? styles.column1 : ''} />
             </View>
 
-            <View style={styles.row1}>
+            <View style={screenWidth >= 600 ? styles.row1 : styles.column1}>
               <CustomButton
                 title="Yes, create my face template"
-                style={styles.buttonMargin}
+                style={
+                  screenWidth >= 600
+                    ? styles.buttonMarginL
+                    : styles.buttonMarginS
+                }
                 onPress={() => {
                   navigation.navigate(constants.SCREENS.login, {
                     nextScreen: constants.SCREENS.instruction,
@@ -273,7 +305,11 @@ function Consent({navigation}) {
               />
               <CustomButton
                 title="No, don’t create my face template"
-                style={styles.buttonMargin}
+                style={
+                  screenWidth >= 600
+                    ? styles.buttonMarginL
+                    : styles.buttonMarginS
+                }
                 onPress={showDeclineModal}
               />
             </View>
@@ -290,27 +326,25 @@ var styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#E5E5E5',
+    backgroundColor: '#F1F1F1',
   },
   centerColumn: {
     maxWidth: 840,
     flex: 1,
     flexDirection: 'column',
-    // marginTop: 30,
+    marginTop: 0,
   },
   topSection: {
-    flex: 1,
     flexDirection: 'row',
-    maxHeight: 250,
+    marginBottom: -50,
   },
   bottomSection: {
-    flex: 2,
     backgroundColor: 'white',
     flexDirection: 'column',
     marginBottom: 16,
     borderRadius: 4,
-    padding: 30,
-    paddingTop: 20,
+    paddingLeft: 20,
+    paddingRight: 20,
   },
   textBox: {
     flex: 1,
@@ -330,14 +364,11 @@ var styles = StyleSheet.create({
     flexDirection: 'column',
   },
   imageBox: {
-    flex: 1,
     flexDirection: 'row',
     justifyContent: 'flex-end',
     alignItems: 'center',
   },
   imageFormat: {
-    flex: 1,
-    width: '100%',
     flexDirection: 'row',
     resizeMode: 'contain',
   },
@@ -348,16 +379,14 @@ var styles = StyleSheet.create({
   },
   iconFormat: {
     resizeMode: 'contain',
-    height: 18.5,
-    width: 20,
+    height: 20.5,
+    width: 23,
     marginRight: 15,
   },
   row1: {
     flex: 1,
     flexDirection: 'row',
     flexWrap: 'wrap',
-    marginBottom: 10,
-    marginTop: 10,
   },
   centerMain: {
     justifyContent: 'center',
@@ -365,10 +394,9 @@ var styles = StyleSheet.create({
   column1: {
     flex: 1,
     flexDirection: 'column',
-    margin: 10,
   },
   smallColumn: {
-    maxWidth: 300,
+    paddingLeft: 10,
     minWidth: 300,
   },
   boxContainerP: {
@@ -380,15 +408,24 @@ var styles = StyleSheet.create({
     right: 0,
   },
   textPadding: {
-    marginBottom: 10,
+    marginBottom: 15,
+  },
+  headingPadding: {
     marginTop: 30,
   },
   subheadingMargin: {
     color: '#6E6E6E',
+    marginBottom: 24,
+    marginTop: 4,
   },
-  buttonMargin: {
-    margin: 20,
+  buttonMarginL: {
+    marginRight: 12,
+    marginTop: 24,
+    marginBottom: 50,
     width: 300,
+  },
+  buttonMarginS: {
+    margin: 12,
   },
   greyText: {
     color: '#212121',
