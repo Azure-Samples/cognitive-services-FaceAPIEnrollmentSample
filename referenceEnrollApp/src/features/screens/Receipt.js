@@ -67,8 +67,12 @@ function Receipt({navigation}) {
             </Subheading1>
           </View>
 
-          <View>
-            <View style={styles.column1}>
+          <View style={screenWidth >= 600 ? {flexDirection: 'row'} : {}}>
+            <View
+              style={[
+                styles.column1,
+                screenWidth >= 600 ? {marginRight: 30} : {},
+              ]}>
               <View>
                 <Body2 style={styles.blueheading}>
                   Summary of data being stored
@@ -136,23 +140,23 @@ function Receipt({navigation}) {
                 </Body2>
               </View>
               <View style={styles.rowNoFlex}>
-                <Body1>{'\u2022'}</Body1>
+                <Body1>{'\u2022  '}</Body1>
                 <Body1>Look at the camera sensor</Body1>
               </View>
 
               <View style={styles.rowNoFlex}>
-                <Body1>{'\u2022'}</Body1>
+                <Body1>{'\u2022  '}</Body1>
                 <Body1>Touchless access verifies your face template</Body1>
               </View>
 
               <View style={styles.rowNoFlex}>
-                <Body1>{'\u2022'}</Body1>
+                <Body1>{'\u2022  '}</Body1>
                 <Body1>
                   The sensor lights up to let you know what’s happening
                 </Body1>
               </View>
               <View style={styles.borderLine}>
-                <View style={{height: 127, marginBottom: 10}}>
+                <View style={{height: 90, marginBottom: 10}}>
                   <Image
                     style={styles.imgFormat}
                     source={require('../../assets/img_sensorLights.png')}
@@ -189,8 +193,6 @@ function Receipt({navigation}) {
             />
           </View>
         </View>
-
-        <View style={screenWidth >= 600 ? { flex: 5 } : {}}></View>
       </View>
     </ScrollView>
   );

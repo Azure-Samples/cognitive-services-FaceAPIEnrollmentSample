@@ -104,40 +104,35 @@ const fontStyles = StyleSheet.create({
   caption: {
     fontSize: 12,
     lineHeight: 16,
-    fontFamily: 'Arial',
-    fontWeight: '400',
+    fontFamily: 'Roboto-Regular',
     fontStyle: 'normal',
   },
   body1: {
     fontSize: 14,
   },
-
   body2: {
-    fontWeight: 'bold',
+    fontFamily: 'Roboto-Medium',
   },
   subheading1: {
     fontSize: 16,
     lineHeight: 22,
-    fontFamily: 'Arial',
-    fontWeight: 'normal',
+    fontFamily: 'Roboto-Regular',
     fontStyle: 'normal',
   },
 
   subheading2: {
-    fontWeight: '500',
+    fontFamily: 'Roboto-Medium',
   },
   title1: {
     fontSize: 20,
     lineHeight: 24,
-    fontFamily: 'Arial',
-    fontWeight: 'bold',
+    fontFamily: 'Roboto-Medium',
     fontStyle: 'normal',
   },
   headline: {
     fontSize: 24,
     lineHeight: 28,
-    fontFamily: 'Arial',
-    fontWeight: '500',
+    fontFamily: 'Roboto-Medium',
     fontStyle: 'normal',
   },
 });
@@ -145,7 +140,7 @@ const fontStyles = StyleSheet.create({
 // If Android, use Roboto font
 androidStyle = StyleSheet.create({
   font: {
-    fontFamily: 'Roboto',
+    //fontFamily: 'Roboto-Regular',
   },
 });
 
