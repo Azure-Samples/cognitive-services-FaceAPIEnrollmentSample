@@ -1,15 +1,12 @@
 import React from 'react';
-import {StyleSheet, Text, Platform} from 'react-native';
+import {StyleSheet, Text} from 'react-native';
 
-let useAndroidFont = Platform.OS == 'android';
-console.log('android', useAndroidFont);
 function Caption(props) {
   return (
     <Text
       style={[
         fontStyles.caption,
         props.style,
-        useAndroidFont ? androidStyle.font : '',
       ]}>
       {props.children}
     </Text>
@@ -23,7 +20,6 @@ function Body1(props) {
         style={[
           fontStyles.body1,
           props.style,
-          useAndroidFont ? androidStyle.font : '',
         ]}>
         {props.children}
       </Text>
@@ -37,8 +33,7 @@ function Body2(props) {
       <Text
         style={[
           fontStyles.body2,
-          props.style,
-          useAndroidFont ? androidStyle.font : '',
+          props.style
         ]}>
         {props.children}
       </Text>
@@ -51,8 +46,7 @@ function Subheading1(props) {
     <Text
       style={[
         fontStyles.subheading1,
-        props.style,
-        useAndroidFont ? androidStyle.font : '',
+        props.style
       ]}>
       {props.children}
     </Text>
@@ -65,8 +59,7 @@ function Subheading2(props) {
       <Text
         style={[
           fontStyles.subheading2,
-          props.style,
-          useAndroidFont ? androidStyle.font : '',
+          props.style
         ]}>
         {props.children}
       </Text>
@@ -80,7 +73,6 @@ function Title1(props) {
       style={[
         fontStyles.title1,
         props.style,
-        useAndroidFont ? androidStyle.font : '',
       ]}>
       {props.children}
     </Text>
@@ -92,8 +84,7 @@ function Headline(props) {
     <Text
       style={[
         fontStyles.headline,
-        props.style,
-        useAndroidFont ? androidStyle.font : '',
+        props.style
       ]}>
       {props.children}
     </Text>
@@ -137,12 +128,6 @@ const fontStyles = StyleSheet.create({
   },
 });
 
-// If Android, use Roboto font
-androidStyle = StyleSheet.create({
-  font: {
-    //fontFamily: 'Roboto-Regular',
-  },
-});
 
 export {
   Caption,

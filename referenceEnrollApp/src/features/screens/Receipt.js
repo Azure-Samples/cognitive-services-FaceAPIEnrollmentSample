@@ -67,12 +67,12 @@ function Receipt({navigation}) {
             </Subheading1>
           </View>
 
-          <View style={screenWidth >= 600 ? {flexDirection: 'row'} : {}}>
+          <View style={screenWidth >= 600 ? {flexDirection: 'row'} : {}} >
             <View
-              style={[
-                styles.column1,
-                screenWidth >= 600 ? {marginRight: 30} : {},
-              ]}>
+              style={
+                [styles.column1, {marginRight: 30}]
+                
+              }>
               <View>
                 <Body2 style={styles.blueheading}>
                   Summary of data being stored
@@ -80,15 +80,15 @@ function Receipt({navigation}) {
               </View>
               <View style={styles.borderLine}></View>
               <View style={styles.borderLine}>
-                <View style={[styles.rowNoFlex, {height: 100}]}>
-                  <View style={[{flex: 1}]}>
-                    <View style={{marginBottom: 10}}>
+                <View style={[styles.rowNoFlex, { height: 100 }]}>
+                  <View style={[{ flex: 1 }]}>
+                    <View style={{ marginBottom: 10 }}>
                       <Subheading2>Your face template</Subheading2>
                     </View>
 
                     <Body1>Used to unlock touchless access doors</Body1>
                   </View>
-                  <View style={{flex: 1}}>
+                  <View style={{ flex: 1 }}>
                     <Image
                       style={styles.imgFormat}
                       source={require('../../assets/img_faceTemp_s.png')}
@@ -156,7 +156,7 @@ function Receipt({navigation}) {
                 </Body1>
               </View>
               <View style={styles.borderLine}>
-                <View style={{height: 90, marginBottom: 10}}>
+                <View style={{ height: 90, marginBottom: 10 }}>
                   <Image
                     style={styles.imgFormat}
                     source={require('../../assets/img_sensorLights.png')}
