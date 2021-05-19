@@ -1,5 +1,5 @@
 import React from 'react';
-import {Platform, StyleSheet} from 'react-native';
+import {Platform} from 'react-native';
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
 import ImageCapture from '../features/screens/ImageCapture';
@@ -22,10 +22,7 @@ import * as constants from '../shared/constants';
 const Stack = createStackNavigator();
 const store = configureStore();
 
-
-
 const App = () => {
-  console.log(Platform.OS == 'windows');
   /*
   To store username and personId information, this app writes the data
   to the enrollment directory created here. This is ONLY for demonstration purposes. 

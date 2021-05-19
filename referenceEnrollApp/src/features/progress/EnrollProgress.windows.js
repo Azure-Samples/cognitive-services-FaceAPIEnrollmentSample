@@ -27,9 +27,7 @@ function EnrollProgress(props) {
   let x = width / 2;
   let y = height / 2;
 
-  let progressValue =
-    (props.progressCount /
-      props.total);
+  let progressValue = props.progressCount / props.total;
 
   return (
     <View>
@@ -37,15 +35,15 @@ function EnrollProgress(props) {
         <View style={styles.feedback}>
           <EnrollFeedback />
         </View>
-          <View style={{justifyContent:'center', alignItems:'center'}}>
-            <ProgressBar
-              progress={progressValue}
-              height={15}
-              unfilledColor={"white"}
-              color={'#92C353'}
-              width={330}
-            />
-          </View>
+        <View style={{justifyContent: 'center', alignItems: 'center'}}>
+          <ProgressBar
+            progress={progressValue}
+            height={15}
+            unfilledColor={'white'}
+            color={'#92C353'}
+            width={330}
+          />
+        </View>
       </View>
     </View>
   );

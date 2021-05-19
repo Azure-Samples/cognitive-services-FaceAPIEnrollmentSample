@@ -1,10 +1,9 @@
-import React, {useEffect, useState, useRef} from 'react';
+import React, {useState, useRef} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
 import {
   verifyFaceAction,
   processFaceAction,
   trainAction,
-  getFilteredFaceAction,
   getFilteredFaceForIrAction,
   getFilteredFaceforRgbAction,
 } from './processFrameAction';
@@ -15,8 +14,6 @@ import {CancellationToken, sleep} from '../../shared/helper';
 import CustomButton from '../../styles/CustomButton';
 import {ENROLL_RESULT} from '../../shared/constants';
 import {
-  deleteCurrentEnrollmentsAction,
-  deleteEnrollmentAction,
   deleteNewEnrollmentsAction,
   updateEnrollmentAction,
 } from '../userEnrollment/newEnrollmentAction';

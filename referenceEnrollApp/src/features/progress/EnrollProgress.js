@@ -1,9 +1,8 @@
 import React from 'react';
-import {View, StyleSheet, Dimensions, Easing, Platform} from 'react-native';
+import {View, StyleSheet, Dimensions} from 'react-native';
 import {Svg, Defs, Rect, Mask, Circle} from 'react-native-svg';
 import {AnimatedCircularProgress} from 'react-native-circular-progress';
 import EnrollFeedback from '../feedback/EnrollFeedback';
-import {CONFIG} from '../../env/env.json';
 import useIsPortrait from '../portrait/isPortrait';
 
 function EnrollProgress(props) {
@@ -31,9 +30,7 @@ function EnrollProgress(props) {
   // 5 seconds to update the progress
   let progressDuration = 3000;
 
-  let progressValue =
-    (props.progressCount /
-      props.total) * 100;
+  let progressValue = (props.progressCount / props.total) * 100;
 
   if (progressValue == 100) {
     /*

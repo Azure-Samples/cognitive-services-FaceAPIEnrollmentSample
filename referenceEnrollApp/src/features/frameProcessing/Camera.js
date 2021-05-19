@@ -5,7 +5,7 @@ import Enrollment from './Enrollment';
 
 // Camera component for Android
 export default function Camera(props) {
-  const [startEnroll, setStartEnroll] = useState(true);
+  const [startEnroll, setStartEnroll] = useState(false);
   let cameraRef = React.useRef(null);
 
   const onCameraReady = () => {
