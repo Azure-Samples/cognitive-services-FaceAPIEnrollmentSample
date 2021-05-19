@@ -12,6 +12,8 @@ target 'referenceEnrollApp' do
 
   pod 'RNSVG', :path => '../node_modules/react-native-svg'
 
+  pod 'RNFS', :path => '../node_modules/react-native-fs'
+
   target 'referenceEnrollAppTests' do
     inherit! :complete
     # Pods for testing

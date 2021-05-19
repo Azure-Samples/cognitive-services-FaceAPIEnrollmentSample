@@ -1,21 +1,61 @@
-import React, {useEffect} from 'react';
+import React, {useState} from 'react';
 import {View, StyleSheet} from 'react-native';
+import Enrollment from './Enrollment';
+import {WindowsCamera} from 'react-native-windows-uwp-camera';
 
-// Camera component for Windows
 export default function Camera(props) {
-  useEffect(() => {}, []);
+  const [startEnroll, setStartEnroll] = useState(false);
+  let cameraRef = React.useRef(null);
+
+  console.log('Using windows camera');
+
+  function onInitialized() {
+    console.log('camera ready');
+    setStartEnroll(true);
+  }
+
+  async function takeBase64PictureRgb() {
+    try {
+      var frame = await cameraRef.current.TakeColorPictureAsync();
+      return frame;
+    } catch (error) {
+      console.log(error);
+      return null;
+    }
+  }
+
+  async function takeBase64PictureIr() {
+    try {
+      var frame = await cameraRef.current.TakeInfraredPictureAsync();
+      return frame;
+    } catch (error) {
+      console.log(error);
+      return null;
+    }
+  }
 
   return (
     <View style={styles.root}>
-      {/* This is a place holder until windows camera module is ready */}
+      <WindowsCamera
+        ref={cameraRef}
+        onCameraInitialized={onInitialized}></WindowsCamera>
+      <Enrollment
+        onCompleted={props.onCompleted}
+        takeColorPicture={takeBase64PictureRgb}
+        takeIrPicture={takeBase64PictureIr}
+        beginEnrollment={startEnroll}
+      />
     </View>
   );
 }
 
 const styles = StyleSheet.create({
   root: {
-    backgroundColor: '#fff',
     flex: 1,
-    padding: 20,
+  },
+  camera: {
+    flex: 1,
+    width: '100%',
+    overflow: 'hidden',
   },
 });

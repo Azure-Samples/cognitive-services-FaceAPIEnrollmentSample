@@ -1,5 +1,3 @@
-import 'react-native-gesture-handler/jestSetup';
-
 jest.mock('react-native-fs', () => {
   return {
     mkdir: jest.fn(),

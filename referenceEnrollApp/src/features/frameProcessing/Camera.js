@@ -20,7 +20,6 @@ export default function Camera(props) {
 
   async function takeBase64Picture() {
     let frameData;
-
     try {
       frameData = await cameraRef.current.takePictureAsync({base64: true});
     } catch (error) {
@@ -48,7 +47,10 @@ export default function Camera(props) {
       />
       <Enrollment
         onCompleted={props.onCompleted}
-        takePicture={takeBase64Picture}
+        takeColorPicture={takeBase64Picture}
+        takeInfraredPicture={() => {
+          return null;
+        }}
         beginEnrollment={startEnroll}
       />
     </View>

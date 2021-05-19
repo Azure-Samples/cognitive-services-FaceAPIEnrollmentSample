@@ -1,7 +1,11 @@
 import UserAgent from 'react-native-user-agent';
 import {CONFIG} from '../env/env.json';
+import {requireNativeComponent} from 'react-native';
 
-import createQualityFilter from '../features/filtering/filters';
+import {
+  createQualityFilterRgb,
+  createQualityFilterIr,
+} from '../features/filtering/filters';
 import {Mutex} from 'async-mutex';
 
 const ROOT = 'face/v1.0/';
@@ -35,12 +39,16 @@ export const TRAIN_STATUS_ENDPOINT = (personGroupId) => {
 export const VERIFY_ENDPOINT = ROOT + 'verify';
 
 // face attributes to retrieve from FaceAPI
-export const FACE_ATTRIBUTES =
+export const FACE_ATTRIBUTES_RGB =
   'returnFaceAttributes=headPose,occlusion,glasses,accessories,blur,exposure,noise';
 
-export const REC_MODEL = 'recognitionModel=' + CONFIG.RECOGNITION_MODEL_RGB;
+export const FACE_ATTRIBUTES_IR = 'returnFaceAttributes=headPose,exposure';
 
-export const QUALITY_FILTER = createQualityFilter();
+export const REC_MODEL_RGB = 'recognitionModel=' + CONFIG.RECOGNITION_MODEL_RGB;
+export const REC_MODEL_IR = 'recognitionModel=' + CONFIG.RECOGNITION_MODEL_IR;
+
+export const QUALITY_FILTER_RGB = createQualityFilterRgb();
+export const QUALITY_FILTER_IR = createQualityFilterIr();
 
 export const ENROLL_RESULT = Object.freeze({
   success: 0,
@@ -77,4 +85,9 @@ export const USER_AGENT =
 export var FACEAPI_ENDPOINT = process.env.FACEAPI_ENDPOINT;
 export var FACEAPI_KEY = process.env.FACEAPI_KEY;
 
-export const mutex = new Mutex();
+export const mutexForRgb = new Mutex();
+export const mutexForIr = new Mutex();
+
+export var EnrollDict = {};
+
+//export var Cam = requireNativeComponent('WindowsCameraView');

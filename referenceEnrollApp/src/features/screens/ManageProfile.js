@@ -1,5 +1,12 @@
 import React, {useState, useEffect} from 'react';
-import {View, StyleSheet, BackHandler, ScrollView, Dimensions, Image} from 'react-native';
+import {
+  View,
+  StyleSheet,
+  BackHandler,
+  ScrollView,
+  Dimensions,
+  Image,
+} from 'react-native';
 import {useDispatch} from 'react-redux';
 import {
   Headline,
@@ -9,7 +16,7 @@ import {
   Body2,
 } from '../../styles/fontStyles';
 import CustomButton from '../../styles/CustomButton';
-import {deleteEnrollmentAction} from '../userEnrollment/newEnrollmentAction';
+import {deleteExistingEnrollmentsAction} from '../userEnrollment/newEnrollmentAction';
 import {HeaderBackButton} from '@react-navigation/stack';
 import * as constants from '../../shared/constants';
 
@@ -49,7 +56,7 @@ function ManageProfile({navigation}) {
   }, []);
 
   const dispatch = useDispatch();
-  const dispatchDelete = async () => await dispatch(deleteEnrollmentAction());
+  const dispatchDelete = async () => await dispatch(deleteExistingEnrollmentsAction());
   const dispatchNewEnrollment = async () =>
     await dispatch(newEnrollmentAction());
 
@@ -130,7 +137,7 @@ function ManageProfile({navigation}) {
   let reEnroll = async () => {
     // create new personId
     // enroll with new personId
-    // if succeeded delete old info and replace
+    // if succeeded delete old info and replace TODO
     if (!newEnrollmentCreated) {
       newEnrollmentCreated = true;
       await dispatchNewEnrollment();
@@ -240,7 +247,7 @@ function ManageProfile({navigation}) {
                 </View>
               </View>
             </View>
-            <View style={screenWidth >= 600 ? { flex: 5 } : {}}></View>
+            <View style={screenWidth >= 600 ? {flex: 5} : {}}></View>
           </View>
         </View>
       )}

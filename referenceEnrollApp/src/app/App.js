@@ -1,5 +1,5 @@
 import React from 'react';
-import {StyleSheet} from 'react-native';
+import {Platform} from 'react-native';
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
 import ImageCapture from '../features/screens/ImageCapture';
@@ -12,7 +12,11 @@ import ManageProfile from '../features/screens/ManageProfile';
 import Settings from '../features/screens/Settings';
 import {Provider} from 'react-redux';
 import configureStore from './store';
-const RNFS = require('react-native-fs');
+var RNFS;
+if (Platform.OS != 'windows') {
+  RNFS = require('react-native-fs');
+}
+
 import * as constants from '../shared/constants';
 
 const Stack = createStackNavigator();
@@ -25,7 +29,10 @@ const App = () => {
   Any user information and personId should be stored in a secured, encrypted database. 
   A user's personId should be treated as a secret.
   */
-  RNFS.mkdir(RNFS.DocumentDirectoryPath + '/enrollment/');
+
+  if (Platform.OS != 'windows') {
+    RNFS.mkdir(RNFS.DocumentDirectoryPath + '/enrollment/');
+  }
 
   return (
     <Provider store={store}>

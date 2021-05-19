@@ -10,13 +10,15 @@ import {
 } from '../testData/verifyResult.json';
 import {
   detectFaceAction,
-  getFilteredFaceAction,
+  getFilteredFaceforRgbAction,
   processFaceAction,
   trainAction,
   verifyFaceAction,
 } from '../../src/features/frameProcessing/processFrameAction';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
+import {CONFIG} from '../../src/env/env.json';
+import * as constants from '../../src/shared/constants';
 
 describe('Frame processing unit tests', () => {
   const face = detectionResult[0];
@@ -25,7 +27,10 @@ describe('Frame processing unit tests', () => {
   // Mock Store
   const middlewares = [thunk];
   const mockStore = configureMockStore(middlewares);
-  const store = mockStore({userInfo: {rgbPersonId: 123}, newEnrollment: {}});
+  const store = mockStore({
+    userInfo: {},
+    newEnrollment: {newgRgbPersonId: 123},
+  });
 
   // Mock detect responses
   const detectResponse = {
@@ -55,7 +60,13 @@ describe('Frame processing unit tests', () => {
       .fn()
       .mockImplementationOnce(() => Promise.resolve(detectResponse));
 
-    let face = await store.dispatch(detectFaceAction(frameData));
+    let face = await store.dispatch(
+      detectFaceAction(
+        frameData,
+        constants.REC_MODEL_RGB,
+        constants.FACE_ATTRIBUTES_RGB,
+      ),
+    );
     expect(face.faceId).toBeDefined();
   });
 
@@ -64,7 +75,13 @@ describe('Frame processing unit tests', () => {
       .fn()
       .mockImplementationOnce(() => Promise.resolve(noFaceDetectedResponse));
 
-    let face = await store.dispatch(detectFaceAction(frameData));
+    let face = await store.dispatch(
+      detectFaceAction(
+        frameData,
+        constants.REC_MODEL_RGB,
+        constants.FACE_ATTRIBUTES_RGB,
+      ),
+    );
     expect(face.faceId).toBeUndefined();
   });
 
@@ -73,7 +90,13 @@ describe('Frame processing unit tests', () => {
       .fn()
       .mockImplementationOnce(() => Promise.resolve(errorResponse));
 
-    let face = await store.dispatch(detectFaceAction(frameData));
+    let face = await store.dispatch(
+      detectFaceAction(
+        frameData,
+        CONFIG.RECOGNITION_MODEL_RGB,
+        constants.FACE_ATTRIBUTES_RGB,
+      ),
+    );
     expect(face.faceId).toBeUndefined();
   });
 
@@ -83,7 +106,9 @@ describe('Frame processing unit tests', () => {
       .fn()
       .mockImplementationOnce(() => Promise.resolve({status: 200}));
 
-    let res = await store.dispatch(processFaceAction(face, frameData));
+    let res = await store.dispatch(
+      processFaceAction(face, frameData, CONFIG.PERSONGROUP_RGB, 123),
+    );
     expect(res).toBeTruthy();
   });
 
@@ -97,7 +122,9 @@ describe('Frame processing unit tests', () => {
       }),
     );
 
-    let res = await store.dispatch(processFaceAction(face, frameData));
+    let res = await store.dispatch(
+      processFaceAction(face, frameData, CONFIG.PERSONGROUP_RGB, 123),
+    );
     expect(res).toBeFalsy();
   });
 
@@ -111,7 +138,7 @@ describe('Frame processing unit tests', () => {
       .fn()
       .mockImplementationOnce(() => Promise.resolve(detectResponse));
 
-    let face = await store.dispatch(getFilteredFaceAction(face, frameData));
+    let face = await store.dispatch(getFilteredFaceforRgbAction(frameData));
     expect(face.faceId).toBeDefined();
   });
 
@@ -122,7 +149,7 @@ describe('Frame processing unit tests', () => {
       .fn()
       .mockImplementationOnce(() => Promise.resolve(detectResponse));
 
-    let face = await store.dispatch(getFilteredFaceAction(face, frameData));
+    let face = await store.dispatch(getFilteredFaceforRgbAction(frameData));
     expect(face.faceId).toBeUndefined();
   });
 
@@ -137,7 +164,9 @@ describe('Frame processing unit tests', () => {
       }),
     );
 
-    let res = await store.dispatch(verifyFaceAction(face));
+    let res = await store.dispatch(
+      verifyFaceAction(face, CONFIG.PERSONGROUP_RGB, 123),
+    );
     expect(res).toBeTruthy();
   });
 
@@ -151,7 +180,9 @@ describe('Frame processing unit tests', () => {
       }),
     );
 
-    let res = await store.dispatch(verifyFaceAction(face));
+    let res = await store.dispatch(
+      verifyFaceAction(face, CONFIG.PERSONGROUP_RGB, 123),
+    );
     expect(res).toBeFalsy();
   });
 
@@ -165,7 +196,9 @@ describe('Frame processing unit tests', () => {
       }),
     );
 
-    let res = await store.dispatch(verifyFaceAction(face));
+    let res = await store.dispatch(
+      verifyFaceAction(face, CONFIG.PERSONGROUP_RGB, 123),
+    );
     expect(res).toBeFalsy();
   });
 
@@ -188,7 +221,7 @@ describe('Frame processing unit tests', () => {
         }),
       );
 
-    let res = await store.dispatch(trainAction(face));
+    let res = await store.dispatch(trainAction());
     expect(res).toBeTruthy();
   });
 
@@ -210,7 +243,7 @@ describe('Frame processing unit tests', () => {
         }),
       );
 
-    let res = await store.dispatch(trainAction(face));
+    let res = await store.dispatch(trainAction());
     expect(res).toBeFalsy();
   });
 });

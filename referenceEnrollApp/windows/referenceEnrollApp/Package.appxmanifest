@@ -7,11 +7,11 @@
   IgnorableNamespaces="uap mp">
 
   <Identity
-    Name="75f49af2-b581-4c4e-b9b2-777e12c9acea"
+    Name="fec2c10a-efd1-4d25-b467-7f69e2083e58"
     Publisher="CN=elmouzak"
     Version="1.0.0.0" />
 
-  <mp:PhoneIdentity PhoneProductId="75f49af2-b581-4c4e-b9b2-777e12c9acea" PhonePublisherId="00000000-0000-0000-0000-000000000000"/>
+  <mp:PhoneIdentity PhoneProductId="fec2c10a-efd1-4d25-b467-7f69e2083e58" PhonePublisherId="00000000-0000-0000-0000-000000000000"/>
 
   <Properties>
     <DisplayName>referenceEnrollApp</DisplayName>
@@ -46,5 +46,7 @@
 
   <Capabilities>
     <Capability Name="internetClient" />
+    <DeviceCapability Name="webcam"/>
+    <DeviceCapability Name="microphone"/>
   </Capabilities>
 </Package>

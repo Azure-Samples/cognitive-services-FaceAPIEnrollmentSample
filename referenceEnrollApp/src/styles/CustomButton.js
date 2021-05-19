@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
-import { Subheading2 } from './fontStyles';
+import { Subheading3 } from './fontStyles';
 
 export default function CustomButton(props) {
   return (
@@ -12,7 +12,7 @@ export default function CustomButton(props) {
             ? [styles.whiteButton, props.style]
             : [styles.defaultButton, props.style]
         }>
-        <Subheading2>
+        <Subheading3>
           <Text
             style={
               props.whiteButton
@@ -21,7 +21,7 @@ export default function CustomButton(props) {
             }>
             {props.title}
           </Text>
-        </Subheading2>
+        </Subheading3>
       </View>
     </TouchableOpacity>
   );

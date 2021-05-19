@@ -12,10 +12,10 @@ import {Caption, Headline, Subheading1} from '../../styles/fontStyles';
 import CustomButton from '../../styles/CustomButton';
 import {HeaderBackButton} from '@react-navigation/stack';
 import Modal from '../../styles/Modal';
-import {deleteEnrollmentAction} from '../userEnrollment/newEnrollmentAction';
 import {StackActions} from '@react-navigation/native';
 import * as constants from '../../shared/constants';
 import useIsPortrait from '../portrait/isPortrait';
+import {deleteNewEnrollmentsAction} from '../userEnrollment/newEnrollmentAction';
 
 function Instruction({navigation}) {
   const [showModal, setShowModal] = useState(false);
@@ -28,7 +28,8 @@ function Instruction({navigation}) {
   var buttonFlex = screenWidth <= 600 ? 0 : 8;
 
   const dispatch = useDispatch();
-  const dispatchDelete = async () => dispatch(await deleteEnrollmentAction());
+  const dispatchDelete = async () =>
+    dispatch(await deleteNewEnrollmentsAction());
 
   React.useLayoutEffect(() => {
     // Back button shows modal

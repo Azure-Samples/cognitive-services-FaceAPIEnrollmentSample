@@ -1,12 +1,22 @@
 import React, {useEffect, useState} from 'react';
-import {View, StyleSheet, Alert, Dimensions, Image} from 'react-native';
+import {
+  View,
+  StyleSheet,
+  Alert,
+  Dimensions,
+  Image,
+  NativeModules,
+  requireNativeComponent,
+  NativeEventEmitter,
+} from 'react-native';
 import {Caption, Headline, Subheading1} from '../../styles/fontStyles';
+import AnimatedProgressWheel from 'react-native-progress-wheel';
 import CustomButton from '../../styles/CustomButton';
 import {CONFIG} from '../../env/env.json';
 import {useDispatch} from 'react-redux';
 import * as constants from '../../shared/constants';
-import {deletePersonGroup, validatePersonGroup} from '../../shared/helper';
-var RNFS = require('react-native-fs');
+import {deletePersonGroup, validatePersonGroups} from '../../shared/helper';
+//var RNFS = require('react-native-fs');
 import useIsPortrait from '../portrait/isPortrait';
 
 function Welcome({navigation}) {
@@ -71,10 +81,7 @@ function Welcome({navigation}) {
             {
               text: 'Try again',
               onPress: async () => {
-                let validated = await validatePersonGroup(
-                  CONFIG.PERSONGROUP_RGB,
-                );
-
+                let validated = await validatePersonGroups();
                 if (validated == false) {
                   showAlert();
                 }
@@ -92,43 +99,45 @@ function Welcome({navigation}) {
   };
 
   useEffect(() => {
-    validatePersonGroup(CONFIG.PERSONGROUP_RGB).then((personGroupValidated) => {
-      if (personGroupValidated == false) {
+    validatePersonGroups().then((personGroupsValidated) => {
+      if (personGroupsValidated == false) {
         showAlert();
       }
     });
   }, []);
 
   // This is for testing purposes
-  const clearAllData = () => {
-    RNFS.readDir(RNFS.DocumentDirectoryPath + '/enrollment/')
-      .then((result) => {
-        console.log('files', result);
+  // const clearAllData = () => {
+  //   RNFS.readDir(RNFS.DocumentDirectoryPath + '/enrollment/')
+  //     .then((result) => {
+  //       console.log('files', result);
 
-        // stat the first file
-        return result;
-      })
-      .then((result) => {
-        for (let item of result) {
-          if (item.isFile()) {
-            console.log('deleting', item.path);
-            RNFS.unlink(item.path);
-          }
-        }
-      })
-      .catch((err) => {
-        console.log(err.message, err.code);
-      });
+  //       // stat the first file
+  //       return result;
+  //     })
+  //     .then((result) => {
+  //       for (let item of result) {
+  //         if (item.isFile()) {
+  //           console.log('deleting', item.path);
+  //           RNFS.unlink(item.path);
+  //         }
+  //       }
+  //     })
+  //     .catch((err) => {
+  //       console.log(err.message, err.code);
+  //     });
 
-    deletePersonGroup(CONFIG.PERSONGROUP_RGB).then((res) => {
-      console.log('Delete result:', res);
-    });
-  };
+  //   deletePersonGroup(CONFIG.PERSONGROUP_RGB).then((res) => {
+  //     console.log('Delete result:', res);
+  //   });
+  // };
 
   return (
     <View style={styles.container}>
+      
       <View style={styles.backgroundColumn}>
         <View style={styles.backroundTopRow}>
+
           <View
             style={[
               styles.imgContainer,

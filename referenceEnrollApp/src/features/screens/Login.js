@@ -7,16 +7,22 @@ import {
   TextInput,
   Dimensions,
 } from 'react-native';
-import {saveUserInfoAction} from '../userEnrollment/saveUserInfoAction';
 import {useDispatch, useSelector} from 'react-redux';
 import {Caption, Headline, fontStyles, Title1} from '../../styles/fontStyles';
 import CustomButton from '../../styles/CustomButton';
 import {HeaderBackButton} from '@react-navigation/stack';
 import Modal from '../../styles/Modal';
-import {checkEnrollmentExistsAction} from '../userEnrollment/newEnrollmentAction';
+import {
+  checkEnrollmentExistsAction,
+  checkIfReEnrollment,
+  newEnrollmentAction,
+  setExistingPersonIds,
+} from '../userEnrollment/newEnrollmentAction';
 import {StackActions} from '@react-navigation/native';
 import * as constants from '../../shared/constants';
 import useIsPortrait from '../portrait/isPortrait';
+import {saveUserInfoAction} from '../userEnrollment/saveUserInfoAction';
+import {beginAsyncEvent} from 'react-native/Libraries/Performance/Systrace';
 
 /*
     IMPORTANT: 
@@ -29,6 +35,7 @@ import useIsPortrait from '../portrait/isPortrait';
     to a secured and encrypted database. The user's personId should be considered
     a secret.
 */
+
 function Login({route, navigation}) {
   useEffect(() => {
     // Disables Android hardware back button
@@ -58,6 +65,7 @@ function Login({route, navigation}) {
             tintColor="white"
             disabled={modalProps != null}
             onPress={() => {
+              clearFocus();
               navigation.dispatch(StackActions.popToTop());
             }}
           />
@@ -67,21 +75,41 @@ function Login({route, navigation}) {
   }, [navigation, modalProps]);
 
   // Only create a new person in FaceAPI if person is enrolling.
-  const newEnrollment =
+  const enrollmentPath =
     route.params.nextScreen == constants.SCREENS.instruction;
 
   const dispatch = useDispatch();
-  async function saveUsername(username) {
-    return await dispatch(saveUserInfoAction(username));
-  }
-  const checkEnrollmentExists = async (username) =>
-    await dispatch(checkEnrollmentExistsAction(username));
+
+  const createNewPersons = async () => {
+    console.log('creating...');
+    return await dispatch(newEnrollmentAction());
+  };
+
+  const checkForExistingEnrollment = async (username) =>
+    await dispatch(saveUserInfoAction(username));
 
   const signIn = async () => {
+    clearFocus();
     setShowLoading(true);
     await handleSignIn();
     setShowLoading(false);
   };
+
+  const checkValidUsername = (username) => {
+    var lettersAndNumbers = /^[0-9a-zA-Z]+$/;
+
+    if (!username || username == '' || !username.match(lettersAndNumbers)) {
+      console.log('username not allowed');
+      return false;
+    }
+
+    return true;
+  };
+
+  function clearFocus(){
+    setUsernameFocused(false);
+    setPasswordFocused(false);
+  }
 
   const handleSignIn = async () => {
     /* 
@@ -111,20 +139,19 @@ function Login({route, navigation}) {
 
     // Clear up any spaces in username
     let username = usernameInput.replace(/\s/g, '').toLowerCase();
-    console.log('username new ', username);
+    console.log('username: ', username);
 
-    var lettersAndNumbers = /^[0-9a-zA-Z]+$/;
-
-    if (!username || username == '' || !username.match(lettersAndNumbers)) {
-      console.log('username not allowed');
+    // Validate username
+    if (checkValidUsername(username) == false) {
       setModalProps(defaultModal);
       return;
     }
-    let enrollmentExists = await checkEnrollmentExists(username);
-    console.log('enrollment Exists', enrollmentExists);
+
+    let enrollmentExists = await checkForExistingEnrollment(username);
+
     if (enrollmentExists) {
-      if (newEnrollment) {
-        console.log('start path, enrollment exists');
+      if (enrollmentPath) {
+        console.log('Enrollment path, enrollment exists');
         // Enrollment already exists
         let modalInfo = {
           title: 'You are already enrolled',
@@ -145,28 +172,28 @@ function Login({route, navigation}) {
         };
         setModalProps(modalInfo);
       } else {
-        console.log('manage path, enrollment exists ');
+        console.log('Manage path, enrollment exists');
 
         // Take to manage page
         navigation.navigate(route.params.nextScreen);
       }
-    } // enrollment doesn't exists
+    } // Enrollment doesn't exists
     else {
-      if (newEnrollment) {
-        console.log('start path, new enrollment ');
+      if (enrollmentPath) {
+        console.log('Enrollment path, new enrollment');
 
-        // new enrollment and doesn't exist
+        // First time enrolling
         // take to instructions
         // create person and save info
-        let saved = await saveUsername(username);
-        if (saved) {
+        let created = await createNewPersons();
+        if (created) {
           navigation.navigate(route.params.nextScreen);
         } else {
           // Error with saving info, prompt login again
           setModalProps(defaultModal);
         }
       } else {
-        console.log('manage path, new enrollment ');
+        console.log('manage path, new enrollment');
 
         // Show no profile exists modal
         // dont save info

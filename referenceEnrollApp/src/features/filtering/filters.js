@@ -1,57 +1,63 @@
 import {FEEDBACK} from './filterFeedback';
 import {CONFIG} from '../../env/env.json';
 
-const THRESHOLDS = CONFIG.QUALITY_FILTER_SETTINGS;
+const THRESHOLDS_RGB = CONFIG.QUALITY_FILTER_SETTINGS.RGB;
+const THRESHOLDS_IR = CONFIG.QUALITY_FILTER_SETTINGS.IR;
 
-export default function createQualityFilter() {
+export function createQualityFilterRgb() {
   let filters = [];
 
-  for (let filter in THRESHOLDS) {
-    filters.push(FILTER_MAP[filter]);
+  for (let filter in THRESHOLDS_RGB) {
+    filters.push(FILTER_MAP_RGB[filter]);
   }
 
   return filters;
 }
 
-export function minimumFaceSize(detectResult) {
-  let rect = detectResult.faceRectangle;
-  let faceArea = rect.width * rect.height;
+export function createQualityFilterIr() {
+  let filters = [];
 
-  if (faceArea < THRESHOLDS.MINIMUM_FACEAREA) {
-    return FEEDBACK.smallFace;
+  for (let filter in THRESHOLDS_IR) {
+    filters.push(FILTER_MAP_IR[filter]);
   }
 
-  return FEEDBACK.none;
+  return filters;
 }
 
-export function yaw(detectResult) {
-  let yaw = detectResult.faceAttributes.headPose.yaw;
-
-  if (yaw < THRESHOLDS.YAW.MIN || yaw > THRESHOLDS.YAW.MAX) {
-    return FEEDBACK.yawOrRoll;
-  }
-
-  return FEEDBACK.none;
+export function minimumFaceSizeRgb(detectResult) {
+  return minimumFaceSize(detectResult, THRESHOLDS_RGB.MINIMUM_FACEAREA);
 }
 
-export function pitch(detectResult) {
-  let pitch = detectResult.faceAttributes.headPose.pitch;
-
-  if (pitch < THRESHOLDS.PITCH.MIN || pitch > THRESHOLDS.PITCH.MAX) {
-    return FEEDBACK.pitch;
-  }
-
-  return FEEDBACK.none;
+export function minimumFaceSizeIr(detectResult) {
+  return minimumFaceSize(detectResult, THRESHOLDS_IR.MINIMUM_FACEAREA);
 }
 
-export function roll(detectResult) {
-  let roll = detectResult.faceAttributes.headPose.roll;
+export function yawRgb(detectResult) {
+  return yaw(detectResult, THRESHOLDS_RGB.YAW.MIN, THRESHOLDS_RGB.YAW.MAX);
+}
 
-  if (roll < THRESHOLDS.ROLL.MIN || roll > THRESHOLDS.ROLL.MAX) {
-    return FEEDBACK.yawOrRoll;
-  }
+export function yawIr(detectResult) {
+  return yaw(detectResult, THRESHOLDS_IR.YAW.MIN, THRESHOLDS_IR.YAW.MAX);
+}
 
-  return FEEDBACK.none;
+export function pitchRgb(detectResult) {
+  return pitch(
+    detectResult,
+    THRESHOLDS_RGB.PITCH.MIN,
+    THRESHOLDS_RGB.PITCH.MAX,
+  );
+}
+
+export function pitchIr(detectResult) {
+  return pitch(detectResult, THRESHOLDS_IR.PITCH.MIN, THRESHOLDS_IR.PITCH.MAX);
+}
+
+export function rollRgb(detectResult) {
+  return roll(detectResult, THRESHOLDS_RGB.ROLL.MIN, THRESHOLDS_RGB.ROLL.MAX);
+}
+
+export function rollIr(detectResult) {
+  return pitch(detectResult, THRESHOLDS_IR.ROLL.MIN, THRESHOLDS_IR.ROLL.MAX);
 }
 
 export function occlusionForehead(detectResult) {
@@ -78,30 +84,32 @@ export function occlusionMouth(detectResult) {
   return FEEDBACK.none;
 }
 
-export function exposure(detectResult) {
-  let exposure = detectResult.faceAttributes.exposure.value;
-
-  if (exposure < THRESHOLDS.EXPOSURE.UNDER) {
-    return FEEDBACK.noiseOrExposure;
-  }
-
-  if (exposure > THRESHOLDS.EXPOSURE.OVER) {
-    return FEEDBACK.noiseOrExposure;
-  }
-
-  return FEEDBACK.none;
+export function exposureRgb(detectResult) {
+  return exposure(
+    detectResult,
+    THRESHOLDS_RGB.EXPOSURE.UNDER,
+    THRESHOLDS_RGB.EXPOSURE.OVER,
+  );
 }
 
-export function blur(detectResult) {
-  if (detectResult.faceAttributes.blur.value > THRESHOLDS.BLUR) {
+export function exposureIr(detectResult) {
+  return exposure(
+    detectResult,
+    THRESHOLDS_IR.EXPOSURE.UNDER,
+    THRESHOLDS_IR.EXPOSURE.OVER,
+  );
+}
+
+export function blurRgb(detectResult) {
+  if (detectResult.faceAttributes.blur.value > THRESHOLDS_RGB.BLUR) {
     return FEEDBACK.blur;
   }
 
   return FEEDBACK.none;
 }
 
-export function noise(detectResult) {
-  if (detectResult.faceAttributes.noise.value > THRESHOLDS.NOISE) {
+export function noiseRgb(detectResult) {
+  if (detectResult.faceAttributes.noise.value > THRESHOLDS_RGB.NOISE) {
     return FEEDBACK.noiseOrExposure;
   }
 
@@ -119,7 +127,7 @@ export function sunglasses(detectResult) {
       }
     }
 
-    if (sunglassesConfidence >= THRESHOLDS.SUNGLASSES_CONFIDENCE) {
+    if (sunglassesConfidence >= THRESHOLDS_RGB.SUNGLASSES_CONFIDENCE) {
       return FEEDBACK.sunglassesOrMask;
     }
   }
@@ -135,7 +143,7 @@ export function mask(detectResult) {
       maskConfidence = accessorie.confidence;
     }
 
-    if (maskConfidence >= THRESHOLDS.MASK_CONFIDENCE) {
+    if (maskConfidence >= THRESHOLDS_RGB.MASK_CONFIDENCE) {
       return FEEDBACK.sunglassesOrMask;
     }
   }
@@ -143,19 +151,82 @@ export function mask(detectResult) {
   return FEEDBACK.none;
 }
 
+function minimumFaceSize(detectResult, threshold) {
+  let rect = detectResult.faceRectangle;
+  let faceArea = rect.width * rect.height;
+
+  if (faceArea < threshold) {
+    return FEEDBACK.smallFace;
+  }
+
+  return FEEDBACK.none;
+}
+
+function yaw(detectResult, thresholdMin, thresholdMax) {
+  let yaw = detectResult.faceAttributes.headPose.yaw;
+
+  if (yaw < thresholdMin || yaw > thresholdMax) {
+    return FEEDBACK.yawOrRoll;
+  }
+
+  return FEEDBACK.none;
+}
+
+function pitch(detectResult, thresholdMin, thresholdMax) {
+  let pitch = detectResult.faceAttributes.headPose.pitch;
+
+  if (pitch < thresholdMin || pitch > thresholdMax) {
+    return FEEDBACK.pitch;
+  }
+
+  return FEEDBACK.none;
+}
+
+function roll(detectResult, thresholdMin, thresholdMax) {
+  let roll = detectResult.faceAttributes.headPose.roll;
+
+  if (roll < thresholdMin || roll > thresholdMax) {
+    return FEEDBACK.yawOrRoll;
+  }
+
+  return FEEDBACK.none;
+}
+
+function exposure(detectResult, thresholdUnder, thresholdOver) {
+  let exposure = detectResult.faceAttributes.exposure.value;
+
+  if (exposure < thresholdUnder) {
+    return FEEDBACK.noiseOrExposure;
+  }
+
+  if (exposure > thresholdOver) {
+    return FEEDBACK.noiseOrExposure;
+  }
+
+  return FEEDBACK.none;
+}
+
 // An object to map filter config name to filter function name
 // used for creating filters array
-export const FILTER_MAP = Object.freeze({
-  MINIMUM_FACEAREA: minimumFaceSize,
-  YAW: yaw,
-  PITCH: pitch,
-  ROLL: roll,
+export const FILTER_MAP_RGB = Object.freeze({
+  MINIMUM_FACEAREA: minimumFaceSizeRgb,
+  YAW: yawRgb,
+  PITCH: pitchRgb,
+  ROLL: rollRgb,
   OCCLUSION_FOREHEAD: occlusionForehead,
   OCCLUSION_EYES: occlusionEyes,
   OCCLUSION_MOUTH: occlusionMouth,
-  EXPOSURE: exposure,
-  BLUR: blur,
-  NOISE: noise,
+  EXPOSURE: exposureRgb,
+  BLUR: blurRgb,
+  NOISE: noiseRgb,
   SUNGLASSES_CONFIDENCE: sunglasses,
   MASK_CONFIDENCE: mask,
+});
+
+export const FILTER_MAP_IR = Object.freeze({
+  MINIMUM_FACEAREA: minimumFaceSizeIr,
+  YAW: yawIr,
+  PITCH: pitchIr,
+  ROLL: rollIr,
+  EXPOSURE: exposureIr,
 });

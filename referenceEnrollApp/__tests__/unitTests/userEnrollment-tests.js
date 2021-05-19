@@ -8,8 +8,10 @@ import thunk from 'redux-thunk';
 import {saveUserInfoAction} from '../../src/features/userEnrollment/saveUserInfoAction';
 import {
   deleteEnrollmentAction,
+  deleteNewEnrollmentsAction,
   deleteOldEnrollmentAction,
   newEnrollmentAction,
+  updateEnrollmentAction,
 } from '../../src/features/userEnrollment/newEnrollmentAction';
 
 describe('User enrollment unit tests', () => {
@@ -17,7 +19,7 @@ describe('User enrollment unit tests', () => {
   const middlewares = [thunk];
   const mockStore = configureMockStore(middlewares);
   const store = mockStore({
-    userInfo: {rgbPersonId: 123},
+    userInfo: {existingRgbPersonId: 123},
     newEnrollment: {newRgbPersonId: 234},
   });
 
@@ -39,7 +41,7 @@ describe('User enrollment unit tests', () => {
   // Save user information
   it('saveUserInfoAction - success ', async () => {
     const store = mockStore({
-      userInfo: {rgbPersonId: 123},
+      userInfo: {existingRgbPersonId: 123},
       newEnrollment: {newRgbPersonId: 234},
     });
     global.fetch = jest
@@ -47,14 +49,15 @@ describe('User enrollment unit tests', () => {
       .mockImplementationOnce(() => Promise.resolve(addPersonResponse));
 
     let savedInfo = await store.dispatch(saveUserInfoAction('username'));
-    expect(savedInfo).toBeTruthy();
+    // returns true if it was a reenrollment
+    expect(savedInfo).toBeFalsy();
     let expectedAction = [
       {
         type: 'SAVE_USERINFO',
         payload: {
           username: 'username',
-          personIdRgb: createPersonResult.personId,
-          personidIr: '',
+          personIdRgb: '',
+          personIdIr: '',
         },
       },
     ];
@@ -64,7 +67,7 @@ describe('User enrollment unit tests', () => {
 
   it('saveUserInfoAction - failure ', async () => {
     const store = mockStore({
-      userInfo: {rgbPersonId: 123},
+      userInfo: {existingRgbPersonId: 123},
       newEnrollment: {newRgbPersonId: 234},
     });
     global.fetch = jest
@@ -79,7 +82,7 @@ describe('User enrollment unit tests', () => {
         payload: {
           username: 'username',
           personIdRgb: '',
-          personidIr: '',
+          personIdIr: '',
         },
       },
     ];
@@ -89,7 +92,7 @@ describe('User enrollment unit tests', () => {
   // New enrollment
   it('newEnrollmentAction - success ', async () => {
     const store = mockStore({
-      userInfo: {rgbPersonId: 123},
+      userInfo: {existingRgbPersonId: 123},
       newEnrollment: {newRgbPersonId: 234},
     });
     global.fetch = jest
@@ -113,7 +116,7 @@ describe('User enrollment unit tests', () => {
 
   it('newEnrollmentAction - failure ', async () => {
     const store = mockStore({
-      userInfo: {rgbPersonId: 123},
+      userInfo: {existingRgbPersonId: 123},
       newEnrollment: {newRgbPersonId: 234},
     });
     global.fetch = jest
@@ -141,7 +144,7 @@ describe('User enrollment unit tests', () => {
       .fn()
       .mockImplementationOnce(() => Promise.resolve({status: '200'}));
 
-    let deleted = await store.dispatch(deleteEnrollmentAction());
+    let deleted = await store.dispatch(deleteNewEnrollmentsAction());
     expect(deleted).toBeTruthy();
   });
 
@@ -160,7 +163,7 @@ describe('User enrollment unit tests', () => {
       }),
     );
 
-    let deleted = await store.dispatch(deleteEnrollmentAction());
+    let deleted = await store.dispatch(deleteNewEnrollmentsAction());
     expect(deleted).toBeFalsy();
   });
 
@@ -175,7 +178,7 @@ describe('User enrollment unit tests', () => {
     );
 
     store
-      .dispatch(deleteEnrollmentAction())
+      .dispatch(deleteNewEnrollmentsAction())
       .catch((error) => expect(error).toMatch('Error deleting prints: 400'));
   });
 
@@ -185,7 +188,7 @@ describe('User enrollment unit tests', () => {
       .fn()
       .mockImplementationOnce(() => Promise.resolve({status: '200'}));
 
-    let deleted = await store.dispatch(deleteOldEnrollmentAction());
+    let deleted = await store.dispatch(updateEnrollmentAction());
     expect(deleted).toBeTruthy();
   });
 
@@ -204,7 +207,7 @@ describe('User enrollment unit tests', () => {
       }),
     );
 
-    let deleted = await store.dispatch(deleteOldEnrollmentAction());
+    let deleted = await store.dispatch(updateEnrollmentAction());
     expect(deleted).toBeFalsy();
   });
 
@@ -219,26 +222,17 @@ describe('User enrollment unit tests', () => {
     );
 
     store
-      .dispatch(deleteOldEnrollmentAction())
+      .dispatch(updateEnrollmentAction())
       .catch((error) => expect(error).toMatch('Error deleting prints: 400'));
   });
 
-  it('deleteOldEnrollmentAction - pid is empty ', async () => {
+  it('saveNewEnrollmentAction - pid is empty ', async () => {
     const store = mockStore({
       userInfo: {},
       newEnrollment: {newRgbPersonId: 234},
     });
 
-    global.fetch = jest.fn().mockImplementationOnce(() =>
-      Promise.resolve({
-        status: '400',
-        text: function () {
-          return '{}';
-        },
-      }),
-    );
-
-    let deleted = await store.dispatch(deleteOldEnrollmentAction());
-    expect(deleted).toBeFalsy();
+    let deleted = await store.dispatch(updateEnrollmentAction());
+    expect(deleted).toBeTruthy();
   });
 });

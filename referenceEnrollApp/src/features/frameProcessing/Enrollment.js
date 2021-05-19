@@ -1,10 +1,11 @@
-import React, {useEffect, useState, useRef} from 'react';
-import {useDispatch} from 'react-redux';
+import React, {useState, useRef} from 'react';
+import {useDispatch, useSelector} from 'react-redux';
 import {
   verifyFaceAction,
   processFaceAction,
   trainAction,
-  getFilteredFaceAction,
+  getFilteredFaceForIrAction,
+  getFilteredFaceforRgbAction,
 } from './processFrameAction';
 import {View, StyleSheet} from 'react-native';
 import EnrollProgress from '../progress/EnrollProgress';
@@ -12,54 +13,95 @@ import {CONFIG} from '../../env/env.json';
 import {CancellationToken, sleep} from '../../shared/helper';
 import CustomButton from '../../styles/CustomButton';
 import {ENROLL_RESULT} from '../../shared/constants';
-import {deleteEnrollmentAction} from '../userEnrollment/newEnrollmentAction';
-import {mutex} from '../../shared/constants';
+import {
+  deleteNewEnrollmentsAction,
+  updateEnrollmentAction,
+} from '../userEnrollment/newEnrollmentAction';
+import {mutexForRgb, mutexForIr} from '../../shared/constants';
 
 function Enrollment(props) {
   // State
   const [enrollStarted, setEnrollStarted] = useState(false);
   const [rgbProgress, setRgbProgress] = useState(0);
-  const [cancelToken, setCancelToken] = useState(null);
+  const [irProgress, setIrProgress] = useState(0);
+  // This progress can be used for other completed tasks like initial startup
+  const [progress, setProgress] = useState(0);
+  const [cancelToken, setCancelToken] = useState(new CancellationToken());
+  const rgbProgressRef = useRef(rgbProgress);
+  const irProgressRef = useRef(irProgress);
+  const progressRef = useRef(progress);
 
-  const progressRef = useRef(rgbProgress);
+  //get personIds:
+  var newPersonIdRgb = useSelector(
+    (state) => state.newEnrollment.newRgbPersonId,
+  );
+  var newPersonIdIr = useSelector((state) => state.newEnrollment.newIrPersonId);
 
   // Keeps the progress state/ref value equal
-  function updateProgress(newProgress) {
-    progressRef.current = newProgress;
+  function updateRgbProgress(newProgress) {
+    rgbProgressRef.current = newProgress;
     setRgbProgress(newProgress);
+  }
+
+  function updateIrProgress(newProgress) {
+    irProgressRef.current = newProgress;
+    setIrProgress(newProgress);
+  }
+
+  function updateGeneralProgress(newProgress) {
+    progressRef.current = newProgress;
+    setProgress(newProgress);
+  }
+
+  function getTotalProgressVal() {
+    // Enrollment updates progress on startup, so total must be 1 greater.
+    let total = 1;
+
+    if (CONFIG.ENROLL_SETTINGS.RGB_FRAMES_TOENROLL > 0) {
+      // add 1 for verify check
+      total += CONFIG.ENROLL_SETTINGS.RGB_FRAMES_TOENROLL + 1;
+    }
+    if (CONFIG.ENROLL_SETTINGS.IR_FRAMES_TOENROLL > 0) {
+      // add 1 for verify check
+      total += CONFIG.ENROLL_SETTINGS.IR_FRAMES_TOENROLL + 1;
+    }
+
+    return total;
   }
 
   // Dispatch
   const dispatch = useDispatch();
 
   // Detection
-  const dispatchForDetection = async (frame) =>
-    await dispatch(getFilteredFaceAction(frame));
+  const dispatchForRgbDetection = async (frame) =>
+    await dispatch(getFilteredFaceforRgbAction(frame));
+
+  // Detection
+  const dispatchForIrDetection = async (frame) =>
+    await dispatch(getFilteredFaceForIrAction(frame));
 
   // Enrollment
-  const dispatchForEnrollment = async (face, frame) =>
-    await dispatch(processFaceAction(face, frame));
+  const dispatchForEnrollment = async (face, frame, personGroup, personId) =>
+    await dispatch(processFaceAction(face, frame, personGroup, personId));
 
   // Verify
-  const dispatchForVerify = async (face, frame) =>
-    await dispatch(verifyFaceAction(face, frame));
+  const dispatchForVerify = async (face, personGroup, personId) =>
+    await dispatch(verifyFaceAction(face, personGroup, personId));
 
   // Delete
-  const dispatchDelete = async () => await dispatch(deleteEnrollmentAction());
+  const dispatchDelete = async () =>
+    await dispatch(deleteNewEnrollmentsAction());
 
   // Train
   const dispatchTrain = async () => await dispatch(trainAction());
 
-  useEffect(() => {
-    /*
-        Create cancellation token when component mounts
-        token will cancel during cancel click or timeout
-    */
-    setCancelToken(new CancellationToken());
-  }, []);
+  // Update data
+  const dispatchUpdateInfo = async () =>
+    await dispatch(updateEnrollmentAction());
 
   // Runs entire enrollment flow
   const runEnrollment = async () => {
+    console.log('Enrollment begins...');
     const timeoutInMs = CONFIG.ENROLL_SETTINGS.TIMEOUT_SECONDS * 1000;
 
     let timer = setTimeout(() => {
@@ -67,39 +109,51 @@ function Enrollment(props) {
       cancelToken.timeoutCancel();
     }, timeoutInMs);
 
-    // Add one to start up progress bar
-    const rgbFramesToEnroll = CONFIG.ENROLL_SETTINGS.RGB_FRAMES_TOENROLL + 1;
-    let tasks = [];
+    const rgbFramesToEnroll = CONFIG.ENROLL_SETTINGS.RGB_FRAMES_TOENROLL;
+    const irFramesToEnroll = CONFIG.ENROLL_SETTINGS.IR_FRAMES_TOENROLL;
+    let tasksForRgb = [];
+    let tasksForIr = [];
+    let rgbEnrollmentSucceeded = false;
+    let irEnrollmentSucceeded = false;
     let enrollmentSucceeded = false;
-    let completedTaskCount = 0;
+    let completedTaskCountRgb = 0;
+    let completedTaskCountIr = 0;
 
     // Give time for camera to adjust
     await sleep(900);
 
     // Show initial progress
-    updateProgress(progressRef.current + 1);
+    updateGeneralProgress(progressRef.current + 1);
 
-    const processFrame = async (frame) => {
+    const processRgbFrame = async (frame) => {
       // Send frame for detection
-      let face = await dispatchForDetection(frame);
+      let face = await dispatchForRgbDetection(frame);
       if (face.faceId) {
         // Lock, only enroll/verify 1 face at a time
-        let release = await mutex.acquire();
-
+        let release = await mutexForRgb.acquire();
         if (cancelToken.isCancellationRequested == false) {
-          if (progressRef.current < rgbFramesToEnroll) {
+          if (rgbProgressRef.current < rgbFramesToEnroll) {
             // Send frame for enrollment
-            let enrolled = await dispatchForEnrollment(face, frame);
+            let enrolled = await dispatchForEnrollment(
+              face,
+              frame,
+              CONFIG.PERSONGROUP_RGB,
+              newPersonIdRgb,
+            );
 
             if (enrolled) {
-              updateProgress(progressRef.current + 1);
+              updateRgbProgress(rgbProgressRef.current + 1);
             }
-          } else if (progressRef.current == rgbFramesToEnroll) {
+          } else if (rgbProgressRef.current == rgbFramesToEnroll) {
             // Send frame for verify
-            let verified = await dispatchForVerify(face, frame);
+            let verified = await dispatchForVerify(
+              face,
+              CONFIG.PERSONGROUP_RGB,
+              newPersonIdRgb,
+            );
             if (verified) {
-              updateProgress(progressRef.current + 1);
-              enrollmentSucceeded = true;
+              updateRgbProgress(rgbProgressRef.current + 1);
+              rgbEnrollmentSucceeded = true;
             }
           }
         }
@@ -108,22 +162,102 @@ function Enrollment(props) {
         release();
       }
 
-      completedTaskCount++;
+      completedTaskCountRgb++;
     };
 
-    // Begin enrollment
-    while (
-      !enrollmentSucceeded &&
-      cancelToken.isCancellationRequested == false
-    ) {
-      let frame = await props.takePicture();
-      if (frame) {
-        // Prevent too many process requests
-        if (completedTaskCount > tasks.length - 5) {
-          tasks.push(processFrame(frame));
+    const processIrFrame = async (frame) => {
+      // Send frame for detection
+      let face = await dispatchForIrDetection(frame);
+      if (face.faceId) {
+        // Lock, only enroll/verify 1 face at a time
+        let releaseIr = await mutexForIr.acquire();
+
+        if (cancelToken.isCancellationRequested == false) {
+          if (irProgressRef.current < irFramesToEnroll) {
+            // Send frame for enrollment
+            let enrolled = await dispatchForEnrollment(
+              face,
+              frame,
+              CONFIG.PERSONGROUP_IR,
+              newPersonIdIr,
+            );
+            if (enrolled) {
+              updateIrProgress(irProgressRef.current + 1);
+            }
+          } else if (irProgressRef.current == irFramesToEnroll) {
+            // Send frame for verify
+            let verified = await dispatchForVerify(
+              face,
+              CONFIG.PERSONGROUP_IR,
+              newPersonIdIr,
+            );
+            if (verified) {
+              updateIrProgress(irProgressRef.current + 1);
+              irEnrollmentSucceeded = true;
+            }
+          }
+        }
+
+        // Unlock
+        releaseIr();
+      }
+
+      completedTaskCountIr++;
+    };
+
+    const RgbEnrollment = async () => {
+      while (
+        rgbEnrollmentSucceeded == false &&
+        cancelToken.isCancellationRequested == false
+      ) {
+        let frame = await props.takeColorPicture();
+        await sleep(10);
+        if (frame) {
+          // Prevent too many process requests
+          if (completedTaskCountRgb > tasksForRgb.length - 5) {
+            tasksForRgb.push(processRgbFrame(frame));
+          }
+        } else {
+          console.log('Failed to take picture');
         }
       }
+
+      return rgbEnrollmentSucceeded;
+    };
+
+    const IrEnrollment = async () => {
+      while (
+        irEnrollmentSucceeded == false &&
+        cancelToken.isCancellationRequested == false
+      ) {
+        let frame = await props.takeIrPicture();
+        await sleep(10);
+        if (frame) {
+          // Prevent too many process requests
+          if (completedTaskCountIr > tasksForIr.length - 5) {
+            tasksForIr.push(processIrFrame(frame));
+          }
+        } else {
+          console.log('Failed to take picture');
+        }
+      }
+
+      return irEnrollmentSucceeded;
+    };
+
+    var rgbPromise = Promise.resolve(true);
+    var irPromise = Promise.resolve(true);
+
+    if (rgbFramesToEnroll > 0) {
+      rgbPromise = RgbEnrollment();
     }
+    if (irFramesToEnroll > 0) {
+      irPromise = IrEnrollment();
+    }
+
+    // Runs Rgb and Ir enrollment concurrently
+    var succeeded = await Promise.all([rgbPromise, irPromise]);
+    enrollmentSucceeded = succeeded[0] && succeeded[1];
 
     console.log('Clearing timeout');
     clearTimeout(timer);
@@ -153,6 +287,10 @@ function Enrollment(props) {
 
     console.log('train result:', trainResult);
 
+    // update or save enrollment info
+    var saved = await dispatchUpdateInfo();
+    console.log('Enrollment data saved:', saved);
+
     if (trainResult) {
       return ENROLL_RESULT.success;
     } else return ENROLL_RESULT.successNoTrain;
@@ -178,12 +316,18 @@ function Enrollment(props) {
   function cancelEnrollment() {
     console.log('Cancel clicked');
     cancelToken.cancel();
+    if (enrollStarted == false) {
+      props.onCompleted(ENROLL_RESULT.cancel);
+    }
   }
 
   return (
     <View style={styles.root}>
       <View style={styles.overlay}>
-        <EnrollProgress rgbProgressCount={rgbProgress} />
+        <EnrollProgress
+          progressCount={rgbProgress + irProgress + progress}
+          total={getTotalProgressVal()}
+        />
       </View>
       <CustomButton
         onPress={cancelEnrollment}

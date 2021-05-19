@@ -96,7 +96,7 @@ function Consent({navigation}) {
 
                   <Subheading1 style={styles.greyText}>
                     Touchless access uses face recognition to let you
-                    conveniently unlock building doors using a{' '}
+                    conveniently unlock building doors using a{'\n'}
                     <Subheading2>face template</Subheading2>.
                   </Subheading1>
                 </View>

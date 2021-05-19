@@ -2,34 +2,63 @@ import {getLargestFace, getTargetFace, sleep} from '../../shared/helper';
 import {enrollFeedbackAction} from '../feedback/enrollFeedbackAction';
 import {CONFIG} from '../../env/env.json';
 import * as constants from '../../shared/constants';
-import {filterFaceAction} from '../filtering/qualityFilteringAction';
+import {
+  filterFaceActionRgb,
+  filterFaceActionIr,
+} from '../filtering/qualityFilteringAction';
 import {FEEDBACK} from '../filtering/filterFeedback';
 
 // Detects and Filters faces
-export const getFilteredFaceAction = (frameData) => {
+export const getFilteredFaceforRgbAction = (frameData) => {
   return async (dispatch) => {
-    let face = await dispatch(detectFaceAction(frameData));
-
+    let face = await dispatch(
+      detectFaceAction(
+        frameData,
+        constants.REC_MODEL_RGB,
+        constants.FACE_ATTRIBUTES_RGB,
+      ),
+    );
     if (face.faceId) {
-      let passedFilters = dispatch(filterFaceAction(face));
+      let passedFilters = dispatch(filterFaceActionRgb(face));
       return passedFilters ? face : {};
     }
+    return {};
+  };
+};
 
+// Detects and Filters faces
+export const getFilteredFaceForIrAction = (frameData) => {
+  return async (dispatch) => {
+    let face = await dispatch(
+      detectFaceAction(
+        frameData,
+        constants.REC_MODEL_IR,
+        constants.FACE_ATTRIBUTES_IR,
+      ),
+    );
+    if (face.faceId) {
+      let passedFilters = dispatch(filterFaceActionIr(face));
+      return passedFilters ? face : {};
+    }
     return {};
   };
 };
 
 // Detects a face
-export const detectFaceAction = (frameData) => {
+export const detectFaceAction = (
+  frameData,
+  recognitionModel,
+  faceAttributes,
+) => {
   return async (dispatch) => {
     // Detect face
     let detectEndpoint =
       constants.FACEAPI_ENDPOINT +
       constants.DETECT_ENDPOINT +
       '?' +
-      constants.FACE_ATTRIBUTES +
+      faceAttributes +
       '&' +
-      constants.REC_MODEL;
+      recognitionModel;
 
     let response = await fetch(detectEndpoint, {
       method: 'POST',
@@ -52,14 +81,14 @@ export const detectFaceAction = (frameData) => {
         // dispatch no face detected message
         dispatch(enrollFeedbackAction(FEEDBACK.noFaceDetected));
         // return empty face object
-        console.log('No face detected');
         return {};
       } else {
-        console.log('Face found');
         return faceToEnroll;
       }
     } else {
-      console.log('Detect failure: ', response);
+      let result = await response.text();
+      let detectResult = JSON.parse(result);
+      console.log('Detect failure: ', detectResult);
       // return empty face object
       return {};
     }
@@ -67,19 +96,12 @@ export const detectFaceAction = (frameData) => {
 };
 
 // Enrolls a face
-export const processFaceAction = (face, frameData) => {
+export const processFaceAction = (face, frameData, personGroup, personId) => {
   return async (dispatch, getState) => {
-    // If re-enrollment, use the new personId
-    let newPersonId = getState().newEnrollment.newRgbPersonId;
-    let personId =
-      newPersonId && newPersonId != ''
-        ? newPersonId
-        : getState().userInfo.rgbPersonId;
-
     // Add face
     let addFaceEndpoint =
       constants.FACEAPI_ENDPOINT +
-      constants.ADD_FACE_ENDPOINT(CONFIG.PERSONGROUP_RGB, personId) +
+      constants.ADD_FACE_ENDPOINT(personGroup, personId) +
       '?targetFace=' +
       getTargetFace(face);
 
@@ -94,7 +116,8 @@ export const processFaceAction = (face, frameData) => {
       body: frameData,
     });
 
-    console.log('AddFace status', response.status);
+    console.log('AddFace status:', personGroup, response.status);
+
     if (response.status == '200') {
       return true;
     } else {
@@ -107,16 +130,9 @@ export const processFaceAction = (face, frameData) => {
 };
 
 // Verfies a face
-export const verifyFaceAction = (face) => {
+export const verifyFaceAction = (face, personGroup, personId) => {
   return async (dispatch, getState) => {
     dispatch(enrollFeedbackAction(FEEDBACK.verifying));
-
-    // If re-enrollment, use the new personId
-    let newPersonId = getState().newEnrollment.newRgbPersonId;
-    let personId =
-      newPersonId && newPersonId != ''
-        ? newPersonId
-        : getState().userInfo.rgbPersonId;
 
     // Verify
     let verifyEndpoint = constants.FACEAPI_ENDPOINT + constants.VERIFY_ENDPOINT;
@@ -124,7 +140,7 @@ export const verifyFaceAction = (face) => {
     let requestBody = {
       faceId: face.faceId,
       personId: personId,
-      largePersonGroupId: CONFIG.PERSONGROUP_RGB,
+      largePersonGroupId: personGroup,
     };
 
     let response = await fetch(verifyEndpoint, {
@@ -160,71 +176,83 @@ export const verifyFaceAction = (face) => {
 // Trains person group
 export const trainAction = () => {
   return async (dispatch, getState) => {
-    let maxAttempts = CONFIG.ENROLL_SETTINGS.TRAIN_ATTEMPTS;
-    const maxStatusChecks = 50;
-
-    for (let trainAttempts = 0; trainAttempts < maxAttempts; trainAttempts++) {
-      console.log('train attempt ', trainAttempts);
-      // Train
-      let tainEndpoint =
-        constants.FACEAPI_ENDPOINT +
-        constants.TRAIN_ENDPOINT(CONFIG.PERSONGROUP_RGB);
-
-      let response = await fetch(tainEndpoint, {
-        method: 'POST',
-        headers: {
-          'User-Agent': constants.USER_AGENT,
-          'Content-Type': 'application/json',
-          Accept: 'application/json',
-          'Ocp-Apim-Subscription-Key': constants.FACEAPI_KEY,
-        },
-      });
-
-      // If train was accepted, check status
-      if (response.status == '202') {
-        let trainFailed = false;
-        for (
-          let statusAttempts = 0;
-          statusAttempts < maxStatusChecks && trainFailed == false;
-          statusAttempts++
-        ) {
-          console.log('train status attempt ', statusAttempts);
-
-          // Get training status
-          let tainStatusEndpoint =
-            constants.FACEAPI_ENDPOINT +
-            constants.TRAIN_STATUS_ENDPOINT(CONFIG.PERSONGROUP_RGB);
-
-          let response = await fetch(tainStatusEndpoint, {
-            method: 'GET',
-            headers: {
-              'User-Agent': constants.USER_AGENT,
-              'Content-Type': 'application/json',
-              Accept: 'application/json',
-              'Ocp-Apim-Subscription-Key': constants.FACEAPI_KEY,
-            },
-          });
-
-          if (response.status == '200') {
-            let result = await response.text();
-            let trainingResult = JSON.parse(result);
-            if (trainingResult.status == 'succeeded') {
-              // Training finished and succeeded
-              return true;
-            }
-
-            trainFailed = trainingResult.status == 'failed';
-          }
-          // Wait between status checks
-          await sleep(100);
-        }
-      }
-
-      // Wait between train attempts
-      await sleep(100);
+    let success = true;
+    if (CONFIG.ENROLL_SETTINGS.RGB_FRAMES_TOENROLL > 0) {
+      success &= await train(CONFIG.PERSONGROUP_RGB);
     }
 
-    // Training has failed
-    return false;
+    if (CONFIG.ENROLL_SETTINGS.IR_FRAMES_TOENROLL > 0) {
+      success &= await train(CONFIG.PERSONGROUP_IR);
+    }
+
+    return success;
   };
 };
+
+async function train(personGroup) {
+  let maxAttempts = CONFIG.ENROLL_SETTINGS.TRAIN_ATTEMPTS;
+  const maxStatusChecks = 50;
+
+  for (let trainAttempts = 0; trainAttempts < maxAttempts; trainAttempts++) {
+    console.log('train attempt ', trainAttempts);
+    // Train
+    let tainEndpoint =
+      constants.FACEAPI_ENDPOINT + constants.TRAIN_ENDPOINT(personGroup);
+
+    let response = await fetch(tainEndpoint, {
+      method: 'POST',
+      headers: {
+        'User-Agent': constants.USER_AGENT,
+        'Content-Type': 'application/json',
+        Accept: 'application/json',
+        'Ocp-Apim-Subscription-Key': constants.FACEAPI_KEY,
+      },
+    });
+
+    // If train was accepted, check status
+    if (response.status == '202') {
+      let trainFailed = false;
+      for (
+        let statusAttempts = 0;
+        statusAttempts < maxStatusChecks && trainFailed == false;
+        statusAttempts++
+      ) {
+        console.log('train status attempt ', statusAttempts);
+
+        // Get training status
+        let tainStatusEndpoint =
+          constants.FACEAPI_ENDPOINT +
+          constants.TRAIN_STATUS_ENDPOINT(CONFIG.PERSONGROUP_RGB);
+
+        let response = await fetch(tainStatusEndpoint, {
+          method: 'GET',
+          headers: {
+            'User-Agent': constants.USER_AGENT,
+            'Content-Type': 'application/json',
+            Accept: 'application/json',
+            'Ocp-Apim-Subscription-Key': constants.FACEAPI_KEY,
+          },
+        });
+
+        if (response.status == '200') {
+          let result = await response.text();
+          let trainingResult = JSON.parse(result);
+          if (trainingResult.status == 'succeeded') {
+            // Training finished and succeeded
+            return true;
+          }
+
+          trainFailed = trainingResult.status == 'failed';
+        }
+        // Wait between status checks
+        await sleep(100);
+      }
+    }
+
+    // Wait between train attempts
+    await sleep(100);
+  }
+
+  // Training has failed
+  return false;
+}

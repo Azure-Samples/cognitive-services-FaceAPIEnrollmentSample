@@ -12,55 +12,55 @@ describe('Quality filters', () => {
 
   // Minimum Face size
   it('Minimum Face size - pass ', () => {
-    face.faceRectangle.height = 60;
-    face.faceRectangle.width = 60;
-    expect(filter.minimumFaceSize(face)).toBe(FEEDBACK.none);
+    face.faceRectangle.height = 100;
+    face.faceRectangle.width = 100;
+    expect(filter.minimumFaceSizeRgb(face)).toBe(FEEDBACK.none);
   });
 
   it('Minimum Face size - fail', () => {
     face.faceRectangle.height = 20;
     face.faceRectangle.width = 20;
 
-    expect(filter.minimumFaceSize(face)).toBe(FEEDBACK.smallFace);
+    expect(filter.minimumFaceSizeRgb(face)).toBe(FEEDBACK.smallFace);
   });
 
   // Yaw
   it('Yaw - pass', () => {
-    face.faceAttributes.headPose.yaw = 25;
+    face.faceAttributes.headPose.yaw = 35;
 
-    expect(filter.yaw(face)).toBe(FEEDBACK.none);
+    expect(filter.yawRgb(face)).toBe(FEEDBACK.none);
   });
 
   it('Yaw - fail', () => {
-    face.faceAttributes.headPose.yaw = -25.1;
+    face.faceAttributes.headPose.yaw = -35.1;
 
-    expect(filter.yaw(face)).toBe(FEEDBACK.yawOrRoll);
+    expect(filter.yawRgb(face)).toBe(FEEDBACK.yawOrRoll);
   });
 
   // Pitch
   it('Pitch - pass', () => {
-    face.faceAttributes.headPose.pitch = 25;
+    face.faceAttributes.headPose.pitch = 35;
 
-    expect(filter.pitch(face)).toBe(FEEDBACK.none);
+    expect(filter.pitchRgb(face)).toBe(FEEDBACK.none);
   });
 
   it('Pitch - fail', () => {
-    face.faceAttributes.headPose.pitch = -25.1;
+    face.faceAttributes.headPose.pitch = -35.1;
 
-    expect(filter.pitch(face)).toBe(FEEDBACK.pitch);
+    expect(filter.pitchRgb(face)).toBe(FEEDBACK.pitch);
   });
 
   // Roll
   it('Roll - pass', () => {
     face.faceAttributes.headPose.roll = 20;
 
-    expect(filter.roll(face)).toBe(FEEDBACK.none);
+    expect(filter.rollRgb(face)).toBe(FEEDBACK.none);
   });
 
   it('Roll - fail', () => {
     face.faceAttributes.headPose.roll = -20.1;
 
-    expect(filter.roll(face)).toBe(FEEDBACK.yawOrRoll);
+    expect(filter.rollRgb(face)).toBe(FEEDBACK.yawOrRoll);
   });
 
   // Occlusion forehead
@@ -106,52 +106,52 @@ describe('Quality filters', () => {
   it('Under Exposure - pass', () => {
     face.faceAttributes.exposure.value = '0.25';
 
-    expect(filter.exposure(face)).toBe(FEEDBACK.none);
+    expect(filter.exposureRgb(face)).toBe(FEEDBACK.none);
   });
 
   it('Under Exposure - pass', () => {
     face.faceAttributes.exposure.value = '0.24';
 
-    expect(filter.exposure(face)).toBe(FEEDBACK.noiseOrExposure);
+    expect(filter.exposureRgb(face)).toBe(FEEDBACK.noiseOrExposure);
   });
 
   // Over Exposure
   it('Over Exposure - pass', () => {
     face.faceAttributes.exposure.value = '0.75';
 
-    expect(filter.exposure(face)).toBe(FEEDBACK.none);
+    expect(filter.exposureRgb(face)).toBe(FEEDBACK.none);
   });
 
   it('Over Exposure - pass', () => {
     face.faceAttributes.exposure.value = '0.76';
 
-    expect(filter.exposure(face)).toBe(FEEDBACK.noiseOrExposure);
+    expect(filter.exposureRgb(face)).toBe(FEEDBACK.noiseOrExposure);
   });
 
   // Noise
   it('Noise - pass', () => {
-    face.faceAttributes.noise.value = '0.3';
+    face.faceAttributes.noise.value = '0.4';
 
-    expect(filter.noise(face)).toBe(FEEDBACK.none);
+    expect(filter.noiseRgb(face)).toBe(FEEDBACK.none);
   });
 
   it('Noise - fail', () => {
-    face.faceAttributes.noise.value = '0.31';
+    face.faceAttributes.noise.value = '0.41';
 
-    expect(filter.noise(face)).toBe(FEEDBACK.noiseOrExposure);
+    expect(filter.noiseRgb(face)).toBe(FEEDBACK.noiseOrExposure);
   });
 
   // Blur
   it('Blur - pass', () => {
-    face.faceAttributes.blur.value = '0.3';
+    face.faceAttributes.blur.value = '0.4';
 
-    expect(filter.blur(face)).toBe(FEEDBACK.none);
+    expect(filter.blurRgb(face)).toBe(FEEDBACK.none);
   });
 
   it('Blur - fail', () => {
-    face.faceAttributes.blur.value = '0.31';
+    face.faceAttributes.blur.value = '0.41';
 
-    expect(filter.blur(face)).toBe(FEEDBACK.blur);
+    expect(filter.blurRgb(face)).toBe(FEEDBACK.blur);
   });
 
   // Sunglasses

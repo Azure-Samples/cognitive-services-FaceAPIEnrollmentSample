@@ -6,5 +6,9 @@
     <ProjectReference Include="$(ProjectDir)..\..\node_modules\react-native-camera\windows\ReactNativeCameraCPP\ReactNativeCameraCPP.vcxproj">
       <Project>{7432c343-cc07-4bc7-9bd0-8c467be0f018}</Project>
     </ProjectReference>
+    <!-- Projects from react-native-windows-uwp-camera -->
+    <ProjectReference Include="$(ProjectDir)..\..\node_modules\react-native-windows-uwp-camera\windows\ReactNativeWindowsUwpCamera\ReactNativeWindowsUwpCamera.csproj">
+      <Project>{D706BAB5-0DFC-4A38-8AA5-597DC23AF5E6}</Project>
+    </ProjectReference>
   </ItemGroup>
 </Project>

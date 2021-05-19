@@ -1,7 +1,7 @@
 const initialState = {
   username: '',
-  rgbPersonId: '',
-  irPersonId: '',
+  existingRgbPersonId: '',
+  existingIrPersonId: '',
 };
 
 const saveUserInfoReducer = (state = initialState, action) => {
@@ -10,8 +10,8 @@ const saveUserInfoReducer = (state = initialState, action) => {
       return {
         ...state,
         username: action.payload.username,
-        rgbPersonId: action.payload.personIdRgb,
-        irPersonId: action.payload.personIdIr,
+        existingRgbPersonId: action.payload.personIdRgb,
+        existingIrPersonId: action.payload.personIdIr,
       };
     default:
       return state;

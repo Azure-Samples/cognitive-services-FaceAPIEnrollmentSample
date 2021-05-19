@@ -47,6 +47,20 @@ async function validatePersonGroup(personGroupId) {
   return personGroupExists;
 }
 
+async function validatePersonGroups() {
+  let validated = true;
+
+  if (CONFIG.ENROLL_SETTINGS.RGB_FRAMES_TOENROLL > 0) {
+    validated &= await validatePersonGroup(CONFIG.PERSONGROUP_RGB);
+  }
+
+  if (CONFIG.ENROLL_SETTINGS.IR_FRAMES_TOENROLL > 0) {
+    validated &= await validatePersonGroup(CONFIG.PERSONGROUP_IR);
+  }
+
+  return validated;
+}
+
 async function checkPersonGroupExists(personGroupId) {
   let getPersonGroupEndpoint =
     constants.FACEAPI_ENDPOINT + constants.PERSONGROUP_ENDPOINT(personGroupId);
@@ -146,6 +160,7 @@ class CancellationToken {
 export {
   getLargestFace,
   deletePersonGroup,
+  validatePersonGroups,
   validatePersonGroup,
   getTargetFace,
   sleep,
