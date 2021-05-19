@@ -9,7 +9,6 @@ import {Platform} from 'react-native';
 
 export const newEnrollmentAction = () => {
   return async (dispatch) => {
-    console.log('Creating new personIds');
     let createdPersonIdRgb = '';
     let createdPersonIdIr = '';
     let result = true;
@@ -42,15 +41,12 @@ export const newEnrollmentAction = () => {
 
 export const updateEnrollmentAction = () => {
   return async (dispatch, getState) => {
-    console.log('HERE');
     let existingPersonIdRgb = getState().userInfo.existingRgbPersonId;
     let existingPersonIdIr = getState().userInfo.existingIrPersonId;
     let username = getState().userInfo.username;
-    console.log('IR', existingPersonIdIr);
 
     let newPersonIdRgb = getState().newEnrollment.newRgbPersonId;
     let newPersonIdIr = getState().newEnrollment.newIrPersonId;
-    console.log('HEREE', newPersonIdIr, newPersonIdRgb);
     let success = true;
 
     if (existingPersonIdRgb && existingPersonIdRgb != '') {
@@ -71,7 +67,6 @@ export const updateEnrollmentAction = () => {
     }
 
     if (existingPersonIdIr && existingPersonIdIr != '') {
-      console.log('updating IR');
       success &= await updateEnrollment(
         username,
         CONFIG.PERSONGROUP_IR,
@@ -92,7 +87,6 @@ export const updateEnrollmentAction = () => {
 
 export const deleteNewEnrollmentsAction = () => {
   return async (dispatch, getState) => {
-    console.log('Deleting new enrollment');
     let personIdRgb = getState().newEnrollment.newRgbPersonId;
     let personIdIr = getState().newEnrollment.newIrPersonId;
     console.log('deleting', personIdIr, personIdRgb);
@@ -112,7 +106,6 @@ export const deleteNewEnrollmentsAction = () => {
       );
     }
 
-    console.log('RES', deletedSuccessfully);
     return deletedSuccessfully;
   };
 };
@@ -195,7 +188,7 @@ const updateEnrollment = async (
 
 // saves enrollment info for first enrollment
 const saveEnrollment = async (username, personGroup, personId) => {
-  console.log('saving...');
+  console.log('saving enrollment data...');
   if (Platform.OS == 'windows') {
     if (constants.EnrollDict[username] == null) {
       constants.EnrollDict[username] = {};

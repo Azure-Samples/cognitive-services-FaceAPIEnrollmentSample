@@ -2,7 +2,7 @@ import React from 'react';
 
 import {View, StyleSheet} from 'react-native';
 import {useSelector} from 'react-redux';
-import {Subheading2} from '../../styles/fontStyles';
+import {Body1} from '../../styles/fontStyles';
 
 /*
 Component reports quality filtering 
@@ -15,7 +15,7 @@ function EnrollFeedback() {
     <View>
       {feedback != '' ? (
         <View style={styles.root}>
-          <Subheading2>{feedback}</Subheading2>
+          <Body1>{feedback}</Body1>
         </View>
       ) : (
         <View />

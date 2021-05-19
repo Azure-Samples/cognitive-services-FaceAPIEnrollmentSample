@@ -1,7 +1,7 @@
 {
     "CONFIG": {
         "PERSONGROUP_RGB": "ref-app-group",
-        "PERSONGROUP_IR": "",
+        "PERSONGROUP_IR": "ref-app-group-ir",
         "RECOGNITION_MODEL_RGB": "recognition_03",
         "RECOGNITION_MODEL_IR": "ir_recognition_02",
         "ENROLL_SETTINGS": {

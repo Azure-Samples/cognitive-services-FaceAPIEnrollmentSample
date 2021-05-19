@@ -1,11 +1,5 @@
 import React, {useState} from 'react';
-import {
-  View,
-  StyleSheet,
-  NativeModules,
-  UIManager,
-  findNodeHandle,
-} from 'react-native';
+import {View, StyleSheet} from 'react-native';
 import Enrollment from './Enrollment';
 import {WindowsCamera} from 'react-native-windows-uwp-camera';
 
@@ -13,7 +7,7 @@ export default function Camera(props) {
   const [startEnroll, setStartEnroll] = useState(false);
   let cameraRef = React.useRef(null);
 
-  console.log('WINDOWS');
+  console.log('Using windows camera');
 
   function onInitialized() {
     console.log('camera ready');

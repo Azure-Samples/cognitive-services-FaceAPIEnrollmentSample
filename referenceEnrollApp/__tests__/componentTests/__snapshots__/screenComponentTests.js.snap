@@ -126,14 +126,12 @@ exports[`Welcome screen renders correctly 1`] = `
               style={
                 Array [
                   Object {
-                    "fontFamily": "Arial",
+                    "fontFamily": "Roboto-Medium",
                     "fontSize": 24,
                     "fontStyle": "normal",
-                    "fontWeight": "500",
                     "lineHeight": 28,
                   },
                   undefined,
-                  "",
                 ]
               }
             >
@@ -144,16 +142,14 @@ exports[`Welcome screen renders correctly 1`] = `
             style={
               Array [
                 Object {
-                  "fontFamily": "Arial",
+                  "fontFamily": "Roboto-Regular",
                   "fontSize": 16,
                   "fontStyle": "normal",
-                  "fontWeight": "normal",
                   "lineHeight": 22,
                 },
                 Object {
                   "color": "#77787B",
                 },
-                "",
               ]
             }
           >
@@ -217,14 +213,12 @@ exports[`Welcome screen renders correctly 1`] = `
                   style={
                     Array [
                       Object {
-                        "fontFamily": "Arial",
+                        "fontFamily": "Roboto-Regular",
                         "fontSize": 16,
                         "fontStyle": "normal",
-                        "fontWeight": "500",
-                        "lineHeight": 16,
+                        "lineHeight": 22,
                       },
                       undefined,
-                      "",
                     ]
                   }
                 >
@@ -232,7 +226,7 @@ exports[`Welcome screen renders correctly 1`] = `
                     style={
                       Array [
                         Object {
-                          "color": "white",
+                          "fontFamily": "Roboto-Medium",
                         },
                         undefined,
                       ]
@@ -294,14 +288,12 @@ exports[`Welcome screen renders correctly 1`] = `
                   style={
                     Array [
                       Object {
-                        "fontFamily": "Arial",
+                        "fontFamily": "Roboto-Regular",
                         "fontSize": 16,
                         "fontStyle": "normal",
-                        "fontWeight": "500",
-                        "lineHeight": 16,
+                        "lineHeight": 22,
                       },
                       undefined,
-                      "",
                     ]
                   }
                 >
@@ -309,7 +301,7 @@ exports[`Welcome screen renders correctly 1`] = `
                     style={
                       Array [
                         Object {
-                          "color": "#0078D4",
+                          "fontFamily": "Roboto-Medium",
                         },
                         undefined,
                       ]
@@ -348,16 +340,14 @@ exports[`Welcome screen renders correctly 1`] = `
             style={
               Array [
                 Object {
-                  "fontFamily": "Arial",
+                  "fontFamily": "Roboto-Regular",
                   "fontSize": 12,
                   "fontStyle": "normal",
-                  "fontWeight": "400",
                   "lineHeight": 16,
                 },
                 Object {
                   "color": "#77787B",
                 },
-                "",
               ]
             }
           >
@@ -372,16 +362,14 @@ exports[`Welcome screen renders correctly 1`] = `
             style={
               Array [
                 Object {
-                  "fontFamily": "Arial",
+                  "fontFamily": "Roboto-Regular",
                   "fontSize": 12,
                   "fontStyle": "normal",
-                  "fontWeight": "400",
                   "lineHeight": 16,
                 },
                 Object {
                   "color": "#77787B",
                 },
-                "",
               ]
             }
           >

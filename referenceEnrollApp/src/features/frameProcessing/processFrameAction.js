@@ -11,7 +11,6 @@ import {FEEDBACK} from '../filtering/filterFeedback';
 // Detects and Filters faces
 export const getFilteredFaceforRgbAction = (frameData) => {
   return async (dispatch) => {
-    console.log('detection rgb called');
     let face = await dispatch(
       detectFaceAction(
         frameData,
@@ -20,9 +19,7 @@ export const getFilteredFaceforRgbAction = (frameData) => {
       ),
     );
     if (face.faceId) {
-      console.log('Rgb face found');
       let passedFilters = dispatch(filterFaceActionRgb(face));
-      console.log('Passed RGB: ', passedFilters);
       return passedFilters ? face : {};
     }
     return {};
@@ -32,8 +29,6 @@ export const getFilteredFaceforRgbAction = (frameData) => {
 // Detects and Filters faces
 export const getFilteredFaceForIrAction = (frameData) => {
   return async (dispatch) => {
-    //return {};
-    console.log('detection for IR.');
     let face = await dispatch(
       detectFaceAction(
         frameData,
@@ -42,9 +37,7 @@ export const getFilteredFaceForIrAction = (frameData) => {
       ),
     );
     if (face.faceId) {
-      console.log('IR face found');
       let passedFilters = dispatch(filterFaceActionIr(face));
-      console.log('Passed IR: ', passedFilters);
       return passedFilters ? face : {};
     }
     return {};
@@ -123,11 +116,7 @@ export const processFaceAction = (face, frameData, personGroup, personId) => {
       body: frameData,
     });
 
-    console.log(
-      'AddFace status for persongroup: ',
-      personGroup,
-      response.status,
-    );
+    console.log('AddFace status:', personGroup, response.status);
 
     if (response.status == '200') {
       return true;
