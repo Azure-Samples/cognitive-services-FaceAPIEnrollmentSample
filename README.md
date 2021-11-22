@@ -17,9 +17,9 @@ When launched, the application shows users a detailed consent screen. If the use
 
 The sample enrollment app is written using JavaScript and the React Native framework. It can currently be deployed on Android and iOS devices; more deployment options are coming in the future.
 
-<img src="./media/beginning.GIF" alt="begin" width="300"/> 
+![begin](./media/beginning.GIF "Beginning")
 
-<img src="./media/enrolling.JPG" alt="enrolling" width="300"/> 
+![enrolling](./media/enrolling.JPG "Enrolling")
 
 ## Getting Started
 
@@ -101,8 +101,7 @@ Now that you have set up the sample enrollment app, you can tailor it to your ow
 
 For example, you may want to add situation-specific information on your consent page:
 
-<img src="./media/1_consent1.JPG" alt="consent" width="300"/>
-
+![consent](./media/1_consent1.JPG "consent") 
 
 The service provides image quality checks to help you make the choice of whether the image is of sufficient quality to enroll the customer or attempt face recognition. This app demonstrates how to access frames from the device's camera, select the highest-quality frames, and enroll the detected face into the Face API service. 
 
@@ -113,12 +112,11 @@ Many face recognition issues are caused by low-quality reference images. Some fa
 * Occlusion (partially hidden or obstructed faces) including accessories like hats or thick-rimmed glasses)
 * Blur (such as by rapid face movement when the photograph was taken). 
 
-<img src="./media/4_instruction.JPG" alt="instructions" width="300"/>
-
+![instruction](./media/4_instruction.JPG "instruction") 
 
 Notice the app also offers functionality for deleting the user's enrollment and the option to re-enroll.
 
-<img src="./media/deleteProfile.GIF" alt="manage" width="300"/>
+![manage](./media/deleteProfile.GIF "manage") 
 
 To extend the app's functionality to cover the full enrollment experience, read the [overview](https://docs.microsoft.com/en-us/azure/cognitive-services/face/enrollment-overview) for additional features to implement and best practices.
 
