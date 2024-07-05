@@ -51,9 +51,9 @@ The sample enrollment app is written using JavaScript and the React Native frame
 1. ```git clone https://github.com/Azure-Samples/cognitive-services-FaceAPIEnrollmentSample.git```
 1. ```cd cognitive-services-FaceAPIEnrollmentSample```
 1. ```cd referenceEnrollApp```
-1. ```npm install```
+1. ```npm ci```
 1. Either set up an Android Vitrual Device emulator on Android Studio, or plug in your Android device via USB. To check your device is recognized run: ```adb devices```
-1. Fill out all relevant values, such as your person group name, in the ```development.json``` file.
+1. Fill out all relevant values, such as your large person group ID, in the [src/env/development.json](./referenceEnrollApp/src/env/development.json) file.
 1. Set the FaceAPI key and endpoint as environment values. This is for local development purposes only. You can set environment variables when starting Metro bundler:  
 
     Windows example:  
@@ -62,7 +62,7 @@ The sample enrollment app is written using JavaScript and the React Native frame
 
     macOS example:  
 
-    ```export FACEAPI_ENDPOINT=<FaceAPI endpoint> && export FACEAPI_KEY= <FaceAPI key> &&  npm start``` 
+    ```export FACEAPI_ENDPOINT=<FaceAPI endpoint> && export FACEAPI_KEY= <FaceAPI key> && npm start``` 
 
 1. Run ```npx react-native run-android```. This will build and launch the app onto the emulator or device. 
 
@@ -85,12 +85,12 @@ The sample enrollment app is written using JavaScript and the React Native frame
 1. ```git clone https://github.com/Azure-Samples/cognitive-services-FaceAPIEnrollmentSample.git```
 1. ```cd cognitive-services-FaceAPIEnrollmentSample```
 1. ```cd referenceEnrollApp```
-1. ```npm install```
+1. ```npm ci```
 1. ```cd ios```
 1. ```pod install```
-1. Fill out all relevant values, such as your person group name, in the ```development.json``` file.
+1. Fill out all relevant values, such as your large person group ID, in the [src/env/development.json](./referenceEnrollApp/src/env/development.json) file.
 1. Set the FaceAPI key and endpoint as environment values. This is for local development purposes only. You can set environment variables when starting Metro bundler:  
-    ```export FACEAPI_ENDPOINT=<FaceAPI endpoint> && export FACEAPI_KEY= <FaceAPI key> &&  npm start``` 
+    ```export FACEAPI_ENDPOINT=<FaceAPI endpoint> && export FACEAPI_KEY= <FaceAPI key> && npm start``` 
 1. Either build and run the app through Xcode on a simulator, or plug in your iOS device via USB and run ```npm run ios --device <device name>```. This will build and launch the app onto the simulated or physical device. 
 </details>
 
@@ -118,14 +118,14 @@ Notice the app also offers functionality for deleting the user's enrollment and 
 
 ![manage](./media/deleteProfile.GIF "manage") 
 
-To extend the app's functionality to cover the full enrollment experience, read the [overview](https://docs.microsoft.com/en-us/azure/cognitive-services/face/enrollment-overview) for additional features to implement and best practices.
+To extend the app's functionality to cover the full enrollment experience, read the [overview](https://learn.microsoft.com/azure/ai-services/computer-vision/enrollment-overview) for additional features to implement and best practices.
 
 ## Deploy the enrollment app
 
 <details>
 <summary>Android</summary>
 
-First, make sure that your app is ready for production deployment: remove any keys or secrets from the app code and make sure you have followed the [security best practices](https://docs.microsoft.com/azure/cognitive-services/cognitive-services-security?tabs=command-line%2Ccsharp).
+First, make sure that your app is ready for production deployment: remove any keys or secrets from the app code and make sure you have followed the [security best practices](https://learn.microsoft.com/azure/ai-services/security-features).
 
 When you're ready to release your app for production, you'll generate a release-ready APK file, which is the package file format for Android apps. This APK file must be signed with a private key. With this release build, you can begin distributing the app to your devices directly. 
 
@@ -137,12 +137,12 @@ Once you've created a signed APK, see the <a href="https://developer.android.com
 <details>
 <summary>iOS</summary>
 
-First, make sure that your app is ready for production deployment: remove any keys or secrets from the app code and make sure you have followed the [security best practices](https://docs.microsoft.com/azure/cognitive-services/cognitive-services-security?tabs=command-line%2Ccsharp). To prepare for distribution, you will need to create an app icon, a launch screen, and configure deployment info settings. Follow the [documentation from Xcode](https://developer.apple.com/documentation/Xcode/preparing_your_app_for_distribution) to prepare your app for distribution. 
+First, make sure that your app is ready for production deployment: remove any keys or secrets from the app code and make sure you have followed the [security best practices](https://learn.microsoft.com/azure/ai-services/security-features). To prepare for distribution, you will need to create an app icon, a launch screen, and configure deployment info settings. Follow the [documentation from Xcode](https://developer.apple.com/documentation/Xcode/preparing_your_app_for_distribution) to prepare your app for distribution. 
 
 When you're ready to release your app for production, you'll build an archive of your app. Follow the [Xcode documentation](https://developer.apple.com/documentation/Xcode/distributing_your_app_for_beta_testing_and_releases) on how to create an archive build and options for distributing your app.  
 </details>
 
 ## Resources
 
-In this guide, you learned how to set up your development environment and get started with the sample enrollment app. If you're new to React Native, you can read their [getting started docs](https://reactnative.dev/docs/getting-started) to learn more background information. It also may be helpful to familiarize yourself with [Face API](Overview.md). Read the other sections on enrollment app documentation before you begin development.
+In this guide, you learned how to set up your development environment and get started with the sample enrollment app. If you're new to React Native, you can read their [getting started docs](https://reactnative.dev/docs/getting-started) to learn more background information. It also may be helpful to familiarize yourself with [Face API](https://learn.microsoft.com/azure/ai-services/computer-vision/overview-identity). Read the other sections on enrollment app documentation before you begin development.
 
