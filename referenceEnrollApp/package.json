@@ -21,8 +21,6 @@
     "lint": "eslint ."
   },
   "dependencies": {
-    "@azure/cognitiveservices-face": "^4.1.0",
-    "@azure/ms-rest-js": "^2.1.0",
     "@react-native-community/masked-view": "^0.1.10",
     "@react-navigation/native": "^5.9.0",
     "@react-navigation/stack": "^5.13.0",
