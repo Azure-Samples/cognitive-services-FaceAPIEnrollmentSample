@@ -4,7 +4,7 @@ languages:
 - javascript
 products:
 - azure
-- azure-cognitive-services
+- ai-services
 name : FaceAPI Enrollment Sample
 urlFragment: faceapi-enrollment-sample
 ---
